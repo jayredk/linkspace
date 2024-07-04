@@ -6,6 +6,7 @@ import {
   Divider,
   Flex,
   Heading,
+  HStack,
   Icon,
   IconButton,
   Image,
@@ -116,6 +117,51 @@ function DraggableItemPanel() {
         </Tooltip>
       </SimpleGrid>
     </VStack>
+  );
+}
+
+function SortableBlock() {
+  return (
+    <Box w="100%" bgColor="white" borderRadius="1.5rem">
+      <Flex
+        bgColor="gray.200"
+        borderTopRadius="1.5rem"
+        justifyContent="space-between"
+        p="0.5rem 1rem"
+      >
+        <HStack spacing={2}>
+          <IconButton
+            aria-label="Sort block"
+            bgColor="transparent"
+            cursor="grab"
+            fontSize="1.25rem"
+            icon={<Icon as={MdDragIndicator} />}
+          />
+          <Switch />
+        </HStack>
+        <HStack spacing={2}>
+          <Tooltip label="複製" borderRadius="1.5rem">
+            <IconButton
+              aria-label="Copy block"
+              bgColor="transparent"
+              icon={<Icon as={BsCopy} />}
+            />
+          </Tooltip>
+          <Tooltip label="刪除" borderRadius="1.5rem">
+            <IconButton
+              aria-label="Delete block"
+              bgColor="transparent"
+              fontSize="1.25rem"
+              icon={<Icon as={MdDelete} />}
+            />
+          </Tooltip>
+          <Button rightIcon={<Icon as={MdEdit} />}>編輯</Button>
+        </HStack>
+      </Flex>
+      <Box borderRadius="1.5rem" textAlign="center" p="1rem">
+        Content
+      </Box>
+    </Box>
   );
 }
 
@@ -337,6 +383,10 @@ export default function Admin() {
                   編輯個人檔案
                 </Button>
               </VStack>
+
+              {[1, 2, 3].map((item, index) => {
+                return <SortableBlock key={index} />;
+              })}
             </VStack>
           </Flex>
         </Container>
