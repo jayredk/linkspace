@@ -96,6 +96,7 @@ export default function Admin() {
         as="header"
         w="100%"
         position="fixed"
+        zIndex="100"
         top="0"
         bgColor="white"
         boxShadow="0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)"
