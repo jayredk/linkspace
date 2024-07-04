@@ -6,6 +6,7 @@ import {
   Divider,
   Flex,
   Heading,
+  Icon,
   IconButton,
   Image,
   Input,
@@ -16,13 +17,34 @@ import {
   MenuList,
   MenuItem,
   SimpleGrid,
+  Switch,
   Text,
   Tooltip,
   VStack,
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
-import { CopyIcon, ExternalLinkIcon } from '@chakra-ui/icons';
+
+import {
+  MdContentCopy,
+  MdDelete,
+  MdDragIndicator,
+  MdEdit,
+  MdIosShare,
+  MdLanguage,
+  MdLogout,
+} from 'react-icons/md';
+
+import {
+  BsCopy,
+  BsFacebook,
+  BsThreadsFill,
+  BsTiktok,
+  BsInstagram,
+  BsYoutube,
+} from 'react-icons/bs';
+
+import { FiExternalLink } from 'react-icons/fi';
 
 function DraggableItemPanel() {
   return (
@@ -164,43 +186,41 @@ export default function Admin() {
                   size="lg"
                   value="https://linkspace.com/arbramov"
                 />
-                <Tooltip label="複製網址" borderRadius="1.5rem">
+                <Tooltip
+                  label="複製網址"
+                  borderRadius="1.5rem">
                   <IconButton
                     aria-label="Copy website URL"
                     colorScheme="teal"
                     variant="outline"
-                    icon={<CopyIcon />}
+                    icon={<Icon as={MdContentCopy} />}
                     _hover={{
                       background: 'white',
                     }}
                   />
                 </Tooltip>
-                <Tooltip label="開啟頁面" borderRadius="1.5rem">
+                <Tooltip
+                  label="開啟頁面"
+                  borderRadius="1.5rem">
                   <IconButton
                     aria-label="Go to the website"
                     colorScheme="teal"
-                    icon={<ExternalLinkIcon />}
+                    icon={<Icon as={FiExternalLink} />}
                     ml="0.5rem"
                   />
                 </Tooltip>
               </InputGroup>
-              <VStack
-                position="relative"
+              <VStack position="relative"
                 spacing="1rem"
                 px="3rem"
-                pt="3rem"
-              >
+                pt="3rem">
                 <Tooltip label="分享" borderRadius="1.5rem">
                   <IconButton
                     position="absolute"
                     left="2rem"
                     top="1rem"
                     bgColor="transparent"
-                    icon={
-                      <span className="material-symbols-outlined">
-                        ios_share
-                      </span>
-                    }
+                    icon={<Icon fontSize="1.5rem" as={MdIosShare} />}
                   />
                 </Tooltip>
 
@@ -216,7 +236,7 @@ export default function Admin() {
                   </Text>
                 </Box>
 
-                <Wrap spacing={4}>
+                <Wrap spacing={4} my="0.5rem">
                   <WrapItem>
                     <Tooltip label="官方網站" borderRadius="1.5rem">
                       <IconButton
@@ -225,16 +245,67 @@ export default function Admin() {
                         _hover={{
                           transform: 'scale(1.2)',
                         }}
-                        icon={
-                          <span
-                            style={{
-                              fontSize: '32px',
-                            }}
-                            className="material-symbols-outlined"
-                          >
-                            language
-                          </span>
-                        }
+                        icon={<Icon fontSize="2rem" as={MdLanguage} />}
+                      />
+                    </Tooltip>
+                  </WrapItem>
+                  <WrapItem>
+                    <Tooltip label="Facebook" borderRadius="1.5rem">
+                      <IconButton
+                        colorScheme="gray"
+                        bgColor="transparent"
+                        _hover={{
+                          transform: 'scale(1.2)',
+                        }}
+                        icon={<Icon fontSize="2rem" as={BsFacebook} />}
+                      />
+                    </Tooltip>
+                  </WrapItem>
+                  <WrapItem>
+                    <Tooltip label="Threads" borderRadius="1.5rem">
+                      <IconButton
+                        colorScheme="gray"
+                        bgColor="transparent"
+                        _hover={{
+                          transform: 'scale(1.2)',
+                        }}
+                        icon={<Icon fontSize="2rem" as={BsThreadsFill} />}
+                      />
+                    </Tooltip>
+                  </WrapItem>
+                  <WrapItem>
+                    <Tooltip label="Tiktok" borderRadius="1.5rem">
+                      <IconButton
+                        colorScheme="gray"
+                        bgColor="transparent"
+                        _hover={{
+                          transform: 'scale(1.2)',
+                        }}
+                        icon={<Icon fontSize="2rem" as={BsTiktok} />}
+                      />
+                    </Tooltip>
+                  </WrapItem>
+                  <WrapItem>
+                    <Tooltip label="Instagram" borderRadius="1.5rem">
+                      <IconButton
+                        colorScheme="gray"
+                        bgColor="transparent"
+                        _hover={{
+                          transform: 'scale(1.2)',
+                        }}
+                        icon={<Icon fontSize="2rem" as={BsInstagram} />}
+                      />
+                    </Tooltip>
+                  </WrapItem>
+                  <WrapItem>
+                    <Tooltip label="Youtube" borderRadius="1.5rem">
+                      <IconButton
+                        colorScheme="gray"
+                        bgColor="transparent"
+                        _hover={{
+                          transform: 'scale(1.2)',
+                        }}
+                        icon={<Icon fontSize="2rem" as={BsYoutube} />}
                       />
                     </Tooltip>
                   </WrapItem>
@@ -245,16 +316,8 @@ export default function Admin() {
                   colorScheme="teal"
                   variant="outline"
                   border="0"
-                  rightIcon={
-                    <span
-                      style={{
-                        fontSize: '20px',
-                      }}
-                      className="material-symbols-outlined"
-                    >
-                      edit
-                    </span>
-                  }
+                  borderRadius="1.5rem"
+                  rightIcon={<Icon fontSize="20px" as={MdEdit} />}
                 >
                   編輯個人檔案
                 </Button>
