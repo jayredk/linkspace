@@ -153,8 +153,15 @@ export default function Admin() {
                 abramov@gmail.com
               </Text>
               <Divider />
-              <MenuItem borderRadius="0.75rem" mt="0.75rem">
-                登出
+              <MenuItem borderRadius="0.75rem" mt="0.75rem" p="0">
+                <Button
+                  bgColor="white"
+                  w="100%"
+                  justifyContent="flex-start"
+                  leftIcon={<Icon as={MdLogout} />}
+                >
+                  登出
+                </Button>
               </MenuItem>
             </MenuList>
           </Menu>
