@@ -227,7 +227,7 @@ export default function Admin() {
           lg: '20rem',
         }}
       >
-        <Container maxW="lg" mt="10rem">
+        <Container maxW="lg" mt="10rem" mb="5rem">
           <Flex justifyContent="space-between">
             <DraggableItemPanel />
             <VStack w="100%" spacing={8}>
