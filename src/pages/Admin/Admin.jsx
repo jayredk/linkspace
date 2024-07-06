@@ -208,6 +208,31 @@ function SortableBlock({ item }) {
         </Box>
       )}
 
+      {item.type === 'square-board' && (
+        <Box position="relative">
+          <AspectRatio w="100%" ratio={1 / 1}>
+            <Image
+              src="https://bit.ly/naruto-sage"
+              alt="naruto"
+              objectFit="cover"
+            />
+          </AspectRatio>
+          <Text
+            bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+            color="white"
+            fontSize="sm"
+            position="absolute"
+            bottom="0"
+            left="0"
+            right="0"
+            p="1rem"
+          >
+            {item.text}
+          </Text>
+        </Box>
+      )}
+
+      
     </Box>
   );
 }
