@@ -122,10 +122,16 @@ function DraggableItemPanel() {
 
 function SortableBlock() {
   return (
-    <Box w="100%" bgColor="white" borderRadius="1.5rem">
+    <Box
+      overflow="hidden"
+      w="100%"
+      bgColor="white"
+      borderTopRadius="1rem"
+      borderBottomRadius="md"
+    >
       <Flex
         bgColor="gray.200"
-        borderTopRadius="1.5rem"
+        borderTopRadius="1rem"
         justifyContent="space-between"
         p="0.5rem 1rem"
       >
