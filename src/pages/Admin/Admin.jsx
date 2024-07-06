@@ -120,7 +120,7 @@ function DraggableItemPanel() {
   );
 }
 
-function SortableBlock() {
+function SortableBlock({ item }) {
   return (
     <Box
       overflow="hidden"
@@ -164,14 +164,54 @@ function SortableBlock() {
           <Button rightIcon={<Icon as={MdEdit} />}>編輯</Button>
         </HStack>
       </Flex>
-      <Box borderRadius="1.5rem" textAlign="center" p="1rem">
-        Content
-      </Box>
+
+      {item.type === 'text-button' && (
+        <Button
+          w="100%"
+          border="2px solid"
+          borderColor="gray.600"
+          borderRadius="md"
+          textAlign="center"
+          p="1rem"
+          _hover={{
+            bgColor: 'gray.600',
+            color: 'white',
+            transform: 'scale(1.03)',
+            transition: 'transform .3s',
+          }}
+        >
+          {item.text}
+        </Button>
+      )}
+
     </Box>
   );
 }
 
 export default function Admin() {
+  const blockItems = [
+    {
+      id: 1,
+      type: 'text-button',
+      text: 'hello',
+    },
+    {
+      id: 2,
+      type: 'banner-board',
+      text: '我是橫幅看板',
+    },
+    {
+      id: 3,
+      type: 'square-board',
+      text: '方形看板 desu',
+    },
+    {
+      id: 4,
+      type: 'double-square-board',
+      text: '雙方格看板',
+    },
+  ];
+
   return (
     <>
       <Box
@@ -390,8 +430,8 @@ export default function Admin() {
                 </Button>
               </VStack>
 
-              {[1, 2, 3].map((item, index) => {
-                return <SortableBlock key={index} />;
+              {blockItems.map((item, index) => {
+                return <SortableBlock key={index} item={item} />;
               })}
             </VStack>
           </Flex>
