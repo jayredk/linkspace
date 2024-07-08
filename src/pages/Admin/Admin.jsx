@@ -48,6 +48,9 @@ import {
 
 import { FiExternalLink } from 'react-icons/fi';
 
+import 'lite-youtube-embed/src/lite-yt-embed.css';
+import 'lite-youtube-embed/src/lite-yt-embed.js';
+
 function DraggableItemPanel() {
   return (
     <VStack
@@ -279,6 +282,44 @@ function SortableBlock({ item }) {
           </Box>
         </SimpleGrid>
       )}
+
+      {item.type === 'video-player' && (
+        <Box
+          sx={{
+            '.lty-playbtn': {
+              backgroundImage: "url('/play-btn.svg')",
+              backgroundSize: '1.25rem',
+              backgroundRepeat: 'no-repeat',
+              bgColor: 'black',
+              filter: 'none',
+              border: '2px solid white',
+              borderRadius: '50%',
+              w: '2.5rem',
+              h: '2.5rem',
+            },
+            'lite-youtube': {
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          }}
+        >
+          <lite-youtube
+            videoid="DZkbDCSdC1Q"
+            playlabel="Play: Why You Should Learn To Program the HARD WAY"
+          >
+            <a
+              href="https://youtube.com/watch?v=DZkbDCSdC1Q"
+              className="lty-playbtn"
+              title="Play Video"
+            >
+              <span className="lyt-visually-hidden">
+                Play Video: Why You Should Learn To Program the HARD WAY
+              </span>
+            </a>
+          </lite-youtube>
+        </Box>
+      )}
     </Box>
   );
 }
@@ -304,6 +345,11 @@ export default function Admin() {
       id: 4,
       type: 'double-square-board',
       text: '雙方格看板',
+    },
+    {
+      id: 5,
+      type: 'video-player',
+      text: '影片',
     },
   ];
 
