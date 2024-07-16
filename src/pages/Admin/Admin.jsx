@@ -371,7 +371,7 @@ export default function Admin() {
         >
           <Link
             p="0.75rem"
-            fontSize="4xl"
+            fontSize="1.75rem"
             fontWeight="bold"
             textDecoration="none !important"
             letterSpacing="0.05em"
