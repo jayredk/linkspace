@@ -8,6 +8,7 @@ specifiers:
   '@types/react': ^18.2.66
   '@types/react-dom': ^18.2.22
   '@vitejs/plugin-react': ^4.2.1
+  animate.css: ^4.1.1
   eslint: ^8.57.0
   eslint-config-prettier: ^9.1.0
   eslint-plugin-import: ^2.29.1
@@ -29,6 +30,7 @@ dependencies:
   '@chakra-ui/react': 2.8.2_zsjwpfixfnbz4xxstczqxwgmpe
   '@emotion/react': 11.11.4_3vdbhqr2ncalcx7opnshezpx3q
   '@emotion/styled': 11.11.5_5fp4xdflttuyydnlvnacw4z3pq
+  animate.css: 4.1.1
   framer-motion: 11.2.6_nnrd3gsncyragczmpvfhocinkq
   lite-youtube-embed: 0.3.2
   react: 18.3.1
@@ -2077,6 +2079,10 @@ packages:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
     dev: true
+
+  /animate.css/4.1.1:
+    resolution: {integrity: sha512-+mRmCTv6SbCmtYJCN4faJMNFVNN5EuCTTprDTAo7YzIGji2KADmakjVA3+8mVDkZ2Bf09vayB35lSQIex2+QaQ==}
+    dev: false
 
   /ansi-regex/5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
