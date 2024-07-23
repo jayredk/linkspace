@@ -82,6 +82,9 @@ import { BiTimer } from 'react-icons/bi';
 import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'lite-youtube-embed/src/lite-yt-embed.js';
 
+import 'animate.css';
+
+
 const fontSizeMap = {
   sm: '16px',
   md: '20px',
@@ -142,10 +145,17 @@ function BasicModal({
   } = modalState;
   console.log(modalState);
 
+  const effectMap = {
+    none: '',
+    wobble: 'animate__wobble',
+    shakeX: 'animate__shakeX',
+    pulse: 'animate__pulse',
+  };
+
   function handleModalStateChange(e) {
 
     const { name, value } = e.target;
-    // console.log(name, value);
+    console.log(name, value);
 
     switch (name) {
     case 'fontSize':
@@ -190,6 +200,17 @@ function BasicModal({
       setModalState({
         ...modalState,
         buttons: tempButtons,
+      });
+      break;
+
+    case 'effect':
+      const buttonIndex = e.target.dataset.index;
+      const tempButtonsForEffect = [...buttons];
+
+      tempButtonsForEffect[buttonIndex].effect = e.target.value;
+      setModalState({
+        ...modalState,
+        buttons: tempButtonsForEffect,
       });
       break;
 
@@ -418,7 +439,13 @@ function BasicModal({
                         </Flex>
                         <Flex alignItems="center" mb="1rem">
                           <Icon as={BiTimer} mr="1rem" fontSize="xl" />
-                          <Select backgroundColor="gray.400">
+                          <Select
+                            name="effect"
+                            data-index={index}
+                            onChange={handleModalStateChange}
+                            value={button.effect}
+                            backgroundColor="gray.400"
+                          >
                             <option value="none">無動態效果</option>
                             <option value="wobble">搖晃</option>
                             <option value="shakeX">震動</option>
@@ -450,9 +477,11 @@ function BasicModal({
                 {buttons.map((button, index) => {
                   return (
                     <Link
+                      style={{'--animate-duration': '2s'}}
                       href={button.linkUrl}
                       isExternal
                       key={index}
+                      className={`animate__animated animate__infinite ${effectMap[button.effect]}`}
                       display="flex"
                       alignItems="center"
                       backgroundColor={isSolid ? 'gray.900' : 'transparent'}
@@ -873,6 +902,7 @@ export default function Admin() {
       fontSize: 'sm',
       buttons: [
         {
+          effect: 'wobble',
           text: '訂閱阿滴',
           subText: 'hello',
           icon: 'youtube',
@@ -915,24 +945,28 @@ export default function Admin() {
       fontSize: 'sm',
       buttons: [
         {
+          effect: 'none',
           text: '阿滴的IG',
           subText: '有妹妹然後教英文的那個🙋🏻‍♂️',
           icon: 'instagram',
           linkUrl: 'https://www.instagram.com/rayduenglish/',
         },
         {
+          effect: 'none',
           text: '阿滴的日常IG',
           subText: '比較多日常廢文那個',
           icon: 'instagram',
           linkUrl: 'https://www.instagram.com/raydudaily/',
         },
         {
+          effect: 'none',
           text: '阿滴英文Facebook粉專',
           subText: '',
           icon: 'facebook',
           linkUrl: 'https://www.facebook.com/RayDuEnglish',
         },
         {
+          effect: 'none',
           text: '阿滴個人Facebook帳號',
           subText: '',
           icon: 'facebook',
