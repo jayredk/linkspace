@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   AspectRatio,
   Avatar,
@@ -40,9 +42,10 @@ import {
 import {
   BsCopy,
   BsFacebook,
+  BsInstagram,
   BsThreadsFill,
   BsTiktok,
-  BsInstagram,
+  BsTwitterX,
   BsYoutube,
 } from 'react-icons/bs';
 
@@ -50,6 +53,42 @@ import { FiExternalLink } from 'react-icons/fi';
 
 import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'lite-youtube-embed/src/lite-yt-embed.js';
+
+
+const fontSizeMap = {
+  sm: '16px',
+  md: '20px',
+  lg: '24px',
+  xl: '32px',
+};
+
+const fontSizeMapWithSubtitle = {
+  sm: '20px',
+  md: '24px',
+  lg: '28px',
+  xl: '36px',
+};
+
+const iconSizeMap = {
+  sm: '24px',
+  md: '24px',
+  lg: '32px',
+  xl: '40px',
+};
+
+const iconSizeMapWithSubtitle = {
+  sm: '32px',
+  md: '32px',
+  lg: '40px',
+  xl: '48px',
+};
+
+const iconMap = {
+  facebook: BsFacebook,
+  instagram: BsInstagram,
+  twitter: BsTwitterX,
+  youtube: BsYoutube,
+};
 
 function DraggableItemPanel() {
   return (
@@ -122,7 +161,7 @@ function DraggableItemPanel() {
       </SimpleGrid>
     </VStack>
   );
-}
+}  
 
 function SortableBlock({ item }) {
   return (
@@ -170,22 +209,67 @@ function SortableBlock({ item }) {
       </Flex>
 
       {item.type === 'text-button' && (
-        <Button
-          w="100%"
-          border="2px solid"
-          borderColor="gray.600"
-          borderRadius="md"
-          textAlign="center"
-          p="1rem"
-          _hover={{
-            bgColor: 'gray.600',
-            color: 'white',
-            transform: 'scale(1.03)',
-            transition: 'transform .3s',
-          }}
-        >
-          {item.text}
-        </Button>
+        <VStack spacing={4}
+          flexGrow="1"
+          align="stretch"
+          textAlign="center">
+          {item.buttons.map((button, index) => {
+            return (
+              <Link
+                key={index}
+                href={button.linkUrl}
+                target="_blank"
+                display="flex"
+                alignItems="center"
+                backgroundColor={item.isSolid ? 'gray.900' : 'transparent'}
+                color={item.isSolid ? '#fff' : 'gray.900'}
+                textDecoration="none"
+                border="2px"
+                borderColor="gray.900"
+                borderRadius="10px"
+                fontWeight="bold"
+                p="1rem"
+                _hover={{
+                  bgColor: 'gray.600',
+                  transform: 'scale(1.03)',
+                  textDecoration: 'none',
+                  backgroundColor: item.isSolid ? '#fff' : 'gray.900',
+                  color: item.isSolid ? 'gray.900' : '#fff',
+                }}
+              >
+                {item.hasSubtitle ? (
+                  <Icon
+                    as={iconMap[button.icon]}
+                    fontSize={iconSizeMapWithSubtitle[item.fontSize]}
+                  />
+                ) : (
+                  <Icon
+                    as={iconMap[button.icon]}
+                    fontSize={iconSizeMap[item.fontSize]}
+                  />
+                )}
+
+                {item.hasSubtitle ? (
+                  <Text fontSize={fontSizeMapWithSubtitle[item.fontSize]} mx="auto">
+                    {button.text}
+                    <Text
+                      as="span"
+                      display="block"
+                      fontSize="md"
+                      fontWeight="normal"
+                    >
+                      {button.subText}
+                    </Text>
+                  </Text>
+                ) : (
+                  <Text fontSize={fontSizeMap[item.fontSize]} mx="auto">
+                    {button.text}
+                  </Text>
+                )}
+              </Link>
+            );
+          })}
+        </VStack>
       )}
 
       {item.type === 'banner-board' && (
@@ -238,48 +322,46 @@ function SortableBlock({ item }) {
 
       {item.type === 'double-square-board' && (
         <SimpleGrid columns={2} spacing={4}>
-          <Box position="relative">
-            <AspectRatio w="100%" ratio={1 / 1}>
-              <Image
-                src="https://bit.ly/naruto-sage"
-                alt="naruto"
-                objectFit="cover"
-              />
-            </AspectRatio>
-            <Text
-              bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-              color="white"
-              fontSize="sm"
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              p="1rem"
-            >
-              {item.text}
-            </Text>
-          </Box>
-          <Box position="relative">
-            <AspectRatio w="100%" ratio={1 / 1}>
-              <Image
-                src="https://bit.ly/naruto-sage"
-                alt="naruto"
-                objectFit="cover"
-              />
-            </AspectRatio>
-            <Text
-              bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-              color="white"
-              fontSize="sm"
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              p="1rem"
-            >
-              {item.text}
-            </Text>
-          </Box>
+          {item.blocks.map((block, index) => {
+            return (
+              <Link
+                key={index}
+                href={block.linkUrl}
+                target="_blank"
+                position="relative"
+                _hover={{
+                  transform: 'scale(1.03)',
+                  transition: 'transform .3s',
+                }}
+              >
+                {item.text}
+
+                <Box position="relative">
+                  <AspectRatio w="100%" ratio={1 / 1}>
+                    <Image
+                      src={block.imageUrl}
+                      alt={block.text}
+                      borderRadius="md"
+                      objectFit="cover"
+                    />
+                  </AspectRatio>
+                  <Text
+                    bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+                    borderRadius="md"
+                    color="white"
+                    fontSize="sm"
+                    position="absolute"
+                    bottom="0"
+                    left="0"
+                    right="0"
+                    p="1rem"
+                  >
+                    {block.text}
+                  </Text>
+                </Box>
+              </Link>
+            );
+          })}
         </SimpleGrid>
       )}
 
@@ -301,12 +383,13 @@ function SortableBlock({ item }) {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              borderRadius: 'md',
             },
           }}
         >
           <lite-youtube
-            videoid="DZkbDCSdC1Q"
-            playlabel="Play: Why You Should Learn To Program the HARD WAY"
+            videoid={item.videoId}
+            playlabel={'Play: ' + item.videoDescription}
           >
             <a
               href="https://youtube.com/watch?v=DZkbDCSdC1Q"
@@ -314,7 +397,7 @@ function SortableBlock({ item }) {
               title="Play Video"
             >
               <span className="lyt-visually-hidden">
-                Play Video: Why You Should Learn To Program the HARD WAY
+                Play Video: {item.videoDescription}
               </span>
             </a>
           </lite-youtube>
@@ -325,33 +408,112 @@ function SortableBlock({ item }) {
 }
 
 export default function Admin() {
-  const blockItems = [
+  const profile = {
+    avatar:
+      'https://img.portaly.cc/5m-nfNgxp5htRXAXdUp4SAIVgGc-qG8qJ0hiYRcELq4/rs:fill:640/q:75/aHR0cHM6Ly9maXJlYmFzZXN0b3JhZ2UuZ29vZ2xlYXBpcy5jb20vdjAvYi9wb3J0YWx5LWNhOWUxLmFwcHNwb3QuY29tL28vVUhpQlEwVTZJSlIwRHRWb2hIeTMlMkZhdmF0YXI_YWx0PW1lZGlhJnRva2VuPThlZjlkODAzLWQxOGUtNGM4Zi1iZmY3LWNlNTBmMDQwNzhhOA',
+    email: 'durayray@gmail.com',
+    name: '阿滴',
+    description: '有妹妹然後教英文的那個',
+    siteUrl: 'https://linkspace.com/durayray',
+    links: [
+      {
+        icon: 'facebook',
+        text: 'Facebook',
+        url: 'https://www.facebook.com/RayDuEnglish',
+      },
+      {
+        icon: 'instagram',
+        text: 'Instagram',
+        url: 'https://www.instagram.com/rayduenglish/',
+      },
+      {
+        icon: 'twitter',
+        text: 'Twitter',
+        url: 'https://twitter.com/durayray',
+      },
+    ],
+  };
+
+  const blockItemData = [
     {
       id: 1,
       type: 'text-button',
-      text: 'hello',
+      isSolid: true,
+      hasSubtitle: false,
+      fontSize: 'sm',
+      buttons: [
+        {
+          text: '訂閱阿滴',
+          subText: 'hello',
+          icon: 'youtube',
+          linkUrl:
+            'https://www.youtube.com/@rayduenglish/featured?sub_confirmation=1',
+        },
+      ],
     },
     {
       id: 2,
-      type: 'banner-board',
-      text: '我是橫幅看板',
+      type: 'video-player',
+      videoId: 'bQXLG1UNjdA',
+      videoDescription:
+        ' 班機取消卡在非洲? 拍攝行程大亂! 肯亞航空給了我這輩子最雷的飛行體驗😍 ',
     },
     {
       id: 3,
-      type: 'square-board',
-      text: '方形看板 desu',
+      type: 'double-square-board',
+      blocks: [
+        {
+          imageUrl:
+            'https://img.portaly.cc/qHx90MonPTYB1p1VfDPAHttiyLUTW4PEKPf-Hhf84pw/rs:fill:1080/q:75/aHR0cHM6Ly9maXJlYmFzZXN0b3JhZ2UuZ29vZ2xlYXBpcy5jb20vdjAvYi9wb3J0YWx5LWNhOWUxLmFwcHNwb3QuY29tL28vVUhpQlEwVTZJSlIwRHRWb2hIeTMlMkZibG9ja3MlMkZGWmZ6anZFR2s2SGlVT01XeWlWTiUyRml0ZW1NYXAuLXVTQTNHQklxYlhXaXdBNDZadEZMLmltYWdlP2FsdD1tZWRpYSZ0b2tlbj0wMjQzNGIzOC1lN2RiLTRjMzUtODY1NS02YmYwODkzNDUzOTM',
+          text: '阿滴英文 YT',
+          linkUrl: 'https://www.youtube.com/@rayduenglish/featured',
+        },
+        {
+          imageUrl:
+            'https://img.portaly.cc/GRody5jF4DKi9XYBqU_YK7oYQSuPRr_UKO_CP0NUeIo/rs:fill:1080/q:75/aHR0cHM6Ly9maXJlYmFzZXN0b3JhZ2UuZ29vZ2xlYXBpcy5jb20vdjAvYi9wb3J0YWx5LWNhOWUxLmFwcHNwb3QuY29tL28vVUhpQlEwVTZJSlIwRHRWb2hIeTMlMkZibG9ja3MlMkZGWmZ6anZFR2s2SGlVT01XeWlWTiUyRml0ZW1NYXAueEJYWG84eWJ1RVBZME9IaHJkUW1FLmltYWdlP2FsdD1tZWRpYSZ0b2tlbj0yNjA5NmE4Zi1lZjAzLTQ1N2ItYTQ3NC0xMWM4NDYzMzUyZjE',
+          text: '阿滴日常 YT',
+          linkUrl:
+            'https://www.youtube.com/channel/UCL--AnIMxQQdbcH4ESEK0Iw/videos',
+        },
+      ],
     },
     {
       id: 4,
-      type: 'double-square-board',
-      text: '雙方格看板',
-    },
-    {
-      id: 5,
-      type: 'video-player',
-      text: '影片',
-    },
+      type: 'text-button',
+      isSolid: false,
+      hasSubtitle: true,
+      fontSize: 'sm',
+      buttons: [
+        {
+          text: '阿滴的IG',
+          subText: '有妹妹然後教英文的那個🙋🏻‍♂️',
+          icon: 'instagram',
+          linkUrl: 'https://www.instagram.com/rayduenglish/',
+        },
+        {
+          text: '阿滴的日常IG',
+          subText: '比較多日常廢文那個',
+          icon: 'instagram',
+          linkUrl: 'https://www.instagram.com/raydudaily/',
+        },
+        {
+          text: '阿滴英文Facebook粉專',
+          subText: '',
+          icon: 'facebook',
+          linkUrl: 'https://www.facebook.com/RayDuEnglish',
+        },
+        {
+          text: '阿滴個人Facebook帳號',
+          subText: '',
+          icon: 'facebook',
+          linkUrl: 'https://www.facebook.com/durayray',
+        },
+      ],
+    }
   ];
+
+  const [blockItems, setBlockItems] = useState(blockItemData);
+
 
   return (
     <>
@@ -380,18 +542,17 @@ export default function Admin() {
           </Link>
           <Menu isLazy>
             <MenuButton>
-              <Image
+              <Avatar
                 my="0.75rem"
                 boxSize="60px"
                 borderRadius="0.75rem"
-                src="https://bit.ly/dan-abramov"
-                alt="Dan Abramov"
+                src={profile.avatar}
               />
             </MenuButton>
             <MenuList p="1rem">
-              <Text fontWeight="bold">Dan Abramov</Text>
+              <Text fontWeight="bold">{profile.name}</Text>
               <Text fontSize="sm" mb="0.75rem">
-                abramov@gmail.com
+                {profile.email}
               </Text>
               <Divider />
               <MenuItem borderRadius="0.75rem" mt="0.75rem" p="0">
@@ -432,11 +593,9 @@ export default function Admin() {
                   isReadOnly
                   border="0"
                   size="lg"
-                  value="https://linkspace.com/arbramov"
+                  value={profile.siteUrl}
                 />
-                <Tooltip
-                  label="複製網址"
-                  borderRadius="1.5rem">
+                <Tooltip label="複製網址" borderRadius="1.5rem">
                   <IconButton
                     aria-label="Copy website URL"
                     colorScheme="teal"
@@ -447,21 +606,33 @@ export default function Admin() {
                     }}
                   />
                 </Tooltip>
-                <Tooltip
-                  label="開啟頁面"
-                  borderRadius="1.5rem">
-                  <IconButton
+                <Tooltip label="開啟頁面" borderRadius="1.5rem">
+                  <Link
+                    href={profile.siteUrl}
+                    isExternal
                     aria-label="Go to the website"
                     colorScheme="teal"
-                    icon={<Icon as={FiExternalLink} />}
+                    border="1px"
+                    borderRadius="md"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minW="2.5rem"
+                    minH="2.5rem"
                     ml="0.5rem"
-                  />
+                  >
+                    <Icon as={FiExternalLink} />
+                  </Link>
                 </Tooltip>
               </InputGroup>
-              <VStack position="relative"
+
+              <VStack
+                position="relative"
+                w="100%"
                 spacing="1rem"
-                px="3rem"
-                pt="3rem">
+                p="3rem"
+                pb="1rem"
+              >
                 <Tooltip label="分享" borderRadius="1.5rem">
                   <IconButton
                     position="absolute"
@@ -472,91 +643,34 @@ export default function Admin() {
                   />
                 </Tooltip>
 
-                <Avatar size="2xl" src="https://bit.ly/dan-abramov" />
+                <Avatar size="2xl" src={profile.avatar} />
 
                 <Box textAlign="center">
                   <Heading as="h1" size="md" mb="0.5rem">
-                    Dan Abramov
+                    {profile.name}
                   </Heading>
-                  <Text whiteSpace="pre-wrap">
-                    Working on @reactjs. Co-author of Redux and Create React
-                    App. Building tools for humans.
-                  </Text>
+                  <Text whiteSpace="pre-wrap">{profile.description}</Text>
                 </Box>
 
-                <Wrap spacing={4} my="0.5rem">
-                  <WrapItem>
-                    <Tooltip label="官方網站" borderRadius="1.5rem">
-                      <IconButton
-                        colorScheme="gray"
-                        bgColor="transparent"
-                        _hover={{
-                          transform: 'scale(1.2)',
-                        }}
-                        icon={<Icon fontSize="2rem" as={MdLanguage} />}
-                      />
-                    </Tooltip>
-                  </WrapItem>
-                  <WrapItem>
-                    <Tooltip label="Facebook" borderRadius="1.5rem">
-                      <IconButton
-                        colorScheme="gray"
-                        bgColor="transparent"
-                        _hover={{
-                          transform: 'scale(1.2)',
-                        }}
-                        icon={<Icon fontSize="2rem" as={BsFacebook} />}
-                      />
-                    </Tooltip>
-                  </WrapItem>
-                  <WrapItem>
-                    <Tooltip label="Threads" borderRadius="1.5rem">
-                      <IconButton
-                        colorScheme="gray"
-                        bgColor="transparent"
-                        _hover={{
-                          transform: 'scale(1.2)',
-                        }}
-                        icon={<Icon fontSize="2rem" as={BsThreadsFill} />}
-                      />
-                    </Tooltip>
-                  </WrapItem>
-                  <WrapItem>
-                    <Tooltip label="Tiktok" borderRadius="1.5rem">
-                      <IconButton
-                        colorScheme="gray"
-                        bgColor="transparent"
-                        _hover={{
-                          transform: 'scale(1.2)',
-                        }}
-                        icon={<Icon fontSize="2rem" as={BsTiktok} />}
-                      />
-                    </Tooltip>
-                  </WrapItem>
-                  <WrapItem>
-                    <Tooltip label="Instagram" borderRadius="1.5rem">
-                      <IconButton
-                        colorScheme="gray"
-                        bgColor="transparent"
-                        _hover={{
-                          transform: 'scale(1.2)',
-                        }}
-                        icon={<Icon fontSize="2rem" as={BsInstagram} />}
-                      />
-                    </Tooltip>
-                  </WrapItem>
-                  <WrapItem>
-                    <Tooltip label="Youtube" borderRadius="1.5rem">
-                      <IconButton
-                        colorScheme="gray"
-                        bgColor="transparent"
-                        _hover={{
-                          transform: 'scale(1.2)',
-                        }}
-                        icon={<Icon fontSize="2rem" as={BsYoutube} />}
-                      />
-                    </Tooltip>
-                  </WrapItem>
+                <Wrap spacing={6} my="0.5rem">
+                  {profile.links.map((link, index) => {
+                    return (
+                      <WrapItem key={index}>
+                        <Tooltip label={link.text} borderRadius="1.5rem">
+                          <Link
+                            href={link.url}
+                            target="_blank"
+                            bgColor="transparent"
+                            _hover={{
+                              transform: 'scale(1.2)',
+                            }}
+                          >
+                            <Icon as={iconMap[link.icon]} fontSize="1.5rem" />
+                          </Link>
+                        </Tooltip>
+                      </WrapItem>
+                    );
+                  })}
                 </Wrap>
 
                 <Button
