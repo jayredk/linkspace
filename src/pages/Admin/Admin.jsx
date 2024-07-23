@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   AspectRatio,
   Avatar,
   Box,
   Button,
+  Card,
+  CardBody,
   Container,
   Divider,
   Flex,
@@ -18,12 +20,31 @@ import {
   Link,
   Menu,
   MenuButton,
-  MenuList,
   MenuItem,
+  MenuList,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Radio,
+  RadioGroup,
+  Select,
   SimpleGrid,
+  Stack,
   Switch,
   Text,
   Tooltip,
+  useDisclosure,
   VStack,
   Wrap,
   WrapItem,
@@ -37,23 +58,29 @@ import {
   MdIosShare,
   MdLanguage,
   MdLogout,
+  MdOutlineEmojiEmotions,
+  MdTitle,
 } from 'react-icons/md';
 
 import {
   BsCopy,
   BsFacebook,
   BsInstagram,
+  BsLink45Deg,
   BsThreadsFill,
   BsTiktok,
   BsTwitterX,
   BsYoutube,
 } from 'react-icons/bs';
 
+import { IoInformation } from 'react-icons/io5';
+
 import { FiExternalLink } from 'react-icons/fi';
+
+import { BiTimer } from 'react-icons/bi';
 
 import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'lite-youtube-embed/src/lite-yt-embed.js';
-
 
 const fontSizeMap = {
   sm: '16px',
@@ -89,6 +116,409 @@ const iconMap = {
   twitter: BsTwitterX,
   youtube: BsYoutube,
 };
+
+const iconArray = Object.entries(iconMap).map(([key, value]) => ({
+  name: key,
+  icon: value,
+}));
+
+
+function BasicModal({
+  tempBlockData,
+  setTempBlockData,
+  isOpen,
+  onClose,
+  setBlockItems,
+}) {
+
+  const [modalState, setModalState] = useState(tempBlockData);
+
+  const {
+    buttons = [],
+    hasImage = false,
+    hasSubtitle = false,
+    isSolid = false,
+    fontSize = 'sm',
+  } = modalState;
+  console.log(modalState);
+
+  function handleModalStateChange(e) {
+
+    const { name, value } = e.target;
+    // console.log(name, value);
+
+    switch (name) {
+    case 'fontSize':
+      setModalState({
+        ...modalState,
+        [name]: value,
+      });
+      break;
+    case 'text':
+    case 'subText':
+      const index = e.target.dataset.index;
+      const newButtons = [...buttons];
+
+      name === 'text'
+        ? (newButtons[index].text = value)
+        : (newButtons[index].subText = value);
+
+      setModalState({
+        ...modalState,
+        buttons: newButtons,
+      });
+      break;
+    case 'isSolid':
+      setModalState({
+        ...modalState,
+        [name]: e.target.checked,
+      });
+      break;
+    case 'hasSubtitle':
+      setModalState({
+        ...modalState,
+        [name]: e.target.checked,
+      });
+      break;
+
+    case 'changeIcon':
+      console.log(e.target);
+      const btnIndex = e.target.dataset.index;
+      const tempButtons = [...buttons];
+
+      tempButtons[btnIndex].icon = e.target.value;
+      setModalState({
+        ...modalState,
+        buttons: tempButtons,
+      });
+      break;
+
+    default:
+      break;
+    }
+  }
+
+  function handleSave(e) {
+    setBlockItems((prevState) => {
+      const index = prevState.findIndex((item) => item.id === modalState.id);
+      const newItems = [...prevState];
+      newItems[index] = { ...modalState };
+      console.log(newItems);
+      return newItems;
+    });
+    setTempBlockData({});
+    onClose();
+  }
+
+  useEffect(() => {
+    setModalState(tempBlockData);
+  }, [tempBlockData]);
+
+  return (
+    <>
+      {/* <Button onClick={onOpen}>Open Modal</Button> */}
+
+      <Modal
+        scrollBehavior="inside"
+        isOpen={isOpen}
+        onClose={onClose}
+        w="100%"
+        size="6xl"
+      >
+        <ModalOverlay />
+        <ModalContent
+          borderTopRadius="20px"
+          backgroundColor="gray.200"
+          flexDirection="row"
+        >
+          <ModalHeader
+            borderTopRadius="20px"
+            backgroundColor="#000"
+            color="#fff"
+            display="flex"
+            alignItems="center"
+            position="absolute"
+            left="0"
+            right="0"
+            mb="1.5rem"
+          >
+            <Heading size="lg">編輯區塊</Heading>
+            <ModalCloseButton color="#fff" />
+          </ModalHeader>
+          <ModalBody maxW="50%" mt="6rem">
+            <Flex>
+              <Box>
+                <Heading as="h3" size="md" mb="1rem">
+                  按鈕樣式
+                </Heading>
+                <Wrap spacing="2rem" borderRadius="20px" mb="2rem">
+                  <WrapItem
+                    backgroundColor="gray.400"
+                    borderRadius="20px"
+                    p="0.5rem 0.75rem"
+                  >
+                    <HStack spacing="24px">
+                      <Text fontWeight="500">按鈕填滿</Text>
+                      <Switch
+                        name="isSolid"
+                        onChange={handleModalStateChange}
+                        isChecked={isSolid}
+                      />
+                    </HStack>
+                  </WrapItem>
+                  <WrapItem
+                    backgroundColor="gray.400"
+                    borderRadius="20px"
+                    p="0.5rem 0.75rem"
+                  >
+                    <HStack spacing="24px">
+                      <Text fontWeight="500">按鈕圖片</Text>
+                      <Switch />
+                    </HStack>
+                  </WrapItem>
+                  <WrapItem
+                    backgroundColor="gray.400"
+                    borderRadius="20px"
+                    p="0.5rem 0.75rem"
+                  >
+                    <HStack spacing="24px">
+                      <Text fontWeight="500">按鈕副標</Text>
+                      <Switch
+                        name="hasSubtitle"
+                        onChange={handleModalStateChange}
+                        isChecked={hasSubtitle}
+                      />
+                    </HStack>
+                  </WrapItem>
+                </Wrap>
+                <Heading as="h3" size="md" mb="1rem">
+                  字體大小
+                </Heading>
+                <RadioGroup
+                  borderRadius="20px"
+                  mb="2rem"
+                  name="fontSize"
+                  value={fontSize}
+                >
+                  <Stack
+                    direction="row"
+                    backgroundColor="gray.400"
+                    borderRadius="20px"
+                    p="0.5rem 0.75rem"
+                  >
+                    <Radio
+                      onChange={handleModalStateChange}
+                      value="sm"
+                      mx="0.5rem"
+                    >
+                      小
+                    </Radio>
+                    <Radio
+                      onChange={handleModalStateChange}
+                      value="md"
+                      mx="0.5rem"
+                    >
+                      中
+                    </Radio>
+                    <Radio
+                      onChange={handleModalStateChange}
+                      value="lg"
+                      mx="0.5rem"
+                    >
+                      大
+                    </Radio>
+                    <Radio
+                      onChange={handleModalStateChange}
+                      value="xl"
+                      mx="0.5rem"
+                    >
+                      特大
+                    </Radio>
+                  </Stack>
+                </RadioGroup>
+                {buttons.map((button, index) => {
+                  return (
+                    <Card key={index} borderRadius="20px" mb="1rem">
+                      <CardBody>
+                        <Flex alignItems="center" mb="1rem">
+                          <Heading as="h5" fontSize="lg" mr={4}>
+                            選擇 Icon
+                          </Heading>
+                          <Popover isLazy>
+                            {({ isOpen, onClose }) => (
+                              <>
+                                <PopoverTrigger>
+                                  <IconButton
+                                    icon={<Icon as={MdOutlineEmojiEmotions} />}
+                                  />
+                                </PopoverTrigger>
+                                <PopoverContent>
+                                  <PopoverHeader fontWeight="semibold">
+                                    Icon 列表
+                                  </PopoverHeader>
+                                  <PopoverArrow />
+                                  <PopoverCloseButton />
+                                  <PopoverBody>
+                                    {iconArray.map((icon, iconIndex) => {
+                                      return (
+                                        <IconButton
+                                          key={iconIndex}
+                                          bgColor="transparent"
+                                          fontSize="xl"
+                                          name="changeIcon"
+                                          value={icon.name}
+                                          data-index={index}
+                                          onClick={(e) => {
+                                            handleModalStateChange(e);
+                                            onClose();
+                                          }}
+                                          icon={
+                                            <Icon as={iconMap[icon.name]} />
+                                          }
+                                        />
+                                      );
+                                    })}
+                                  </PopoverBody>
+                                </PopoverContent>
+                              </>
+                            )}
+                          </Popover>
+                        </Flex>
+                        <Flex alignItems="center" mb="1rem">
+                          <Icon as={MdTitle} mr="1rem" fontSize="xl" />
+                          <Input
+                            name="text"
+                            data-index={index}
+                            value={button.text}
+                            onChange={handleModalStateChange}
+                            backgroundColor="gray.400"
+                            placeholder="按鈕文字"
+                          />
+                        </Flex>
+                        {hasSubtitle && (
+                          <Flex alignItems="center" mb="1rem">
+                            <Icon as={IoInformation} fontSize="xl" mr="1rem" />
+                            <Input
+                              name="subText"
+                              data-index={index}
+                              value={button.subText}
+                              onChange={handleModalStateChange}
+                              backgroundColor="gray.400"
+                              placeholder="副標題：說明文字"
+                            />
+                          </Flex>
+                        )}
+                        <Flex alignItems="center" mb="1rem">
+                          <Icon as={BsLink45Deg} fontSize="xl" mr="1rem" />
+                          <Input
+                            backgroundColor="gray.400"
+                            placeholder="請輸入網址"
+                            value={button.linkUrl}
+                          />
+                        </Flex>
+                        <Flex alignItems="center" mb="1rem">
+                          <Icon as={BiTimer} mr="1rem" fontSize="xl" />
+                          <Select backgroundColor="gray.400">
+                            <option value="none">無動態效果</option>
+                            <option value="wobble">搖晃</option>
+                            <option value="shakeX">震動</option>
+                            <option value="pulse">跳動</option>
+                          </Select>
+                        </Flex>
+                      </CardBody>
+                    </Card>
+                  );
+                })}
+              </Box>
+            </Flex>
+          </ModalBody>
+
+          <ModalFooter
+            flexDirection="column"
+            justifyContent="space-between"
+            flexGrow="1"
+            maxW="50%"
+            mt="6rem"
+          >
+            <Container>
+              <VStack
+                spacing={4}
+                flexGrow="1"
+                align="stretch"
+                textAlign="center"
+              >
+                {buttons.map((button, index) => {
+                  return (
+                    <Link
+                      href={button.linkUrl}
+                      isExternal
+                      key={index}
+                      display="flex"
+                      alignItems="center"
+                      backgroundColor={isSolid ? 'gray.900' : 'transparent'}
+                      color={isSolid ? '#fff' : 'gray.900'}
+                      textDecoration="none"
+                      border="2px"
+                      borderColor="gray.900"
+                      borderRadius="10px"
+                      p="1rem"
+                      _hover={{
+                        transform: 'scale(1.03)',
+                        textDecoration: 'none',
+                        backgroundColor: isSolid ? '#fff' : 'gray.900',
+                        color: isSolid ? 'gray.900' : '#fff',
+                      }}
+                    >
+                      {hasSubtitle ? (
+                        <Icon
+                          as={iconMap[button.icon]}
+                          fontSize={iconSizeMapWithSubtitle[fontSize]}
+                        />
+                      ) : (
+                        <Icon
+                          as={iconMap[button.icon]}
+                          fontSize={iconSizeMap[fontSize]}
+                        />
+                      )}
+
+                      {hasSubtitle ? (
+                        <Text
+                          fontSize={fontSizeMapWithSubtitle[fontSize]}
+                          mx="auto"
+                        >
+                          {button.text}
+                          <Text as="span" display="block" fontSize="md">
+                            {button.subText}
+                          </Text>
+                        </Text>
+                      ) : (
+                        <Text fontSize={fontSizeMap[fontSize]} mx="auto">
+                          {button.text}
+                        </Text>
+                      )}
+                    </Link>
+                  );
+                })}
+              </VStack>
+            </Container>
+
+            {/* <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button> */}
+
+            <Button
+              onClick={handleSave}
+              alignSelf="flex-end"
+              colorScheme="blue"
+            >
+              儲存
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
 
 function DraggableItemPanel() {
   return (
@@ -161,9 +591,20 @@ function DraggableItemPanel() {
       </SimpleGrid>
     </VStack>
   );
-}  
+}
 
-function SortableBlock({ item }) {
+// const handleEditBlock = (item) => {
+//   setTempBlockData(item);
+//   onModalOpen();
+// };
+
+function SortableBlock({ item, onModalOpen, setTempBlockData }) {
+
+  const handleEditBlock = () => {
+    setTempBlockData(item);
+    onModalOpen();
+  };
+
   return (
     <Box
       overflow="hidden"
@@ -204,7 +645,9 @@ function SortableBlock({ item }) {
               icon={<Icon as={MdDelete} />}
             />
           </Tooltip>
-          <Button rightIcon={<Icon as={MdEdit} />}>編輯</Button>
+          <Button onClick={handleEditBlock} rightIcon={<Icon as={MdEdit} />}>
+            編輯
+          </Button>
         </HStack>
       </Flex>
 
@@ -217,8 +660,6 @@ function SortableBlock({ item }) {
             return (
               <Link
                 key={index}
-                href={button.linkUrl}
-                target="_blank"
                 display="flex"
                 alignItems="center"
                 backgroundColor={item.isSolid ? 'gray.900' : 'transparent'}
@@ -227,10 +668,8 @@ function SortableBlock({ item }) {
                 border="2px"
                 borderColor="gray.900"
                 borderRadius="10px"
-                fontWeight="bold"
                 p="1rem"
                 _hover={{
-                  bgColor: 'gray.600',
                   transform: 'scale(1.03)',
                   textDecoration: 'none',
                   backgroundColor: item.isSolid ? '#fff' : 'gray.900',
@@ -252,12 +691,7 @@ function SortableBlock({ item }) {
                 {item.hasSubtitle ? (
                   <Text fontSize={fontSizeMapWithSubtitle[item.fontSize]} mx="auto">
                     {button.text}
-                    <Text
-                      as="span"
-                      display="block"
-                      fontSize="md"
-                      fontWeight="normal"
-                    >
+                    <Text as="span" display="block" fontSize="md">
                       {button.subText}
                     </Text>
                   </Text>
@@ -334,31 +768,27 @@ function SortableBlock({ item }) {
                   transition: 'transform .3s',
                 }}
               >
-                {item.text}
-
-                <Box position="relative">
-                  <AspectRatio w="100%" ratio={1 / 1}>
-                    <Image
-                      src={block.imageUrl}
-                      alt={block.text}
-                      borderRadius="md"
-                      objectFit="cover"
-                    />
-                  </AspectRatio>
-                  <Text
-                    bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+                <AspectRatio w="100%" ratio={1 / 1}>
+                  <Image
+                    src={block.imageUrl}
+                    alt="naruto"
                     borderRadius="md"
-                    color="white"
-                    fontSize="sm"
-                    position="absolute"
-                    bottom="0"
-                    left="0"
-                    right="0"
-                    p="1rem"
-                  >
-                    {block.text}
-                  </Text>
-                </Box>
+                    objectFit="cover"
+                  />
+                </AspectRatio>
+                <Text
+                  bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+                  borderRadius="md"
+                  color="white"
+                  fontSize="sm"
+                  position="absolute"
+                  bottom="0"
+                  left="0"
+                  right="0"
+                  p="1rem"
+                >
+                  {block.text}
+                </Text>
               </Link>
             );
           })}
@@ -514,6 +944,8 @@ export default function Admin() {
 
   const [blockItems, setBlockItems] = useState(blockItemData);
 
+  const { isOpen, onOpen: onModalOpen, onClose } = useDisclosure();
+  const [tempBlockData, setTempBlockData] = useState({});
 
   return (
     <>
@@ -544,7 +976,6 @@ export default function Admin() {
             <MenuButton>
               <Avatar
                 my="0.75rem"
-                boxSize="60px"
                 borderRadius="0.75rem"
                 src={profile.avatar}
               />
@@ -672,26 +1103,32 @@ export default function Admin() {
                     );
                   })}
                 </Wrap>
-
-                <Button
-                  aria-label="Edit the profile"
-                  colorScheme="teal"
-                  variant="outline"
-                  border="0"
-                  borderRadius="1.5rem"
-                  rightIcon={<Icon fontSize="20px" as={MdEdit} />}
-                >
-                  編輯個人檔案
-                </Button>
               </VStack>
 
               {blockItems.map((item, index) => {
-                return <SortableBlock key={index} item={item} />;
+                return (
+                  <SortableBlock
+                    key={index}
+                    item={item}
+                    onModalOpen={onModalOpen}
+                    setTempBlockData={setTempBlockData}
+                  />
+                );
               })}
             </VStack>
           </Flex>
         </Container>
       </Box>
+
+      <BasicModal
+        isOpen={isOpen}
+        onClose={onClose}
+        setBlockItems={setBlockItems}
+        tempBlockData={tempBlockData}
+        setTempBlockData={setTempBlockData}
+      />
     </>
   );
 }
+
+
