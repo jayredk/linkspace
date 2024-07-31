@@ -295,342 +295,342 @@ function BasicModal({
     <>
       {/* <Button onClick={onOpen}>Open Modal</Button> */}
 
-      <Modal
-        scrollBehavior="inside"
-        isOpen={isOpen}
-        onClose={onClose}
-        w="100%"
-        size="6xl"
+    <Modal
+      scrollBehavior="inside"
+      isOpen={isOpen}
+      onClose={onClose}
+      w="100%"
+      size="6xl"
+    >
+      <ModalOverlay />
+      <ModalContent
+        borderTopRadius="20px"
+        backgroundColor="gray.200"
+        flexDirection="row"
       >
-        <ModalOverlay />
-        <ModalContent
+        <ModalHeader
           borderTopRadius="20px"
-          backgroundColor="gray.200"
-          flexDirection="row"
+          backgroundColor="#000"
+          color="#fff"
+          display="flex"
+          alignItems="center"
+          position="absolute"
+          left="0"
+          right="0"
+          mb="1.5rem"
         >
-          <ModalHeader
-            borderTopRadius="20px"
-            backgroundColor="#000"
-            color="#fff"
-            display="flex"
-            alignItems="center"
-            position="absolute"
-            left="0"
-            right="0"
-            mb="1.5rem"
-          >
-            <Heading size="lg">編輯區塊</Heading>
-            <ModalCloseButton onClick={handleClose} color="#fff" />
-          </ModalHeader>
-          <ModalBody maxW="50%" mt="6rem">
-            <Flex>
-              <Box>
-                <Heading as="h3" size="md" mb="1rem">
+          <Heading size="lg">編輯區塊</Heading>
+          <ModalCloseButton onClick={handleClose} color="#fff" />
+        </ModalHeader>
+        <ModalBody maxW="50%" mt="6rem">
+          <Flex>
+            <Box>
+              <Heading as="h3" size="md" mb="1rem">
                   按鈕樣式
-                </Heading>
-                <Wrap spacing="2rem" borderRadius="20px" mb="2rem">
-                  <WrapItem
-                    backgroundColor="gray.400"
-                    borderRadius="20px"
-                    p="0.5rem 0.75rem"
-                  >
-                    <HStack spacing="24px">
-                      <Text fontWeight="500">按鈕填滿</Text>
-                      <Switch
-                        name="isSolid"
-                        onChange={handleModalStateChange}
-                        isChecked={isSolid}
-                      />
-                    </HStack>
-                  </WrapItem>
-                  <WrapItem
-                    backgroundColor="gray.400"
-                    borderRadius="20px"
-                    p="0.5rem 0.75rem"
-                  >
-                    <HStack spacing="24px">
-                      <Text fontWeight="500">按鈕圖片</Text>
-                      <Switch />
-                    </HStack>
-                  </WrapItem>
-                  <WrapItem
-                    backgroundColor="gray.400"
-                    borderRadius="20px"
-                    p="0.5rem 0.75rem"
-                  >
-                    <HStack spacing="24px">
-                      <Text fontWeight="500">按鈕副標</Text>
-                      <Switch
-                        name="hasSubtitle"
-                        onChange={handleModalStateChange}
-                        isChecked={hasSubtitle}
-                      />
-                    </HStack>
-                  </WrapItem>
-                </Wrap>
-                <Heading as="h3" size="md" mb="1rem">
-                  字體大小
-                </Heading>
-                <RadioGroup
+              </Heading>
+              <Wrap spacing="2rem" borderRadius="20px" mb="2rem">
+                <WrapItem
+                  backgroundColor="gray.400"
                   borderRadius="20px"
-                  mb="2rem"
-                  name="fontSize"
-                  value={fontSize}
+                  p="0.5rem 0.75rem"
                 >
-                  <Stack
-                    direction="row"
-                    backgroundColor="gray.400"
-                    borderRadius="20px"
-                    p="0.5rem 0.75rem"
-                  >
-                    <Radio
+                  <HStack spacing="24px">
+                    <Text fontWeight="500">按鈕填滿</Text>
+                    <Switch
+                      name="isSolid"
                       onChange={handleModalStateChange}
-                      value="sm"
-                      mx="0.5rem"
-                    >
-                      小
-                    </Radio>
-                    <Radio
-                      onChange={handleModalStateChange}
-                      value="md"
-                      mx="0.5rem"
-                    >
-                      中
-                    </Radio>
-                    <Radio
-                      onChange={handleModalStateChange}
-                      value="lg"
-                      mx="0.5rem"
-                    >
-                      大
-                    </Radio>
-                    <Radio
-                      onChange={handleModalStateChange}
-                      value="xl"
-                      mx="0.5rem"
-                    >
-                      特大
-                    </Radio>
-                  </Stack>
-                </RadioGroup>
-                {buttons.map((button, index) => {
-                  return (
-                    <Card key={index} borderRadius="20px" mb="1rem">
-                      <CardBody>
-                        <Flex alignItems="center" mb="1rem">
-                          <Heading as="h5" fontSize="lg" mr={4}>
-                            選擇 Icon
-                          </Heading>
-                          <Popover isLazy>
-                            {({ isOpen, onClose }) => (
-                              <>
-                                <PopoverTrigger>
-                                  <IconButton
-                                    icon={<Icon as={MdOutlineEmojiEmotions} />}
-                                  />
-                                </PopoverTrigger>
-                                <PopoverContent>
-                                  <PopoverHeader fontWeight="semibold">
-                                    Icon 列表
-                                  </PopoverHeader>
-                                  <PopoverArrow />
-                                  <PopoverCloseButton />
-                                  <PopoverBody>
-                                    {iconArray.map((icon, iconIndex) => {
-                                      return (
-                                        <IconButton
-                                          key={iconIndex}
-                                          bgColor="transparent"
-                                          fontSize="xl"
-                                          name="changeIcon"
-                                          value={icon.name}
-                                          data-index={index}
-                                          onClick={(e) => {
-                                            handleModalStateChange(e);
-                                            onClose();
-                                          }}
-                                          icon={
-                                            <Icon as={iconMap[icon.name]} />
-                                          }
-                                        />
-                                      );
-                                    })}
-                                  </PopoverBody>
-                                </PopoverContent>
-                              </>
-                            )}
-                          </Popover>
-                          <IconButton
-                            name="removeButton"
-                            data-index={index}
-                            onClick={handleModalStateChange}
-                            icon={<Icon as={MdClose} />}
-                            bgColor="gray.600"
-                            color="white"
-                            ml="auto"
-                            _hover={{
-                              bgColor: 'gray.700',
-                            }}
-                          ></IconButton>
-                        </Flex>
-                        <Flex alignItems="center" mb="1rem">
-                          <Icon as={MdTitle} mr="1rem" fontSize="xl" />
-                          <Input
-                            name="text"
-                            data-index={index}
-                            value={button.text}
-                            onChange={handleModalStateChange}
-                            backgroundColor="gray.400"
-                            placeholder="按鈕文字"
-                          />
-                        </Flex>
-                        {hasSubtitle && (
-                          <Flex alignItems="center" mb="1rem">
-                            <Icon as={IoInformation} fontSize="xl" mr="1rem" />
-                            <Input
-                              name="subText"
-                              data-index={index}
-                              value={button.subText}
-                              onChange={handleModalStateChange}
-                              backgroundColor="gray.400"
-                              placeholder="副標題：說明文字"
-                            />
-                          </Flex>
-                        )}
-                        <Flex alignItems="center" mb="1rem">
-                          <Icon as={BsLink45Deg} fontSize="xl" mr="1rem" />
-                          <Input
-                            name="url"
-                            data-index={index}
-                            backgroundColor="gray.400"
-                            placeholder="請輸入網址"
-                            onChange={handleModalStateChange}
-                            value={button.linkUrl}
-                          />
-                        </Flex>
-                        <Flex alignItems="center" mb="1rem">
-                          <Icon as={BiTimer} mr="1rem" fontSize="xl" />
-                          <Select
-                            name="effect"
-                            data-index={index}
-                            onChange={handleModalStateChange}
-                            value={button.effect}
-                            backgroundColor="gray.400"
-                          >
-                            <option value="none">無動態效果</option>
-                            <option value="wobble">搖晃</option>
-                            <option value="shakeX">震動</option>
-                            <option value="pulse">跳動</option>
-                          </Select>
-                        </Flex>
-                      </CardBody>
-                    </Card>
-                  );
-                })}
-
-                <Button
-                  name="newButton"
-                  onClick={handleModalStateChange}
-                  isDisabled={buttons.length === 5}
-                  w="100%"
-                  borderRadius="lg"
-                  bgColor="gray.700"
-                  color="white"
-                  _hover={{
-                    bgColor: 'gray.600',
-                  }}
+                      isChecked={isSolid}
+                    />
+                  </HStack>
+                </WrapItem>
+                <WrapItem
+                  backgroundColor="gray.400"
+                  borderRadius="20px"
+                  p="0.5rem 0.75rem"
                 >
-                  新增按鈕
-                </Button>
-              </Box>
-            </Flex>
-          </ModalBody>
-
-          <ModalFooter
-            flexDirection="column"
-            justifyContent="space-between"
-            flexGrow="1"
-            maxW="50%"
-            mt="6rem"
-          >
-            <Container>
-              <VStack
-                spacing={4}
-                flexGrow="1"
-                align="stretch"
-                textAlign="center"
+                  <HStack spacing="24px">
+                    <Text fontWeight="500">按鈕圖片</Text>
+                    <Switch />
+                  </HStack>
+                </WrapItem>
+                <WrapItem
+                  backgroundColor="gray.400"
+                  borderRadius="20px"
+                  p="0.5rem 0.75rem"
+                >
+                  <HStack spacing="24px">
+                    <Text fontWeight="500">按鈕副標</Text>
+                    <Switch
+                      name="hasSubtitle"
+                      onChange={handleModalStateChange}
+                      isChecked={hasSubtitle}
+                    />
+                  </HStack>
+                </WrapItem>
+              </Wrap>
+              <Heading as="h3" size="md" mb="1rem">
+                  字體大小
+              </Heading>
+              <RadioGroup
+                borderRadius="20px"
+                mb="2rem"
+                name="fontSize"
+                value={fontSize}
               >
-                {buttons.map((button, index) => {
-                  return (
-                    <Link
-                      style={{'--animate-duration': '2s'}}
-                      href={button.linkUrl}
-                      isExternal
-                      key={index}
-                      className={`animate__animated animate__infinite ${effectMap[button.effect]}`}
-                      display="flex"
-                      alignItems="center"
-                      backgroundColor={isSolid ? 'gray.900' : 'transparent'}
-                      color={isSolid ? '#fff' : 'gray.900'}
-                      textDecoration="none"
-                      border="2px"
-                      borderColor="gray.900"
-                      borderRadius="10px"
-                      p="1rem"
-                      _hover={{
-                        transform: 'scale(1.03)',
-                        textDecoration: 'none',
-                        backgroundColor: isSolid ? '#fff' : 'gray.900',
-                        color: isSolid ? 'gray.900' : '#fff',
-                      }}
-                    >
-                      {hasSubtitle ? (
-                        <Icon
-                          as={iconMap[button.icon]}
-                          fontSize={iconSizeMapWithSubtitle[fontSize]}
+                <Stack
+                  direction="row"
+                  backgroundColor="gray.400"
+                  borderRadius="20px"
+                  p="0.5rem 0.75rem"
+                >
+                  <Radio
+                    onChange={handleModalStateChange}
+                    value="sm"
+                    mx="0.5rem"
+                  >
+                      小
+                  </Radio>
+                  <Radio
+                    onChange={handleModalStateChange}
+                    value="md"
+                    mx="0.5rem"
+                  >
+                      中
+                  </Radio>
+                  <Radio
+                    onChange={handleModalStateChange}
+                    value="lg"
+                    mx="0.5rem"
+                  >
+                      大
+                  </Radio>
+                  <Radio
+                    onChange={handleModalStateChange}
+                    value="xl"
+                    mx="0.5rem"
+                  >
+                      特大
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+              {buttons.map((button, index) => {
+                return (
+                  <Card key={index} borderRadius="20px" mb="1rem">
+                    <CardBody>
+                      <Flex alignItems="center" mb="1rem">
+                        <Heading as="h5" fontSize="lg" mr={4}>
+                            選擇 Icon
+                        </Heading>
+                        <Popover isLazy>
+                          {({ isOpen, onClose }) => (
+                            <>
+                              <PopoverTrigger>
+                                <IconButton
+                                  icon={<Icon as={MdOutlineEmojiEmotions} />}
+                                />
+                              </PopoverTrigger>
+                              <PopoverContent>
+                                <PopoverHeader fontWeight="semibold">
+                                    Icon 列表
+                                </PopoverHeader>
+                                <PopoverArrow />
+                                <PopoverCloseButton />
+                                <PopoverBody>
+                                  {iconArray.map((icon, iconIndex) => {
+                                    return (
+                                      <IconButton
+                                        key={iconIndex}
+                                        bgColor="transparent"
+                                        fontSize="xl"
+                                        name="changeIcon"
+                                        value={icon.name}
+                                        data-index={index}
+                                        onClick={(e) => {
+                                          handleModalStateChange(e);
+                                          onClose();
+                                        }}
+                                        icon={
+                                          <Icon as={iconMap[icon.name]} />
+                                        }
+                                      />
+                                    );
+                                  })}
+                                </PopoverBody>
+                              </PopoverContent>
+                            </>
+                          )}
+                        </Popover>
+                        <IconButton
+                          name="removeButton"
+                          data-index={index}
+                          onClick={handleModalStateChange}
+                          icon={<Icon as={MdClose} />}
+                          bgColor="gray.600"
+                          color="white"
+                          ml="auto"
+                          _hover={{
+                            bgColor: 'gray.700',
+                          }}
+                        ></IconButton>
+                      </Flex>
+                      <Flex alignItems="center" mb="1rem">
+                        <Icon as={MdTitle} mr="1rem" fontSize="xl" />
+                        <Input
+                          name="text"
+                          data-index={index}
+                          value={button.text}
+                          onChange={handleModalStateChange}
+                          backgroundColor="gray.400"
+                          placeholder="按鈕文字"
                         />
-                      ) : (
-                        <Icon
-                          as={iconMap[button.icon]}
-                          fontSize={iconSizeMap[fontSize]}
-                        />
+                      </Flex>
+                      {hasSubtitle && (
+                        <Flex alignItems="center" mb="1rem">
+                          <Icon as={IoInformation} fontSize="xl" mr="1rem" />
+                          <Input
+                            name="subText"
+                            data-index={index}
+                            value={button.subText}
+                            onChange={handleModalStateChange}
+                            backgroundColor="gray.400"
+                            placeholder="副標題：說明文字"
+                          />
+                        </Flex>
                       )}
-
-                      {hasSubtitle ? (
-                        <Text
-                          fontSize={fontSizeMapWithSubtitle[fontSize]}
-                          mx="auto"
+                      <Flex alignItems="center" mb="1rem">
+                        <Icon as={BsLink45Deg} fontSize="xl" mr="1rem" />
+                        <Input
+                          name="url"
+                          data-index={index}
+                          backgroundColor="gray.400"
+                          placeholder="請輸入網址"
+                          onChange={handleModalStateChange}
+                          value={button.linkUrl}
+                        />
+                      </Flex>
+                      <Flex alignItems="center" mb="1rem">
+                        <Icon as={BiTimer} mr="1rem" fontSize="xl" />
+                        <Select
+                          name="effect"
+                          data-index={index}
+                          onChange={handleModalStateChange}
+                          value={button.effect}
+                          backgroundColor="gray.400"
                         >
-                          {button.text}
-                          <Text as="span" display="block" fontSize="md">
-                            {button.subText}
-                          </Text>
+                          <option value="none">無動態效果</option>
+                          <option value="wobble">搖晃</option>
+                          <option value="shakeX">震動</option>
+                          <option value="pulse">跳動</option>
+                        </Select>
+                      </Flex>
+                    </CardBody>
+                  </Card>
+                );
+              })}
+
+              <Button
+                name="newButton"
+                onClick={handleModalStateChange}
+                isDisabled={buttons.length === 5}
+                w="100%"
+                borderRadius="lg"
+                bgColor="gray.700"
+                color="white"
+                _hover={{
+                  bgColor: 'gray.600',
+                }}
+              >
+                  新增按鈕
+              </Button>
+            </Box>
+          </Flex>
+        </ModalBody>
+
+        <ModalFooter
+          flexDirection="column"
+          justifyContent="space-between"
+          flexGrow="1"
+          maxW="50%"
+          mt="6rem"
+        >
+          <Container>
+            <VStack
+              spacing={4}
+              flexGrow="1"
+              align="stretch"
+              textAlign="center"
+            >
+              {buttons.map((button, index) => {
+                return (
+                  <Link
+                    style={{ '--animate-duration': '2s' }}
+                    href={button.linkUrl}
+                    isExternal
+                    key={index}
+                    className={`animate__animated animate__infinite ${effectMap[button.effect]}`}
+                    display="flex"
+                    alignItems="center"
+                    backgroundColor={isSolid ? 'gray.900' : 'transparent'}
+                    color={isSolid ? '#fff' : 'gray.900'}
+                    textDecoration="none"
+                    border="2px"
+                    borderColor="gray.900"
+                    borderRadius="10px"
+                    p="1rem"
+                    _hover={{
+                      transform: 'scale(1.03)',
+                      textDecoration: 'none',
+                      backgroundColor: isSolid ? '#fff' : 'gray.900',
+                      color: isSolid ? 'gray.900' : '#fff',
+                    }}
+                  >
+                    {hasSubtitle ? (
+                      <Icon
+                        as={iconMap[button.icon]}
+                        fontSize={iconSizeMapWithSubtitle[fontSize]}
+                      />
+                    ) : (
+                      <Icon
+                        as={iconMap[button.icon]}
+                        fontSize={iconSizeMap[fontSize]}
+                      />
+                    )}
+
+                    {hasSubtitle ? (
+                      <Text
+                        fontSize={fontSizeMapWithSubtitle[fontSize]}
+                        mx="auto"
+                      >
+                        {button.text}
+                        <Text as="span" display="block" fontSize="md">
+                          {button.subText}
                         </Text>
-                      ) : (
-                        <Text fontSize={fontSizeMap[fontSize]} mx="auto">
-                          {button.text}
-                        </Text>
-                      )}
-                    </Link>
-                  );
-                })}
-              </VStack>
-            </Container>
+                      </Text>
+                    ) : (
+                      <Text fontSize={fontSizeMap[fontSize]} mx="auto">
+                        {button.text}
+                      </Text>
+                    )}
+                  </Link>
+                );
+              })}
+            </VStack>
+          </Container>
 
             {/* <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button> */}
 
-            <Button
-              onClick={handleSave}
-              alignSelf="flex-end"
-              colorScheme="blue"
-            >
+          <Button
+            onClick={handleSave}
+            alignSelf="flex-end"
+            colorScheme="blue"
+          >
               儲存
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
     </>
   );
 }
