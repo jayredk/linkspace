@@ -234,6 +234,24 @@ function BasicModal({
         break;
       }
 
+      case 'newButton': {
+        const newButtons = JSON.parse(JSON.stringify(buttons));
+
+        newButtons.push({
+          effect: 'none',
+          text: '',
+          subText: '',
+          icon: '',
+          linkUrl: '',
+        });
+
+        setModalState({
+          ...modalState,
+          buttons: newButtons,
+        });
+        break;
+      }
+
       default:
         break;
     }
@@ -479,6 +497,21 @@ function BasicModal({
                     </Card>
                   );
                 })}
+
+                <Button
+                  name="newButton"
+                  onClick={handleModalStateChange}
+                  isDisabled={buttons.length === 5}
+                  w="100%"
+                  borderRadius="lg"
+                  bgColor="gray.700"
+                  color="white"
+                  _hover={{
+                    bgColor: 'gray.600',
+                  }}
+                >
+                  新增按鈕
+                </Button>
               </Box>
             </Flex>
           </ModalBody>
