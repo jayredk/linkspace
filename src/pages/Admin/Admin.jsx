@@ -203,6 +203,20 @@ function BasicModal({
       });
       break;
 
+    case 'url': {
+      const url = e.target.value;
+      const index = e.target.dataset.index;
+      const newButtons = [...buttons];
+
+      newButtons[index].linkUrl = url;
+      setModalState({
+        ...modalState,
+        buttons: newButtons,
+      });
+
+      break;
+    }
+
     case 'effect':
       const buttonIndex = e.target.dataset.index;
       const tempButtonsForEffect = [...buttons];
@@ -432,8 +446,11 @@ function BasicModal({
                         <Flex alignItems="center" mb="1rem">
                           <Icon as={BsLink45Deg} fontSize="xl" mr="1rem" />
                           <Input
+                            name="url"
+                            data-index={index}
                             backgroundColor="gray.400"
                             placeholder="請輸入網址"
+                            onChange={handleModalStateChange}
                             value={button.linkUrl}
                           />
                         </Flex>
