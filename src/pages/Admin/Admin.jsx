@@ -165,9 +165,9 @@ function BasicModal({
       });
       break;
     case 'text':
-    case 'subText':
+    case 'subText': {
       const index = e.target.dataset.index;
-      const newButtons = [...buttons];
+      const newButtons = JSON.parse(JSON.stringify(buttons));
 
       name === 'text'
         ? (newButtons[index].text = value)
@@ -178,6 +178,8 @@ function BasicModal({
         buttons: newButtons,
       });
       break;
+    }
+
     case 'isSolid':
       setModalState({
         ...modalState,
@@ -191,17 +193,18 @@ function BasicModal({
       });
       break;
 
-    case 'changeIcon':
+    case 'changeIcon': {
       console.log(e.target);
-      const btnIndex = e.target.dataset.index;
-      const tempButtons = [...buttons];
+      const index = e.target.dataset.index;
+      const newButtons = JSON.parse(JSON.stringify(buttons));
 
-      tempButtons[btnIndex].icon = e.target.value;
+      newButtons[index].icon = e.target.value;
       setModalState({
         ...modalState,
-        buttons: tempButtons,
+        buttons: newButtons,
       });
       break;
+    }
 
     case 'url': {
       const url = e.target.value;
@@ -217,16 +220,17 @@ function BasicModal({
       break;
     }
 
-    case 'effect':
+    case 'effect': {
       const buttonIndex = e.target.dataset.index;
-      const tempButtonsForEffect = [...buttons];
+      const newButtons = JSON.parse(JSON.stringify(buttons));
 
-      tempButtonsForEffect[buttonIndex].effect = e.target.value;
+      newButtons[buttonIndex].effect = e.target.value;
       setModalState({
         ...modalState,
-        buttons: tempButtonsForEffect,
+        buttons: newButtons,
       });
       break;
+    }
 
     default:
       break;
