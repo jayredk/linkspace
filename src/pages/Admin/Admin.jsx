@@ -52,11 +52,11 @@ import {
 
 import {
   MdContentCopy,
+  MdClose,
   MdDelete,
   MdDragIndicator,
   MdEdit,
   MdIosShare,
-  MdLanguage,
   MdLogout,
   MdOutlineEmojiEmotions,
   MdTitle,
@@ -252,6 +252,20 @@ function BasicModal({
         break;
       }
 
+      case 'removeButton': {
+        const index = e.target.dataset.index;
+        const newButtons = JSON.parse(JSON.stringify(buttons));
+
+        newButtons.splice(index, 1);
+
+        setModalState({
+          ...modalState,
+          buttons: newButtons,
+        });
+
+        break;
+      }
+
       default:
         break;
     }
@@ -442,6 +456,18 @@ function BasicModal({
                               </>
                             )}
                           </Popover>
+                          <IconButton
+                            name="removeButton"
+                            data-index={index}
+                            onClick={handleModalStateChange}
+                            icon={<Icon as={MdClose} />}
+                            bgColor="gray.600"
+                            color="white"
+                            ml="auto"
+                            _hover={{
+                              bgColor: 'gray.700',
+                            }}
+                          ></IconButton>
                         </Flex>
                         <Flex alignItems="center" mb="1rem">
                           <Icon as={MdTitle} mr="1rem" fontSize="xl" />
