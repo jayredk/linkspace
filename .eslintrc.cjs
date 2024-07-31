@@ -13,7 +13,7 @@ module.exports = {
   settings: { react: { version: '18.2' } },
   plugins: ['react-refresh'],
   rules: {
-    indent: [2, 2],
+    indent: [2, 2, { SwitchCase: 1 }],
     'max-len': [2, { code: 150 }],
     semi: 2,
     'react/jsx-max-props-per-line': [2, { maximum: { single: 3, multi: 1 } }],

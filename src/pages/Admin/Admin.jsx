@@ -158,82 +158,84 @@ function BasicModal({
     console.log(name, value);
 
     switch (name) {
-    case 'fontSize':
-      setModalState({
-        ...modalState,
-        [name]: value,
-      });
-      break;
-    case 'text':
-    case 'subText': {
-      const index = e.target.dataset.index;
-      const newButtons = JSON.parse(JSON.stringify(buttons));
+      case 'fontSize':
+        setModalState({
+          ...modalState,
+          [name]: value,
+        });
+        break;
 
-      name === 'text'
-        ? (newButtons[index].text = value)
-        : (newButtons[index].subText = value);
+      case 'text':
+      case 'subText': {
+        const index = e.target.dataset.index;
+        const newButtons = JSON.parse(JSON.stringify(buttons));
 
-      setModalState({
-        ...modalState,
-        buttons: newButtons,
-      });
-      break;
-    }
+        name === 'text'
+          ? (newButtons[index].text = value)
+          : (newButtons[index].subText = value);
 
-    case 'isSolid':
-      setModalState({
-        ...modalState,
-        [name]: e.target.checked,
-      });
-      break;
-    case 'hasSubtitle':
-      setModalState({
-        ...modalState,
-        [name]: e.target.checked,
-      });
-      break;
+        setModalState({
+          ...modalState,
+          buttons: newButtons,
+        });
+        break;
+      }
 
-    case 'changeIcon': {
-      console.log(e.target);
-      const index = e.target.dataset.index;
-      const newButtons = JSON.parse(JSON.stringify(buttons));
+      case 'isSolid':
+        setModalState({
+          ...modalState,
+          [name]: e.target.checked,
+        });
+        break;
 
-      newButtons[index].icon = e.target.value;
-      setModalState({
-        ...modalState,
-        buttons: newButtons,
-      });
-      break;
-    }
+      case 'hasSubtitle':
+        setModalState({
+          ...modalState,
+          [name]: e.target.checked,
+        });
+        break;
 
-    case 'url': {
-      const url = e.target.value;
-      const index = e.target.dataset.index;
-      const newButtons = [...buttons];
+      case 'changeIcon': {
+        console.log(e.target);
+        const index = e.target.dataset.index;
+        const newButtons = JSON.parse(JSON.stringify(buttons));
 
-      newButtons[index].linkUrl = url;
-      setModalState({
-        ...modalState,
-        buttons: newButtons,
-      });
+        newButtons[index].icon = e.target.value;
+        setModalState({
+          ...modalState,
+          buttons: newButtons,
+        });
+        break;
+      }
 
-      break;
-    }
+      case 'url': {
+        const url = e.target.value;
+        const index = e.target.dataset.index;
+        const newButtons = JSON.parse(JSON.stringify(buttons));
 
-    case 'effect': {
-      const buttonIndex = e.target.dataset.index;
-      const newButtons = JSON.parse(JSON.stringify(buttons));
+        newButtons[index].linkUrl = url;
+        setModalState({
+          ...modalState,
+          buttons: newButtons,
+        });
 
-      newButtons[buttonIndex].effect = e.target.value;
-      setModalState({
-        ...modalState,
-        buttons: newButtons,
-      });
-      break;
-    }
+        break;
+      }
 
-    default:
-      break;
+      case 'effect': {
+        const buttonIndex = e.target.dataset.index;
+        const newButtons = JSON.parse(JSON.stringify(buttons));
+
+        newButtons[buttonIndex].effect = e.target.value;
+        setModalState({
+          ...modalState,
+          buttons: newButtons,
+        });
+        break;
+      }
+
+      default:
+        break;
     }
   }
 
