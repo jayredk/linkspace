@@ -283,6 +283,10 @@ function BasicModal({
     onClose();
   }
 
+  function handleClose() {
+    setModalState(tempBlockData);
+  }
+
   useEffect(() => {
     setModalState(tempBlockData);
   }, [tempBlockData]);
@@ -316,7 +320,7 @@ function BasicModal({
             mb="1.5rem"
           >
             <Heading size="lg">編輯區塊</Heading>
-            <ModalCloseButton color="#fff" />
+            <ModalCloseButton onClick={handleClose} color="#fff" />
           </ModalHeader>
           <ModalBody maxW="50%" mt="6rem">
             <Flex>
