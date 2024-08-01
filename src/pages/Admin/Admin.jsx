@@ -271,7 +271,7 @@ function BasicModal({
       console.log(newItems);
       return newItems;
     });
-    setTempBlockData({});
+    setModalState({});
     onClose();
   }
 
