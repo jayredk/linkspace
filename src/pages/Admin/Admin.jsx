@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   AspectRatio,
@@ -51,11 +51,12 @@ import {
 } from '@chakra-ui/react';
 
 import {
-  MdContentCopy,
   MdClose,
+  MdContentCopy,
   MdDelete,
   MdDragIndicator,
   MdEdit,
+  MdImage,
   MdIosShare,
   MdLogout,
   MdOutlineEmojiEmotions,
@@ -83,6 +84,9 @@ import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'lite-youtube-embed/src/lite-yt-embed.js';
 
 import 'animate.css';
+
+import firebase from '../../utils/firebase';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 
 const fontSizeMap = {
@@ -188,6 +192,19 @@ function BasicModal({
         });
         break;
 
+      case 'imageAlt': {
+        const { index } = e.currentTarget.dataset;
+        const newButtons = JSON.parse(JSON.stringify(buttons));
+
+        newButtons[index].imageAlt = e.currentTarget.value;
+
+        setModalState({
+          ...modalState,
+          buttons: newButtons,
+        });
+        break;
+      }
+
       case 'changeIcon': {
         const { index } = e.currentTarget.dataset;
         const newButtons = JSON.parse(JSON.stringify(buttons));
@@ -279,6 +296,32 @@ function BasicModal({
     setModalState(tempBlockData);
   }
 
+  async function handleUploadImage (e) {
+    console.log(e.currentTarget);
+    const image = e.currentTarget.files[0];
+    const { index } = e.currentTarget.dataset;
+    
+    const metadata = {
+      contentType: image.type,
+    };
+    
+    const storage = getStorage();
+    const imageRef = ref(storage, `block-images/${image.name}`);
+
+    const snapshot = await uploadBytes(imageRef, image, metadata);
+
+    const imageUrl = await getDownloadURL(snapshot.ref);
+    
+    const newButtons = JSON.parse(JSON.stringify(buttons));
+    console.log(index);
+    newButtons[index].imageUrl = imageUrl;
+
+    setModalState({
+      ...modalState,
+      buttons: newButtons,
+    });
+  }
+
   useEffect(() => {
     setModalState(tempBlockData);
   }, [tempBlockData]);
@@ -339,7 +382,11 @@ function BasicModal({
                 >
                   <HStack spacing="24px">
                     <Text fontWeight="500">按鈕圖片</Text>
-                    <Switch />
+                    <Switch
+                      name="hasImage"
+                      onChange={handleModalStateChange}
+                      isChecked={hasImage}
+                    />
                   </HStack>
                 </WrapItem>
                 <WrapItem
@@ -406,49 +453,10 @@ function BasicModal({
                 return (
                   <Card key={index} borderRadius="20px" mb="1rem">
                     <CardBody>
-                      <Flex alignItems="center" mb="1rem">
-                        <Heading as="h5" fontSize="lg" mr={4}>
-                            選擇 Icon
+                      <Flex justifyContent="space-between" alignItems="center">
+                        <Heading as="h3" fontSize="1.25rem">
+                          按鈕資訊
                         </Heading>
-                        <Popover isLazy>
-                          {({ isOpen, onClose }) => (
-                            <>
-                              <PopoverTrigger>
-                                <IconButton
-                                  icon={<Icon as={MdOutlineEmojiEmotions} />}
-                                />
-                              </PopoverTrigger>
-                              <PopoverContent>
-                                <PopoverHeader fontWeight="semibold">
-                                    Icon 列表
-                                </PopoverHeader>
-                                <PopoverArrow />
-                                <PopoverCloseButton />
-                                <PopoverBody>
-                                  {iconArray.map((icon, iconIndex) => {
-                                    return (
-                                      <IconButton
-                                        key={iconIndex}
-                                        bgColor="transparent"
-                                        fontSize="xl"
-                                        name="changeIcon"
-                                        value={icon.name}
-                                        data-index={index}
-                                        onClick={(e) => {
-                                          handleModalStateChange(e);
-                                          onClose();
-                                        }}
-                                        icon={
-                                          <Icon as={iconMap[icon.name]} />
-                                        }
-                                      />
-                                    );
-                                  })}
-                                </PopoverBody>
-                              </PopoverContent>
-                            </>
-                          )}
-                        </Popover>
                         <IconButton
                           name="removeButton"
                           data-index={index}
@@ -456,11 +464,125 @@ function BasicModal({
                           icon={<Icon as={MdClose} />}
                           bgColor="gray.600"
                           color="white"
-                          ml="auto"
                           _hover={{
                             bgColor: 'gray.700',
                           }}
                         ></IconButton>
+                      </Flex>
+                      <Divider my="0.5rem" />
+                      <Flex alignItems="center" mb="1rem">
+                        {hasImage ? (
+                          <>
+                            {button.imageUrl ? (
+                              <Image
+                                maxW="80px"
+                                mr="1rem"
+                                rounded="xl"
+                                objectFit="cover"
+                                src={button.imageUrl}
+                                alt="Dan Abramov"
+                              />
+                            ) : (
+                              <label
+                                style={{
+                                  position: 'relative',
+                                  width: '100px',
+                                  height: '100px',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  marginRight: '1rem',
+                                  backgroundColor: '#E2E8F0',
+                                  borderRadius: '20px',
+                                }}
+                                htmlFor={`uploadBtn${index}`}
+                              >
+                                <Icon fontSize="1.5rem" as={MdImage}></Icon>
+                                <Input
+                                  data-index={index}
+                                  onChange={handleUploadImage}
+                                  id={`uploadBtn${index}`}
+                                  accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                                  position="absolute"
+                                  inset="0"
+                                  opacity="0"
+                                  maxW="80px"
+                                  mr="1rem"
+                                  rounded="xl"
+                                  type="file"
+                                />
+                              </label>
+                            )}
+
+                            <Box flexGrow="1">
+                              <Button mb="0.5rem">
+                                上傳圖片
+                                <label
+                                  htmlFor={`uploadBtn${index}`}
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    position: 'absolute',
+                                    cursor: 'pointer',
+                                  }}
+                                ></label>
+                              </Button>
+                              <Input 
+                                data-index={index}
+                                name="imageAlt"
+                                onChange={handleModalStateChange}
+                                value={button.imageAlt}
+                                placeholder="(選填） 照片描述，有助於 SEO" />
+                            </Box>
+                          </>
+                        ) : (
+                          <>
+                            <Heading as="h5" fontSize="lg" mr={4}>
+                              選擇 Icon
+                            </Heading>
+                            <Popover isLazy>
+                              {({ isOpen, onClose }) => (
+                                <>
+                                  <PopoverTrigger>
+                                    <IconButton
+                                      icon={
+                                        <Icon as={MdOutlineEmojiEmotions} />
+                                      }
+                                    />
+                                  </PopoverTrigger>
+                                  <PopoverContent>
+                                    <PopoverHeader fontWeight="semibold">
+                                      Icon 列表
+                                    </PopoverHeader>
+                                    <PopoverArrow />
+                                    <PopoverCloseButton />
+                                    <PopoverBody>
+                                      {iconArray.map((icon, iconIndex) => {
+                                        return (
+                                          <IconButton
+                                            key={iconIndex}
+                                            bgColor="transparent"
+                                            fontSize="xl"
+                                            name="changeIcon"
+                                            data-index={index}
+                                            value={icon.name}
+                                            onClick={(e) => {
+                                              handleModalStateChange(e);
+                                              onClose();
+                                            }}
+                                            icon={
+                                              <Icon as={iconMap[icon.name]} />
+                                            }
+                                          />
+                                        );
+                                      })}
+                                    </PopoverBody>
+                                  </PopoverContent>
+                                </>
+                              )}
+                            </Popover>
+                          </>
+                        )}
                       </Flex>
                       <Flex alignItems="center" mb="1rem">
                         <Icon as={MdTitle} mr="1rem" fontSize="xl" />
@@ -573,16 +695,48 @@ function BasicModal({
                       color: isSolid ? 'gray.900' : '#fff',
                     }}
                   >
-                    {hasSubtitle ? (
+                    {hasSubtitle && !hasImage && (
                       <Icon
                         as={iconMap[button.icon]}
                         fontSize={iconSizeMapWithSubtitle[fontSize]}
                       />
-                    ) : (
+                    )}
+                    {!hasSubtitle && !hasImage && (
                       <Icon
                         as={iconMap[button.icon]}
                         fontSize={iconSizeMap[fontSize]}
                       />
+                    )}
+
+                    {hasImage && button.imageUrl && (
+                      <Flex
+                        justifyContent="center"
+                        alignItems="center"
+                        bgColor="gray.400"
+                        boxShadow="md"
+                        rounded="sm"
+                      >
+                        <AspectRatio maxW="128px" w="4rem" ratio={1}>
+                          <Image
+                            src={button.imageUrl}
+                            alt={button.imageAlt}
+                            rounded="sm"
+                          />
+                        </AspectRatio>
+                      </Flex>
+                    )}
+
+                    {hasImage && !button.imageUrl && (
+                      <Flex
+                        justifyContent="center"
+                        alignItems="center"
+                        p="1rem"
+                        bgColor="gray.400"
+                        boxShadow="md"
+                        rounded="sm"
+                      >
+                        <Icon as={MdImage} fontSize="1.5rem" />
+                      </Flex>
                     )}
 
                     {hasSubtitle ? (
