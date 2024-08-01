@@ -143,7 +143,6 @@ function BasicModal({
     isSolid = false,
     fontSize = 'sm',
   } = modalState;
-  console.log(modalState);
 
   const effectMap = {
     none: '',
@@ -285,9 +284,6 @@ function BasicModal({
   }, [tempBlockData]);
 
   return (
-    <>
-      {/* <Button onClick={onOpen}>Open Modal</Button> */}
-
     <Modal
       scrollBehavior="inside"
       isOpen={isOpen}
@@ -319,7 +315,7 @@ function BasicModal({
           <Flex>
             <Box>
               <Heading as="h3" size="md" mb="1rem">
-                  按鈕樣式
+                按鈕樣式
               </Heading>
               <Wrap spacing="2rem" borderRadius="20px" mb="2rem">
                 <WrapItem
@@ -362,7 +358,7 @@ function BasicModal({
                 </WrapItem>
               </Wrap>
               <Heading as="h3" size="md" mb="1rem">
-                  字體大小
+                字體大小
               </Heading>
               <RadioGroup
                 borderRadius="20px"
@@ -381,28 +377,28 @@ function BasicModal({
                     value="sm"
                     mx="0.5rem"
                   >
-                      小
+                    小
                   </Radio>
                   <Radio
                     onChange={handleModalStateChange}
                     value="md"
                     mx="0.5rem"
                   >
-                      中
+                    中
                   </Radio>
                   <Radio
                     onChange={handleModalStateChange}
                     value="lg"
                     mx="0.5rem"
                   >
-                      大
+                    大
                   </Radio>
                   <Radio
                     onChange={handleModalStateChange}
                     value="xl"
                     mx="0.5rem"
                   >
-                      特大
+                    特大
                   </Radio>
                 </Stack>
               </RadioGroup>
@@ -533,7 +529,7 @@ function BasicModal({
                   bgColor: 'gray.600',
                 }}
               >
-                  新增按鈕
+                新增按鈕
               </Button>
             </Box>
           </Flex>
@@ -610,21 +606,12 @@ function BasicModal({
             </VStack>
           </Container>
 
-            {/* <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button> */}
-
-          <Button
-            onClick={handleSave}
-            alignSelf="flex-end"
-            colorScheme="blue"
-          >
-              儲存
+          <Button onClick={handleSave} alignSelf="flex-end" colorScheme="blue">
+            儲存
           </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
-    </>
   );
 }
 
