@@ -181,19 +181,7 @@ function BasicModal({
       }
 
       case 'isSolid':
-        setModalState({
-          ...modalState,
-          [name]: e.currentTarget.checked,
-        });
-        break;
-
       case 'hasImage':
-        setModalState({
-          ...modalState,
-          [name]: e.currentTarget.checked,
-        });
-        break;
-
       case 'hasSubtitle':
         setModalState({
           ...modalState,
