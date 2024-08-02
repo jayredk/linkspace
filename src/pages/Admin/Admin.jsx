@@ -458,6 +458,7 @@ function BasicModal({
                           按鈕資訊
                         </Heading>
                         <IconButton
+                          isDisabled={buttons.length === 1}
                           name="removeButton"
                           data-index={index}
                           onClick={handleModalStateChange}
