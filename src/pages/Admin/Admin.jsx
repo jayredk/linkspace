@@ -43,15 +43,7 @@ import {
   MdLogout,
 } from 'react-icons/md';
 
-import {
-  BsCopy,
-  BsFacebook,
-  BsInstagram,
-  BsThreadsFill,
-  BsTiktok,
-  BsTwitterX,
-  BsYoutube,
-} from 'react-icons/bs';
+import { BsCopy } from 'react-icons/bs';
 
 import { FiExternalLink } from 'react-icons/fi';
 
@@ -59,42 +51,13 @@ import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'lite-youtube-embed/src/lite-yt-embed.js';
 
 
-const fontSizeMap = {
-  sm: '16px',
-  md: '20px',
-  lg: '24px',
-  xl: '32px',
-};
-
-const fontSizeMapWithSubtitle = {
-  sm: '20px',
-  md: '24px',
-  lg: '28px',
-  xl: '36px',
-};
-
-const iconSizeMap = {
-  sm: '24px',
-  md: '24px',
-  lg: '32px',
-  xl: '40px',
-};
-
-const iconSizeMapWithSubtitle = {
-  sm: '32px',
-  md: '32px',
-  lg: '40px',
-  xl: '48px',
-};
-
-const iconMap = {
-  facebook: BsFacebook,
-  instagram: BsInstagram,
-  twitter: BsTwitterX,
-  youtube: BsYoutube,
-  tiktok: BsTiktok,
-  threads: BsThreadsFill,
-};
+import {
+  fontSizeMap,
+  fontSizeMapWithSubtitle,
+  iconSizeMap,
+  iconSizeMapWithSubtitle,
+  iconMap,
+} from '../../constants/utilityMaps';
 
 
 function DraggableItemPanel() {
