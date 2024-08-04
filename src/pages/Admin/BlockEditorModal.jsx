@@ -113,7 +113,8 @@ const iconArray = Object.entries(iconMap).map(([key, value]) => ({
   icon: value,
 }));
 
-function BlockEditorModal({
+
+export default function BlockEditorModal({
   tempBlockData,
   setTempBlockData,
   isOpen,
@@ -485,221 +486,19 @@ function BlockEditorModal({
                 </RadioGroup>
                 {buttons.map((button, index) => {
                   return (
-                    <Card key={index} borderRadius="20px" mb="1rem">
-                      <CardBody>
-                        <Flex
-                          justifyContent="space-between"
-                          alignItems="center"
-                        >
-                          <Heading as="h3" fontSize="1.25rem">
-                            按鈕資訊
-                          </Heading>
-                          <IconButton
-                            isDisabled={buttons.length === 1}
-                            name="removeButton"
-                            data-index={index}
-                            onClick={handleModalStateChange}
-                            icon={<Icon as={MdClose} />}
-                            bgColor="gray.600"
-                            color="white"
-                            _hover={{
-                              bgColor: 'gray.700',
-                            }}
-                          ></IconButton>
-                        </Flex>
-                        <Divider my="0.5rem" />
-                        <Flex alignItems="center" mb="1rem">
-                          {hasImage ? (
-                            <>
-                              {button.imageUrl ? (
-                                <Box position="relative">
-                                  <Image
-                                    maxW="80px"
-                                    mr="1rem"
-                                    rounded="xl"
-                                    objectFit="cover"
-                                    src={button.imageUrl}
-                                    alt="Dan Abramov"
-                                  />
-                                  <Input
-                                    data-index={index}
-                                    onChange={handleImageChange}
-                                    id={`uploadBtn${index}`}
-                                    accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
-                                    position="absolute"
-                                    inset="0"
-                                    height="100%"
-                                    opacity="0"
-                                    maxW="80px"
-                                    mr="1rem"
-                                    rounded="xl"
-                                    type="file"
-                                  />
-                                </Box>
-                              ) : (
-                                <label
-                                  style={{
-                                    position: 'relative',
-                                    width: '100px',
-                                    height: '100px',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginRight: '1rem',
-                                    backgroundColor: '#E2E8F0',
-                                    borderRadius: '20px',
-                                  }}
-                                  htmlFor={`uploadBtn${index}`}
-                                >
-                                  <Icon fontSize="1.5rem" as={MdImage}></Icon>
-                                  <Input
-                                    data-index={index}
-                                    onChange={handleImageChange}
-                                    id={`uploadBtn${index}`}
-                                    accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
-                                    position="absolute"
-                                    inset="0"
-                                    opacity="0"
-                                    maxW="80px"
-                                    mr="1rem"
-                                    rounded="xl"
-                                    type="file"
-                                  />
-                                </label>
-                              )}
-
-                              <Box flexGrow="1">
-                                <Flex gap="0.5rem" mb="0.5rem">
-                                  <Button flexGrow="1">
-                                    上傳圖片
-                                    <label
-                                      htmlFor={`uploadBtn${index}`}
-                                      style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        position: 'absolute',
-                                        cursor: 'pointer',
-                                      }}
-                                    ></label>
-                                  </Button>
-                                  <Button
-                                    isDisabled={!button.imageUrl}
-                                    flexGrow="1"
-                                    onClick={onCropModalOpen}
-                                  >
-                                    裁切圖片
-                                  </Button>
-                                </Flex>
-                                <Input
-                                  data-index={index}
-                                  name="imageAlt"
-                                  onChange={handleModalStateChange}
-                                  value={button.imageAlt}
-                                  placeholder="(選填） 照片描述，有助於 SEO"
-                                />
-                              </Box>
-                            </>
-                          ) : (
-                            <>
-                              <Heading as="h5" fontSize="lg" mr={4}>
-                                選擇 Icon
-                              </Heading>
-                              <Popover isLazy>
-                                {({ isOpen, onClose }) => (
-                                  <>
-                                    <PopoverTrigger>
-                                      <IconButton
-                                        icon={
-                                          <Icon as={MdOutlineEmojiEmotions} />
-                                        }
-                                      />
-                                    </PopoverTrigger>
-                                    <PopoverContent>
-                                      <PopoverHeader fontWeight="semibold">
-                                        Icon 列表
-                                      </PopoverHeader>
-                                      <PopoverArrow />
-                                      <PopoverCloseButton />
-                                      <PopoverBody>
-                                        {iconArray.map((icon, iconIndex) => {
-                                          return (
-                                            <IconButton
-                                              key={iconIndex}
-                                              bgColor="transparent"
-                                              fontSize="xl"
-                                              name="changeIcon"
-                                              data-index={index}
-                                              value={icon.name}
-                                              onClick={(e) => {
-                                                handleModalStateChange(e);
-                                                onClose();
-                                              }}
-                                              icon={
-                                                <Icon as={iconMap[icon.name]} />
-                                              }
-                                            />
-                                          );
-                                        })}
-                                      </PopoverBody>
-                                    </PopoverContent>
-                                  </>
-                                )}
-                              </Popover>
-                            </>
-                          )}
-                        </Flex>
-                        <Flex alignItems="center" mb="1rem">
-                          <Icon as={MdTitle} mr="1rem" fontSize="xl" />
-                          <Input
-                            name="text"
-                            data-index={index}
-                            value={button.text}
-                            onChange={handleModalStateChange}
-                            backgroundColor="gray.400"
-                            placeholder="按鈕文字"
-                          />
-                        </Flex>
-                        {hasSubtitle && (
-                          <Flex alignItems="center" mb="1rem">
-                            <Icon as={IoInformation} fontSize="xl" mr="1rem" />
-                            <Input
-                              name="subText"
-                              data-index={index}
-                              value={button.subText}
-                              onChange={handleModalStateChange}
-                              backgroundColor="gray.400"
-                              placeholder="副標題：說明文字"
-                            />
-                          </Flex>
-                        )}
-                        <Flex alignItems="center" mb="1rem">
-                          <Icon as={BsLink45Deg} fontSize="xl" mr="1rem" />
-                          <Input
-                            name="url"
-                            data-index={index}
-                            backgroundColor="gray.400"
-                            placeholder="請輸入網址"
-                            onChange={handleModalStateChange}
-                            value={button.linkUrl}
-                          />
-                        </Flex>
-                        <Flex alignItems="center" mb="1rem">
-                          <Icon as={BiTimer} mr="1rem" fontSize="xl" />
-                          <Select
-                            name="effect"
-                            data-index={index}
-                            onChange={handleModalStateChange}
-                            value={button.effect}
-                            backgroundColor="gray.400"
-                          >
-                            <option value="none">無動態效果</option>
-                            <option value="wobble">搖晃</option>
-                            <option value="shakeX">震動</option>
-                            <option value="pulse">跳動</option>
-                          </Select>
-                        </Flex>
-                      </CardBody>
-                    </Card>
+                    <BlockInfoEditor
+                      key={index}
+                      buttons={buttons}
+                      button={button}
+                      index={index}
+                      hasImage={hasImage}
+                      hasSubtitle={hasSubtitle}
+                      isSolid={isSolid}
+                      fontSize={fontSize}
+                      handleModalStateChange={handleModalStateChange}
+                      handleImageChange={handleImageChange}
+                      onCropModalOpen={onCropModalOpen}
+                    />
                   );
                 })}
 
@@ -845,4 +644,225 @@ function BlockEditorModal({
   );
 }
 
-export default BlockEditorModal;
+
+function BlockInfoEditor({
+  buttons,
+  button,
+  index,
+  hasImage,
+  hasSubtitle,
+  isSolid,
+  fontSize,
+  handleModalStateChange,
+  handleImageChange,
+  onCropModalOpen,
+}) {
+  return (
+    <Card borderRadius="20px" mb="1rem">
+      <CardBody>
+        <Flex justifyContent="space-between" alignItems="center">
+          <Heading as="h3" fontSize="1.25rem">
+            按鈕資訊
+          </Heading>
+          <IconButton
+            isDisabled={buttons.length === 1}
+            name="removeButton"
+            data-index={index}
+            onClick={handleModalStateChange}
+            icon={<Icon as={MdClose} />}
+            bgColor="gray.600"
+            color="white"
+            _hover={{
+              bgColor: 'gray.700',
+            }}
+          ></IconButton>
+        </Flex>
+        <Divider my="0.5rem" />
+        <Flex alignItems="center" mb="1rem">
+          {hasImage ? (
+            <>
+              {button.imageUrl ? (
+                <Box position="relative">
+                  <Image
+                    maxW="80px"
+                    mr="1rem"
+                    rounded="xl"
+                    objectFit="cover"
+                    src={button.imageUrl}
+                    alt="Dan Abramov"
+                  />
+                  <Input
+                    data-index={index}
+                    onChange={handleImageChange}
+                    id={`uploadBtn${index}`}
+                    accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                    position="absolute"
+                    inset="0"
+                    height="100%"
+                    opacity="0"
+                    maxW="80px"
+                    mr="1rem"
+                    rounded="xl"
+                    type="file"
+                  />
+                </Box>
+              ) : (
+                <label
+                  style={{
+                    position: 'relative',
+                    width: '100px',
+                    height: '100px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginRight: '1rem',
+                    backgroundColor: '#E2E8F0',
+                    borderRadius: '20px',
+                  }}
+                  htmlFor={`uploadBtn${index}`}
+                >
+                  <Icon fontSize="1.5rem" as={MdImage}></Icon>
+                  <Input
+                    data-index={index}
+                    onChange={handleImageChange}
+                    id={`uploadBtn${index}`}
+                    accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                    position="absolute"
+                    inset="0"
+                    opacity="0"
+                    maxW="80px"
+                    mr="1rem"
+                    rounded="xl"
+                    type="file"
+                  />
+                </label>
+              )}
+
+              <Box flexGrow="1">
+                <Flex gap="0.5rem" mb="0.5rem">
+                  <Button flexGrow="1">
+                    上傳圖片
+                    <label
+                      htmlFor={`uploadBtn${index}`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        position: 'absolute',
+                        cursor: 'pointer',
+                      }}
+                    ></label>
+                  </Button>
+                  <Button
+                    isDisabled={!button.imageUrl}
+                    flexGrow="1"
+                    onClick={onCropModalOpen}
+                  >
+                    裁切圖片
+                  </Button>
+                </Flex>
+                <Input
+                  data-index={index}
+                  name="imageAlt"
+                  onChange={handleModalStateChange}
+                  value={button.imageAlt}
+                  placeholder="(選填） 照片描述，有助於 SEO"
+                />
+              </Box>
+            </>
+          ) : (
+            <>
+              <Heading as="h5" fontSize="lg" mr={4}>
+                選擇 Icon
+              </Heading>
+              <Popover isLazy>
+                {({ isOpen, onClose }) => (
+                  <>
+                    <PopoverTrigger>
+                      <IconButton icon={<Icon as={MdOutlineEmojiEmotions} />} />
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <PopoverHeader fontWeight="semibold">
+                        Icon 列表
+                      </PopoverHeader>
+                      <PopoverArrow />
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        {iconArray.map((icon, iconIndex) => {
+                          return (
+                            <IconButton
+                              key={iconIndex}
+                              bgColor="transparent"
+                              fontSize="xl"
+                              name="changeIcon"
+                              data-index={index}
+                              value={icon.name}
+                              onClick={(e) => {
+                                handleModalStateChange(e);
+                                onClose();
+                              }}
+                              icon={<Icon as={iconMap[icon.name]} />}
+                            />
+                          );
+                        })}
+                      </PopoverBody>
+                    </PopoverContent>
+                  </>
+                )}
+              </Popover>
+            </>
+          )}
+        </Flex>
+        <Flex alignItems="center" mb="1rem">
+          <Icon as={MdTitle} mr="1rem" fontSize="xl" />
+          <Input
+            name="text"
+            data-index={index}
+            value={button.text}
+            onChange={handleModalStateChange}
+            backgroundColor="gray.400"
+            placeholder="按鈕文字"
+          />
+        </Flex>
+        {hasSubtitle && (
+          <Flex alignItems="center" mb="1rem">
+            <Icon as={IoInformation} fontSize="xl" mr="1rem" />
+            <Input
+              name="subText"
+              data-index={index}
+              value={button.subText}
+              onChange={handleModalStateChange}
+              backgroundColor="gray.400"
+              placeholder="副標題：說明文字"
+            />
+          </Flex>
+        )}
+        <Flex alignItems="center" mb="1rem">
+          <Icon as={BsLink45Deg} fontSize="xl" mr="1rem" />
+          <Input
+            name="url"
+            data-index={index}
+            backgroundColor="gray.400"
+            placeholder="請輸入網址"
+            onChange={handleModalStateChange}
+            value={button.linkUrl}
+          />
+        </Flex>
+        <Flex alignItems="center" mb="1rem">
+          <Icon as={BiTimer} mr="1rem" fontSize="xl" />
+          <Select
+            name="effect"
+            data-index={index}
+            onChange={handleModalStateChange}
+            value={button.effect}
+            backgroundColor="gray.400"
+          >
+            <option value="none">無動態效果</option>
+            <option value="wobble">搖晃</option>
+            <option value="shakeX">震動</option>
+            <option value="pulse">跳動</option>
+          </Select>
+        </Flex>
+      </CardBody>
+    </Card>
+  );
+}
