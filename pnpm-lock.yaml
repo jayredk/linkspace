@@ -22,6 +22,7 @@ specifiers:
   prettier: 3.2.5
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-easy-crop: ^5.0.8
   react-icons: ^5.2.1
   react-router-dom: ^6.23.1
   vite: ^5.2.0
@@ -37,6 +38,7 @@ dependencies:
   lite-youtube-embed: 0.3.2
   react: 18.3.1
   react-dom: 18.3.1_react@18.3.1
+  react-easy-crop: 5.0.8_nnrd3gsncyragczmpvfhocinkq
   react-icons: 5.2.1_react@18.3.1
   react-router-dom: 6.23.1_nnrd3gsncyragczmpvfhocinkq
 
@@ -4072,6 +4074,10 @@ packages:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
     dev: true
 
+  /normalize-wheel/1.0.1:
+    resolution: {integrity: sha512-1OnlAPZ3zgrk8B91HyRj+eVv+kS5u+Z0SCsak6Xil/kmgEia50ga7zfkumayonZrImffAxPU/5WcyGhzetHNPA==}
+    dev: false
+
   /object-assign/4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
@@ -4299,6 +4305,18 @@ packages:
       loose-envify: 1.4.0
       react: 18.3.1
       scheduler: 0.23.2
+    dev: false
+
+  /react-easy-crop/5.0.8_nnrd3gsncyragczmpvfhocinkq:
+    resolution: {integrity: sha512-KjulxXhR5iM7+ATN2sGCum/IyDxGw7xT0dFoGcqUP+ysaPU5Ka7gnrDa2tUHFHUoMNyPrVZ05QA+uvMgC5ym/g==}
+    peerDependencies:
+      react: '>=16.4.0'
+      react-dom: '>=16.4.0'
+    dependencies:
+      normalize-wheel: 1.0.1
+      react: 18.3.1
+      react-dom: 18.3.1_react@18.3.1
+      tslib: 2.6.2
     dev: false
 
   /react-fast-compare/3.2.2:
