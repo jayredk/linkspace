@@ -24,13 +24,13 @@ import getCroppedImg from '../../utils/cropImage';
 
 
 
-const CropModal = ({
+export default function CropImageModal({
   isOpen,
   onOpen,
   onClose,
   tempImageInfo,
   setTempCroppedImage,
-}) => {
+}) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
   const [zoom, setZoom] = useState(1);
@@ -159,5 +159,3 @@ const CropModal = ({
     </Modal>
   );
 };
-
-export default CropModal;

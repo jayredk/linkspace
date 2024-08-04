@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import CropModal from './CropModal';
+import CropImageModal from './CropImageModal';
 
 import {
   fontSizeMap,
@@ -591,7 +591,7 @@ export default function BlockEditorModal({
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <CropModal
+      <CropImageModal
         isOpen={isCropModalOpen}
         onOpen={onCropModalOpen}
         onClose={onCropModalClose}
