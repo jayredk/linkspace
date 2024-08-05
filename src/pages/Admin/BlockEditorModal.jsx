@@ -260,14 +260,16 @@ export default function BlockEditorModal({
 
     newButtons[index].imageUrl = imageUrl;
 
-    setModalState({
-      ...modalState,
-      buttons: newButtons,
-    });
-
+    setTempCroppedImage(null);
+    
     setTempImageInfo({
       imageUrl,
       index,
+    });
+
+    setModalState({
+      ...modalState,
+      buttons: newButtons,
     });
 
     onCropModalOpen();
@@ -303,18 +305,19 @@ export default function BlockEditorModal({
   }, [tempBlockData]);
 
   useEffect(() => {
-    setModalState((prevState) => {
-      const newButtons = JSON.parse(JSON.stringify(prevState.buttons || []));
+    if (tempCroppedImage) {
+      setModalState((prevState) => {
+        const newButtons = JSON.parse(JSON.stringify(prevState.buttons || []));
 
-      if (tempImageInfo.index) {
         newButtons[tempImageInfo.index].imageUrl = tempCroppedImage;
-      }
 
-      return {
-        ...prevState,
-        buttons: newButtons,
-      };
-    });
+        return {
+          ...prevState,
+          buttons: newButtons,
+        };
+      });
+    }
+    
   }, [tempCroppedImage, tempImageInfo.index]);
 
   return (
