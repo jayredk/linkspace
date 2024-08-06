@@ -234,11 +234,15 @@ export default function BlockEditorModal({
     }
   }
 
-  function handleSave(e) {
+  async function handleSave() {
+    const updatedModalState = await handleUploadImage();
+
     setBlockItems((prevState) => {
-      const index = prevState.findIndex((item) => item.id === modalState.id);
+      const index = prevState.findIndex(
+        (item) => item.id === updatedModalState.id
+      );
       const newItems = [...prevState];
-      newItems[index] = { ...modalState };
+      newItems[index] = { ...updatedModalState };
       console.log(newItems);
       return newItems;
     });
@@ -275,29 +279,46 @@ export default function BlockEditorModal({
     onCropModalOpen();
   }
 
-  async function handleUploadImage(e) {
-    const image = e.currentTarget.files[0];
-    const { index } = e.currentTarget.dataset;
+  async function handleUploadImage() {
+    const uploadImages = [];
 
-    const metadata = {
-      contentType: image.type,
-    };
+    await Promise.all(buttons.map(async (button, index) => {
+      if (button.imageUrl?.startsWith('blob')) {
 
-    const storage = getStorage();
-    const imageRef = ref(storage, `block-images/${image.name}`);
+        const imageBlob = await fetch(button.imageUrl).then((res) => res.blob());
 
-    const snapshot = await uploadBytes(imageRef, image, metadata);
-
-    const imageUrl = await getDownloadURL(snapshot.ref);
+        uploadImages.push({
+          imageBlob,
+          index,
+        });
+      }
+    }));
 
     const newButtons = JSON.parse(JSON.stringify(buttons));
-    console.log(index);
-    newButtons[index].imageUrl = imageUrl;
 
-    setModalState({
+    await Promise.all(uploadImages.map(async (image) => {
+      const metadata = {
+        contentType: 'image/webp',
+      };
+
+      const storage = getStorage();
+      const imageRef = ref(
+        storage,
+        `block-images/${Date.now()}`
+      );
+
+      const snapshot = await uploadBytes(imageRef, image.imageBlob, metadata);
+
+      const imageUrl = await getDownloadURL(snapshot.ref);
+
+      
+      newButtons[image.index].imageUrl = imageUrl;
+    }));
+
+    return {
       ...modalState,
       buttons: newButtons,
-    });
+    };
   }
 
   useEffect(() => {
@@ -317,7 +338,7 @@ export default function BlockEditorModal({
         };
       });
     }
-    
+
   }, [tempCroppedImage, tempImageInfo.index]);
 
   return (
