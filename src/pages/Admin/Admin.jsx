@@ -498,112 +498,117 @@ export default function Admin() {
         <Container maxW="lg" mt="10rem" mb="5rem">
           <Flex justifyContent="space-between">
             <DraggableItemPanel />
+
             <VStack w="100%" spacing={8}>
-              <InputGroup
-                bgColor="white"
-                borderColor="gray.50"
-                borderRadius="1.5rem"
-                focusBorderColor="gray.50"
-                boxShadow="0 1px 2px 0 rgba(0, 0, 0, 0.05)"
-                alignItems="center"
-                p="0.5rem 1rem"
-                w="100%"
-              >
-                <Input
-                  isReadOnly
-                  border="0"
-                  size="lg"
-                  value={profile.siteUrl}
-                />
-                <Tooltip label="複製網址" borderRadius="1.5rem">
-                  <IconButton
-                    aria-label="Copy website URL"
-                    colorScheme="teal"
-                    variant="outline"
-                    icon={<Icon as={MdContentCopy} />}
-                    _hover={{
-                      background: 'white',
-                    }}
-                  />
-                </Tooltip>
-                <Tooltip label="開啟頁面" borderRadius="1.5rem">
-                  <Link
-                    href={profile.siteUrl}
-                    isExternal
-                    aria-label="Go to the website"
-                    colorScheme="teal"
-                    border="1px"
-                    borderRadius="md"
-                    display="flex"
-                    justifyContent="center"
+              {Object.keys(profile).length && (
+                <>
+                  <InputGroup
+                    bgColor="white"
+                    borderColor="gray.50"
+                    borderRadius="1.5rem"
+                    focusBorderColor="gray.50"
+                    boxShadow="0 1px 2px 0 rgba(0, 0, 0, 0.05)"
                     alignItems="center"
-                    minW="2.5rem"
-                    minH="2.5rem"
-                    ml="0.5rem"
+                    p="0.5rem 1rem"
+                    w="100%"
                   >
-                    <Icon as={FiExternalLink} />
-                  </Link>
-                </Tooltip>
-              </InputGroup>
+                    <Input
+                      isReadOnly
+                      border="0"
+                      size="lg"
+                      value={profile.siteUrl}
+                    />
+                    <Tooltip label="複製網址" borderRadius="1.5rem">
+                      <IconButton
+                        aria-label="Copy website URL"
+                        colorScheme="teal"
+                        variant="outline"
+                        icon={<Icon as={MdContentCopy} />}
+                        _hover={{
+                          background: 'white',
+                        }}
+                      />
+                    </Tooltip>
+                    <Tooltip label="開啟頁面" borderRadius="1.5rem">
+                      <Link
+                        href={profile.siteUrl}
+                        isExternal
+                        aria-label="Go to the website"
+                        colorScheme="teal"
+                        border="1px"
+                        borderRadius="md"
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        minW="2.5rem"
+                        minH="2.5rem"
+                        ml="0.5rem"
+                      >
+                        <Icon as={FiExternalLink} />
+                      </Link>
+                    </Tooltip>
+                  </InputGroup>
+                  <VStack
+                    position="relative"
+                    w="100%"
+                    spacing="1rem"
+                    p="3rem"
+                    pb="1rem"
+                  >
+                    <Tooltip label="分享" borderRadius="1.5rem">
+                      <IconButton
+                        position="absolute"
+                        left="2rem"
+                        top="1rem"
+                        bgColor="transparent"
+                        icon={<Icon fontSize="1.5rem" as={MdIosShare} />}
+                      />
+                    </Tooltip>
+                    <Avatar size="2xl" src={profile.avatar} />
+                    <Box textAlign="center">
+                      <Heading as="h1" size="md" mb="0.5rem">
+                        {profile.name}
+                      </Heading>
+                      <Text whiteSpace="pre-wrap">{profile.description}</Text>
+                    </Box>
+                    <Wrap spacing={6} my="0.5rem">
+                      {profile.links?.map((link, index) => {
+                        return (
+                          <WrapItem key={index}>
+                            <Tooltip label={link.text} borderRadius="1.5rem">
+                              <Link
+                                href={link.url}
+                                target="_blank"
+                                bgColor="transparent"
+                                _hover={{
+                                  transform: 'scale(1.2)',
+                                }}
+                              >
+                                <Icon
+                                  as={iconMap[link.icon]}
+                                  fontSize="1.5rem"
+                                />
+                              </Link>
+                            </Tooltip>
+                          </WrapItem>
+                        );
+                      })}
+                    </Wrap>
+                  </VStack>
+                </>
+              )}
 
-              <VStack
-                position="relative"
-                w="100%"
-                spacing="1rem"
-                p="3rem"
-                pb="1rem"
-              >
-                <Tooltip label="分享" borderRadius="1.5rem">
-                  <IconButton
-                    position="absolute"
-                    left="2rem"
-                    top="1rem"
-                    bgColor="transparent"
-                    icon={<Icon fontSize="1.5rem" as={MdIosShare} />}
-                  />
-                </Tooltip>
-
-                <Avatar size="2xl" src={profile.avatar} />
-
-                <Box textAlign="center">
-                  <Heading as="h1" size="md" mb="0.5rem">
-                    {profile.name}
-                  </Heading>
-                  <Text whiteSpace="pre-wrap">{profile.description}</Text>
-                </Box>
-
-                <Wrap spacing={6} my="0.5rem">
-                  {profile.links?.map((link, index) => {
-                    return (
-                      <WrapItem key={index}>
-                        <Tooltip label={link.text} borderRadius="1.5rem">
-                          <Link
-                            href={link.url}
-                            target="_blank"
-                            bgColor="transparent"
-                            _hover={{
-                              transform: 'scale(1.2)',
-                            }}
-                          >
-                            <Icon as={iconMap[link.icon]} fontSize="1.5rem" />
-                          </Link>
-                        </Tooltip>
-                      </WrapItem>
-                    );
-                  })}
-                </Wrap>
-              </VStack>
-
-              {blockItems?.map((item, index) => {
-                return (
-                  <SortableBlock
-                    key={index}
-                    item={item}
-                    onModalOpen={onModalOpen}
-                    setTempBlockData={setTempBlockData}
-                  />
-                );
-              })}
+              {blockItems &&
+                blockItems.map((item, index) => {
+                  return (
+                    <SortableBlock
+                      key={index}
+                      item={item}
+                      onModalOpen={onModalOpen}
+                      setTempBlockData={setTempBlockData}
+                    />
+                  );
+                })}
             </VStack>
           </Flex>
         </Container>
