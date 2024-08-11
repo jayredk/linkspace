@@ -48,3 +48,10 @@ export const iconArray = Object.entries(iconMap).map(([key, value]) => ({
   name: key,
   icon: value,
 }));
+
+export const effectMap = {
+  none: '',
+  wobble: 'animate__wobble',
+  shakeX: 'animate__shakeX',
+  pulse: 'animate__pulse',
+};

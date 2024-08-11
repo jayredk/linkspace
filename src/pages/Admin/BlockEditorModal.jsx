@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import CropImageModal from './CropImageModal';
 
 import {
+  effectMap,
   fontSizeMap,
   fontSizeMapWithSubtitle,
   iconSizeMap,
@@ -102,12 +103,6 @@ export default function BlockEditorModal({
     fontSize = 'sm',
   } = modalState;
 
-  const effectMap = {
-    none: '',
-    wobble: 'animate__wobble',
-    shakeX: 'animate__shakeX',
-    pulse: 'animate__pulse',
-  };
 
   function handleModalStateChange(e) {
     const { name } = e.currentTarget;

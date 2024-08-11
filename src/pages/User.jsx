@@ -27,6 +27,7 @@ import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'lite-youtube-embed/src/lite-yt-embed.js';
 
 import {
+  effectMap,
   fontSizeMap,
   fontSizeMapWithSubtitle,
   iconSizeMap,
@@ -34,12 +35,6 @@ import {
   iconMap,
 } from '../constants/utilityMaps';
 
-const effectMap = {
-  none: '',
-  wobble: 'animate__wobble',
-  shakeX: 'animate__shakeX',
-  pulse: 'animate__pulse',
-};
 
 export default function User() {
   const params = useParams();
