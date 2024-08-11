@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import { Text } from '@chakra-ui/react';
 import Admin from '../pages/Admin/Admin';
+import User from '../pages/User';
 
 export const router = createBrowserRouter([
   {
@@ -20,5 +21,9 @@ export const router = createBrowserRouter([
   {
     path: '/admin',
     element: <Admin />,
+  },
+  {
+    path: '/:userId',
+    element: <User />,
   },
 ]);
