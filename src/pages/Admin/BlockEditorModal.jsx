@@ -67,7 +67,6 @@ import { IoInformation } from 'react-icons/io5';
 
 import { BiTimer } from 'react-icons/bi';
 
-import 'animate.css';
 
 import firebase from '../../utils/firebase';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';

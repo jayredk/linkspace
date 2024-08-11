@@ -1,6 +1,9 @@
 import { RouterProvider } from 'react-router-dom';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 
+import 'animate.css';
+import './assets/styles/effect.css';
+
 import { router } from './router';
 
 const theme = extendTheme({
