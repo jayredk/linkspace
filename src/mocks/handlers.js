@@ -15,6 +15,9 @@ export const handlers = [
           name: '阿滴',
           description: '有妹妹然後教英文的那個',
           siteUrl: 'https://linkspace.com/durayray',
+          bgColor: 'white',
+          textColor: 'black',
+          themeColor: 'pink',
           links: [
             {
               icon: 'facebook',

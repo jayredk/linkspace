@@ -52,6 +52,9 @@ import 'lite-youtube-embed/src/lite-yt-embed.js';
 
 
 import {
+  bgColorsMap,
+  textColorMap,
+  themeColorsMap,
   fontSizeMap,
   fontSizeMapWithSubtitle,
   iconSizeMap,
@@ -437,7 +440,7 @@ export default function Admin() {
   }, []);
 
   return (
-    <>
+    <Box bgColor={bgColorsMap[profile.bgColor]}>
       <Box
         as="header"
         w="100%"
@@ -495,7 +498,7 @@ export default function Admin() {
           lg: '20rem',
         }}
       >
-        <Container maxW="lg" mt="10rem" mb="5rem">
+        <Container maxW="lg" pt="10rem" pb="5rem">
           <Flex justifyContent="space-between">
             <DraggableItemPanel />
 
@@ -560,12 +563,16 @@ export default function Admin() {
                         position="absolute"
                         left="2rem"
                         top="1rem"
+                        color={themeColorsMap[profile.themeColor]}
                         bgColor="transparent"
                         icon={<Icon fontSize="1.5rem" as={MdIosShare} />}
                       />
                     </Tooltip>
                     <Avatar size="2xl" src={profile.avatar} />
-                    <Box textAlign="center">
+                    <Box
+                      textAlign="center"
+                      color={textColorMap[profile.textColor]}
+                    >
                       <Heading as="h1" size="md" mb="0.5rem">
                         {profile.name}
                       </Heading>
@@ -579,6 +586,7 @@ export default function Admin() {
                               <Link
                                 href={link.url}
                                 target="_blank"
+                                color={themeColorsMap[profile.themeColor]}
                                 bgColor="transparent"
                                 _hover={{
                                   transform: 'scale(1.2)',
@@ -606,6 +614,7 @@ export default function Admin() {
                       item={item}
                       onModalOpen={onModalOpen}
                       setTempBlockData={setTempBlockData}
+                      themeColor={profile.themeColor}
                     />
                   );
                 })}
@@ -620,8 +629,9 @@ export default function Admin() {
         setBlockItems={setBlockItems}
         tempBlockData={tempBlockData}
         setTempBlockData={setTempBlockData}
+        themeColor={profile.themeColor}
       />
-    </>
+    </Box>
   );
 }
 

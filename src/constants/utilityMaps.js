@@ -55,3 +55,26 @@ export const effectMap = {
   shakeX: 'animate__shakeX',
   pulse: 'animate__pulse',
 };
+
+export const themeColorsMap = {
+  black: '#262626',
+  beige: '#cbb382',
+  brown: '#9c6549',
+  purple: '#8160b9',
+  blue: '#6bbbe0',
+  green: '#7ebd5c',
+  yellow: '#f8b753',
+  orange: '#f0725c',
+  pink: '#ef8fa5',
+  red: '#ce4b4d',
+};
+
+export const bgColorsMap = {
+  black: '#1a1a1a',
+  white: '#f8f8f8',
+};
+
+export const textColorMap = {
+  black: '#333',
+  white: '#fff',
+};

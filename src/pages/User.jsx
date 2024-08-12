@@ -27,6 +27,9 @@ import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'lite-youtube-embed/src/lite-yt-embed.js';
 
 import {
+  themeColorsMap,
+  bgColorsMap,
+  textColorMap,
   effectMap,
   fontSizeMap,
   fontSizeMapWithSubtitle,
@@ -34,6 +37,7 @@ import {
   iconSizeMapWithSubtitle,
   iconMap,
 } from '../constants/utilityMaps';
+
 
 
 export default function User() {
@@ -62,71 +66,72 @@ export default function User() {
   }, [userId]);
 
   return (
-    <Container maxW="lg" my="4rem">
-      <VStack spacing={8}>
-        {Object.keys(profile).length === 0 && blockItems.length === 0 && (
-          <Heading>此頁面不存在</Heading>
-        )}
-
-        {Object.keys(profile).length && (
-          <VStack
-            position="relative"
-            w="100%"
-            spacing="1rem"
-            p="3rem"
-            pb="1rem"
-          >
-            <Tooltip label="分享" borderRadius="1.5rem">
-              <IconButton
-                position="absolute"
-                left="2rem"
-                top="1rem"
-                bgColor="transparent"
-                icon={<Icon fontSize="1.5rem" as={MdIosShare} />}
-              />
-            </Tooltip>
-
-            <Avatar size="2xl" src={profile.avatar} />
-
-            <Box textAlign="center">
-              <Heading as="h1" size="md" mb="0.5rem">
-                {profile.name}
-              </Heading>
-              <Text whiteSpace="pre-wrap">{profile.description}</Text>
-            </Box>
-
-            <Wrap spacing={6} my="0.5rem">
-              {profile.links?.map((link, index) => {
-                return (
-                  <WrapItem key={index}>
-                    <Tooltip label={link.text} borderRadius="1.5rem">
-                      <Link
-                        href={link.url}
-                        target="_blank"
-                        bgColor="transparent"
-                        _hover={{
-                          transform: 'scale(1.2)',
-                        }}
-                      >
-                        <Icon as={iconMap[link.icon]} fontSize="1.5rem" />
-                      </Link>
-                    </Tooltip>
-                  </WrapItem>
-                );
-              })}
-            </Wrap>
-          </VStack>
-        )}
-
-        {blockItems.map((item, index) => {
-          return <Block key={index} item={item} />;
-        })}
-      </VStack>
-    </Container>
+    <Box bgColor={bgColorsMap[profile.bgColor]}>
+      <Container maxW="lg" py="4rem">
+        <VStack spacing={8}>
+          {Object.keys(profile).length === 0 && blockItems.length === 0 && (
+            <Heading>此頁面不存在</Heading>
+          )}
+          {Object.keys(profile).length && (
+            <VStack
+              position="relative"
+              w="100%"
+              spacing="1rem"
+              p="3rem"
+              pb="1rem"
+            >
+              <Tooltip label="分享" borderRadius="1.5rem">
+                <IconButton
+                  position="absolute"
+                  left="2rem"
+                  top="1rem"
+                  color={themeColorsMap[profile.themeColor]}
+                  bgColor="transparent"
+                  icon={<Icon fontSize="1.5rem" as={MdIosShare} />}
+                />
+              </Tooltip>
+              <Avatar size="2xl" src={profile.avatar} />
+              <Box textAlign="center" color={textColorMap[profile.textColor]}>
+                <Heading as="h1" size="md" mb="0.5rem">
+                  {profile.name}
+                </Heading>
+                <Text whiteSpace="pre-wrap">{profile.description}</Text>
+              </Box>
+              <Wrap spacing={6} my="0.5rem">
+                {profile.links?.map((link, index) => {
+                  return (
+                    <WrapItem key={index}>
+                      <Tooltip label={link.text} borderRadius="1.5rem">
+                        <Link
+                          href={link.url}
+                          target="_blank"
+                          color={themeColorsMap[profile.themeColor]}
+                          bgColor="transparent"
+                          _hover={{
+                            transform: 'scale(1.2)',
+                          }}
+                        >
+                          <Icon as={iconMap[link.icon]} fontSize="1.5rem" />
+                        </Link>
+                      </Tooltip>
+                    </WrapItem>
+                  );
+                })}
+              </Wrap>
+            </VStack>
+          )}
+          {blockItems.map((item, index) => {
+            return (
+              <Block key={index} item={item} themeColor={profile.themeColor} />
+            );
+          })}
+        </VStack>
+      </Container>
+    </Box>
   );
 }
 
-function Block({ item }) {
+function Block({ item, themeColor }) {
   return (
     <Box w="100%" bgColor="transparent" borderRadius="md">
       {item.type === 'text-button' && (
@@ -144,18 +149,22 @@ function Block({ item }) {
                 className={`animate__animated animate__infinite ${effectMap[button.effect]}`}
                 display="flex"
                 alignItems="center"
-                backgroundColor={item.isSolid ? 'gray.900' : 'transparent'}
-                color={item.isSolid ? '#fff' : 'gray.900'}
+                backgroundColor={
+                  item.isSolid ? themeColorsMap[themeColor] : 'transparent'
+                }
+                color={item.isSolid ? '#fff' : themeColorsMap[themeColor]}
                 textDecoration="none"
                 border="2px"
-                borderColor="gray.900"
+                borderColor={themeColorsMap[themeColor]}
                 borderRadius="10px"
                 p="1rem"
                 _hover={{
                   transform: 'scale(1.03)',
                   textDecoration: 'none',
-                  backgroundColor: item.isSolid ? '#fff' : 'gray.900',
-                  color: item.isSolid ? 'gray.900' : '#fff',
+                  backgroundColor: item.isSolid
+                    ? '#fff'
+                    : themeColorsMap[themeColor],
+                  color: item.isSolid ? themeColorsMap[themeColor] : '#fff',
                 }}
               >
                 {item.hasSubtitle && !item.hasImage && (
@@ -203,7 +212,10 @@ function Block({ item }) {
                 )}
 
                 {item.hasSubtitle ? (
-                  <Text fontSize={fontSizeMapWithSubtitle[item.fontSize]} mx="auto">
+                  <Text
+                    fontSize={fontSizeMapWithSubtitle[item.fontSize]}
+                    mx="auto"
+                  >
                     {button.text}
                     <Text as="span" display="block" fontSize="md">
                       {button.subText}
@@ -316,7 +328,7 @@ function Block({ item }) {
               backgroundImage: "url('/play-btn.svg')",
               backgroundSize: '1.25rem',
               backgroundRepeat: 'no-repeat',
-              bgColor: 'black',
+              bgColor: themeColorsMap[themeColor],
               filter: 'none',
               border: '2px solid white',
               borderRadius: '50%',
