@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import MultiTypeBlock from '../../components/MultiTypeBlock';
 import CropImageModal from './CropImageModal';
 
 import {
@@ -78,6 +79,7 @@ export default function BlockEditorModal({
   isOpen,
   onClose,
   setBlockItems,
+  themeColor,
 }) {
   const [modalState, setModalState] = useState(tempBlockData);
 
@@ -101,7 +103,6 @@ export default function BlockEditorModal({
     isSolid = false,
     fontSize = 'sm',
   } = modalState;
-
 
   function handleModalStateChange(e) {
     const { name } = e.currentTarget;
@@ -259,7 +260,7 @@ export default function BlockEditorModal({
     newButtons[index].imageUrl = imageUrl;
 
     setTempCroppedImage(null);
-    
+
     setTempImageInfo({
       imageUrl,
       index,
@@ -276,38 +277,39 @@ export default function BlockEditorModal({
   async function handleUploadImage() {
     const uploadImages = [];
 
-    await Promise.all(buttons.map(async (button, index) => {
-      if (button.imageUrl?.startsWith('blob')) {
+    await Promise.all(
+      buttons.map(async (button, index) => {
+        if (button.imageUrl?.startsWith('blob')) {
+          const imageBlob = await fetch(button.imageUrl).then((res) =>
+            res.blob()
+          );
 
-        const imageBlob = await fetch(button.imageUrl).then((res) => res.blob());
-
-        uploadImages.push({
-          imageBlob,
-          index,
-        });
-      }
-    }));
+          uploadImages.push({
+            imageBlob,
+            index,
+          });
+        }
+      })
+    );
 
     const newButtons = JSON.parse(JSON.stringify(buttons));
 
-    await Promise.all(uploadImages.map(async (image) => {
-      const metadata = {
-        contentType: 'image/webp',
-      };
+    await Promise.all(
+      uploadImages.map(async (image) => {
+        const metadata = {
+          contentType: 'image/webp',
+        };
 
-      const storage = getStorage();
-      const imageRef = ref(
-        storage,
-        `block-images/${Date.now()}`
-      );
+        const storage = getStorage();
+        const imageRef = ref(storage, `block-images/${Date.now()}`);
 
-      const snapshot = await uploadBytes(imageRef, image.imageBlob, metadata);
+        const snapshot = await uploadBytes(imageRef, image.imageBlob, metadata);
 
-      const imageUrl = await getDownloadURL(snapshot.ref);
+        const imageUrl = await getDownloadURL(snapshot.ref);
 
-      
-      newButtons[image.index].imageUrl = imageUrl;
-    }));
+        newButtons[image.index].imageUrl = imageUrl;
+      })
+    );
 
     return {
       ...modalState,
@@ -332,7 +334,6 @@ export default function BlockEditorModal({
         };
       });
     }
-
   }, [tempCroppedImage, tempImageInfo.index]);
 
   return (
@@ -510,92 +511,11 @@ export default function BlockEditorModal({
                 align="stretch"
                 textAlign="center"
               >
-                {buttons.map((button, index) => {
-                  return (
-                    <Link
-                      style={{ '--animate-duration': '2s' }}
-                      href={button.linkUrl}
-                      isExternal
-                      key={index}
-                      className={`animate__animated animate__infinite ${effectMap[button.effect]}`}
-                      display="flex"
-                      alignItems="center"
-                      backgroundColor={isSolid ? 'gray.900' : 'transparent'}
-                      color={isSolid ? '#fff' : 'gray.900'}
-                      textDecoration="none"
-                      border="2px"
-                      borderColor="gray.900"
-                      borderRadius="10px"
-                      p="1rem"
-                      _hover={{
-                        transform: 'scale(1.03)',
-                        textDecoration: 'none',
-                        backgroundColor: isSolid ? '#fff' : 'gray.900',
-                        color: isSolid ? 'gray.900' : '#fff',
-                      }}
-                    >
-                      {hasSubtitle && !hasImage && (
-                        <Icon
-                          as={iconMap[button.icon]}
-                          fontSize={iconSizeMapWithSubtitle[fontSize]}
-                        />
-                      )}
-                      {!hasSubtitle && !hasImage && (
-                        <Icon
-                          as={iconMap[button.icon]}
-                          fontSize={iconSizeMap[fontSize]}
-                        />
-                      )}
-
-                      {hasImage && button.imageUrl && (
-                        <Flex
-                          justifyContent="center"
-                          alignItems="center"
-                          bgColor="gray.400"
-                          boxShadow="md"
-                          rounded="sm"
-                        >
-                          <AspectRatio maxW="128px" w="4rem" ratio={1}>
-                            <Image
-                              src={button.imageUrl}
-                              alt={button.imageAlt}
-                              rounded="sm"
-                            />
-                          </AspectRatio>
-                        </Flex>
-                      )}
-
-                      {hasImage && !button.imageUrl && (
-                        <Flex
-                          justifyContent="center"
-                          alignItems="center"
-                          p="1rem"
-                          bgColor="gray.400"
-                          boxShadow="md"
-                          rounded="sm"
-                        >
-                          <Icon as={MdImage} fontSize="1.5rem" />
-                        </Flex>
-                      )}
-
-                      {hasSubtitle ? (
-                        <Text
-                          fontSize={fontSizeMapWithSubtitle[fontSize]}
-                          mx="auto"
-                        >
-                          {button.text}
-                          <Text as="span" display="block" fontSize="md">
-                            {button.subText}
-                          </Text>
-                        </Text>
-                      ) : (
-                        <Text fontSize={fontSizeMap[fontSize]} mx="auto">
-                          {button.text}
-                        </Text>
-                      )}
-                    </Link>
-                  );
-                })}
+                <MultiTypeBlock
+                  blockItem={modalState}
+                  themeColor={themeColor}
+                  isAnimating={true}
+                />
               </VStack>
             </Container>
 

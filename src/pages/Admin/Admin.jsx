@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import BlockEditorModal from './BlockEditorModal';
+import MultiTypeBlock from '../../components/MultiTypeBlock';
 
 import {
   AspectRatio,
@@ -141,10 +142,14 @@ function DraggableItemPanel() {
 //   onModalOpen();
 // };
 
-function SortableBlock({ item, onModalOpen, setTempBlockData }) {
-
+function SortableBlock({
+  blockItem,
+  onModalOpen,
+  setTempBlockData,
+  themeColor,
+}) {
   const handleEditBlock = () => {
-    setTempBlockData(item);
+    setTempBlockData(blockItem);
     onModalOpen();
   };
 
@@ -154,7 +159,7 @@ function SortableBlock({ item, onModalOpen, setTempBlockData }) {
       w="100%"
       bgColor="white"
       borderTopRadius="1rem"
-      borderBottomRadius="md"
+      borderBottomRadius="xl"
     >
       <Flex
         bgColor="gray.200"
@@ -194,223 +199,7 @@ function SortableBlock({ item, onModalOpen, setTempBlockData }) {
         </HStack>
       </Flex>
 
-      {item.type === 'text-button' && (
-        <VStack spacing={4}
-          flexGrow="1"
-          align="stretch"
-          textAlign="center">
-          {item.buttons.map((button, index) => {
-            return (
-              <Link
-                key={index}
-                display="flex"
-                alignItems="center"
-                backgroundColor={item.isSolid ? 'gray.900' : 'transparent'}
-                color={item.isSolid ? '#fff' : 'gray.900'}
-                textDecoration="none"
-                border="2px"
-                borderColor="gray.900"
-                borderRadius="10px"
-                p="1rem"
-                _hover={{
-                  transform: 'scale(1.03)',
-                  textDecoration: 'none',
-                  backgroundColor: item.isSolid ? '#fff' : 'gray.900',
-                  color: item.isSolid ? 'gray.900' : '#fff',
-                }}
-              >
-                {item.hasSubtitle && !item.hasImage && (
-                  <Icon
-                    as={iconMap[button.icon]}
-                    fontSize={iconSizeMapWithSubtitle[item.fontSize]}
-                  />
-                )}
-                {!item.hasSubtitle && !item.hasImage && (
-                  <Icon
-                    as={iconMap[button.icon]}
-                    fontSize={iconSizeMap[item.fontSize]}
-                  />
-                )}
-
-                {item.hasImage && button.imageUrl && (
-                  <Flex
-                    justifyContent="center"
-                    alignItems="center"
-                    bgColor="gray.400"
-                    boxShadow="md"
-                    rounded="sm"
-                  >
-                    <AspectRatio maxW="128px" w="4rem" ratio={1}>
-                      <Image
-                        src={button.imageUrl}
-                        alt={button.imageAlt}
-                        rounded="sm"
-                      />
-                    </AspectRatio>
-                  </Flex>
-                )}
-
-                {item.hasImage && !button.imageUrl && (
-                  <Flex
-                    justifyContent="center"
-                    alignItems="center"
-                    p="1rem"
-                    bgColor="gray.400"
-                    boxShadow="md"
-                    rounded="sm"
-                  >
-                    <Icon as={MdImage} fontSize="1.5rem" />
-                  </Flex>
-                )}
-
-                {item.hasSubtitle ? (
-                  <Text
-                    fontSize={fontSizeMapWithSubtitle[item.fontSize]}
-                    mx="auto"
-                  >
-                    {button.text}
-                    <Text as="span" display="block" fontSize="md">
-                      {button.subText}
-                    </Text>
-                  </Text>
-                ) : (
-                  <Text fontSize={fontSizeMap[item.fontSize]} mx="auto">
-                    {button.text}
-                  </Text>
-                )}
-              </Link>
-            );
-          })}
-        </VStack>
-      )}
-
-      {item.type === 'banner-board' && (
-        <Box position="relative">
-          <AspectRatio w="100%" ratio={2 / 1}>
-            <Image
-              src="https://bit.ly/naruto-sage"
-              alt="naruto"
-              objectFit="cover"
-            />
-          </AspectRatio>
-          <Text
-            bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-            color="white"
-            fontSize="sm"
-            position="absolute"
-            bottom="0"
-            left="0"
-            right="0"
-            p="1rem"
-          >
-            {item.text}
-          </Text>
-        </Box>
-      )}
-
-      {item.type === 'square-board' && (
-        <Box position="relative">
-          <AspectRatio w="100%" ratio={1 / 1}>
-            <Image
-              src="https://bit.ly/naruto-sage"
-              alt="naruto"
-              objectFit="cover"
-            />
-          </AspectRatio>
-          <Text
-            bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-            color="white"
-            fontSize="sm"
-            position="absolute"
-            bottom="0"
-            left="0"
-            right="0"
-            p="1rem"
-          >
-            {item.text}
-          </Text>
-        </Box>
-      )}
-
-      {item.type === 'double-square-board' && (
-        <SimpleGrid columns={2} spacing={4}>
-          {item.blocks.map((block, index) => {
-            return (
-              <Link
-                key={index}
-                href={block.linkUrl}
-                target="_blank"
-                position="relative"
-                _hover={{
-                  transform: 'scale(1.03)',
-                  transition: 'transform .3s',
-                }}
-              >
-                <AspectRatio w="100%" ratio={1 / 1}>
-                  <Image
-                    src={block.imageUrl}
-                    alt="naruto"
-                    borderRadius="md"
-                    objectFit="cover"
-                  />
-                </AspectRatio>
-                <Text
-                  bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-                  borderRadius="md"
-                  color="white"
-                  fontSize="sm"
-                  position="absolute"
-                  bottom="0"
-                  left="0"
-                  right="0"
-                  p="1rem"
-                >
-                  {block.text}
-                </Text>
-              </Link>
-            );
-          })}
-        </SimpleGrid>
-      )}
-
-      {item.type === 'video-player' && (
-        <Box
-          sx={{
-            '.lty-playbtn': {
-              backgroundImage: "url('/play-btn.svg')",
-              backgroundSize: '1.25rem',
-              backgroundRepeat: 'no-repeat',
-              bgColor: 'black',
-              filter: 'none',
-              border: '2px solid white',
-              borderRadius: '50%',
-              w: '2.5rem',
-              h: '2.5rem',
-            },
-            'lite-youtube': {
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 'md',
-            },
-          }}
-        >
-          <lite-youtube
-            videoid={item.videoId}
-            playlabel={'Play: ' + item.videoDescription}
-          >
-            <a
-              href="https://youtube.com/watch?v=DZkbDCSdC1Q"
-              className="lty-playbtn"
-              title="Play Video"
-            >
-              <span className="lyt-visually-hidden">
-                Play Video: {item.videoDescription}
-              </span>
-            </a>
-          </lite-youtube>
-        </Box>
-      )}
+      <MultiTypeBlock blockItem={blockItem} themeColor={themeColor} />
     </Box>
   );
 }
@@ -607,11 +396,11 @@ export default function Admin() {
               )}
 
               {blockItems &&
-                blockItems.map((item, index) => {
+                blockItems.map((blockItem, index) => {
                   return (
                     <SortableBlock
                       key={index}
-                      item={item}
+                      blockItem={blockItem}
                       onModalOpen={onModalOpen}
                       setTempBlockData={setTempBlockData}
                       themeColor={profile.themeColor}
