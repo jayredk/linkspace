@@ -16,8 +16,10 @@ module.exports = {
     indent: [2, 2, { SwitchCase: 1 }],
     'max-len': [2, { code: 150 }],
     semi: 2,
+    'react/jsx-first-prop-new-line': [2, 'multiline'],
     'react/jsx-max-props-per-line': [2, { maximum: { single: 3, multi: 1 } }],
     'react/jsx-wrap-multilines': 2,
+    'react/jsx-closing-bracket-location': [2, 'tag-aligned'],
     'react/jsx-no-target-blank': 'off',
     'react-refresh/only-export-components': [
       'warn',
