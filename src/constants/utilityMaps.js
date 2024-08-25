@@ -1,11 +1,17 @@
 import {
+  BsBellFill,
   BsFacebook,
+  BsFillPinAngleFill,
   BsInstagram,
-  BsThreadsFill,
+  BsSend,
+  BsThreads,
   BsTiktok,
   BsTwitterX,
   BsYoutube,
 } from 'react-icons/bs';
+
+import { SiApplepodcasts } from 'react-icons/si';
+import { AiOutlineGlobal } from 'react-icons/ai';
 
 export const fontSizeMap = {
   sm: '16px',
@@ -41,7 +47,12 @@ export const iconMap = {
   twitter: BsTwitterX,
   youtube: BsYoutube,
   tiktok: BsTiktok,
-  threads: BsThreadsFill,
+  threads: BsThreads,
+  podcast: SiApplepodcasts,
+  website: AiOutlineGlobal,
+  pin: BsFillPinAngleFill,
+  send: BsSend,
+  bell: BsBellFill,
 };
 
 export const iconArray = Object.entries(iconMap).map(([key, value]) => ({
