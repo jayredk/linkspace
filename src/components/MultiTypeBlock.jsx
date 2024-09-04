@@ -20,14 +20,20 @@ import {
   iconMap,
 } from '../constants/utilityMaps';
 
+import {
+  MdImage,
+} from 'react-icons/md';
+
 export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
   return (
     <Box w="100%" bgColor="transparent" borderRadius="md">
       {blockItem.type === 'text-button' && (
-        <VStack spacing={4}
+        <VStack
+          spacing={4}
           flexGrow="1"
           align="stretch"
-          textAlign="center">
+          textAlign="center"
+        >
           {blockItem.buttons.map((button, index) => {
             return (
               <Link
@@ -137,7 +143,8 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
             href={block.linkUrl}
             isExternal
             display="block"
-            position="relative">
+            position="relative"
+          >
             <AspectRatio w="100%" ratio={2 / 1}>
               <Image src={block.imageUrl} alt="naruto" objectFit="cover" />
             </AspectRatio>
@@ -163,7 +170,8 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
             href={block.linkUrl}
             isExternal
             display="block"
-            position="relative">
+            position="relative"
+          >
             <AspectRatio w="100%" ratio={1 / 1}>
               <Image
                 src={block.imageUrl}
