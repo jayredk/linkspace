@@ -1,22 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import BlockEditorModal from './BlockEditorModal';
 import MultiTypeBlock from '../../components/MultiTypeBlock';
 import UserProfile from '../../components/UserProfile';
+import BlockEditorModal from './BlockEditorModal';
+import ProfileEditorModal from './ProfileEditorModal';
 
 import {
-  AspectRatio,
   Avatar,
   Box,
   Button,
   Container,
   Divider,
   Flex,
-  Heading,
   HStack,
   Icon,
   IconButton,
-  Image,
   Input,
   InputGroup,
   Link,
@@ -29,20 +27,15 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  VStack,
-  Wrap,
-  WrapItem,
+  VStack
 } from '@chakra-ui/react';
 
 import {
-  MdClose,
   MdContentCopy,
   MdDelete,
   MdDragIndicator,
   MdEdit,
-  MdImage,
-  MdIosShare,
-  MdLogout,
+  MdLogout
 } from 'react-icons/md';
 
 import { BsCopy } from 'react-icons/bs';
@@ -54,14 +47,7 @@ import 'lite-youtube-embed/src/lite-yt-embed.js';
 
 
 import {
-  bgColorsMap,
-  textColorMap,
-  themeColorsMap,
-  fontSizeMap,
-  fontSizeMapWithSubtitle,
-  iconSizeMap,
-  iconSizeMapWithSubtitle,
-  iconMap,
+  bgColorsMap
 } from '../../constants/utilityMaps';
 
 
@@ -140,18 +126,18 @@ function DraggableItemPanel() {
 
 // const handleEditBlock = (item) => {
 //   setTempBlockData(item);
-//   onModalOpen();
+//   openEditBlockModal();
 // };
 
 function SortableBlock({
   blockItem,
-  onModalOpen,
+  openEditBlockModal,
   setTempBlockData,
   themeColor,
 }) {
   const handleEditBlock = () => {
     setTempBlockData(blockItem);
-    onModalOpen();
+    openEditBlockModal();
   };
 
   return (
@@ -206,15 +192,20 @@ function SortableBlock({
 }
 
 
-import { fetchUserProfile, fetchUserBlockItems } from '../../apis';
-
+import { fetchUserBlockItems, fetchUserProfile } from '../../apis';
 const userId = 'durayray';
 
 export default function Admin() {
   const [profile, setProfile] = useState({});
   const [blockItems, setBlockItems] = useState([]);
 
-  const { isOpen, onOpen: onModalOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isEditProfileModalOpen,
+    onOpen: openEditProfileModal,
+    onClose: closeEditProfileModal,
+  } = useDisclosure();
+
+  const { isOpen: isEditBlockModalOpen, onOpen: openEditBlockModal, onClose: closeEditBlockModal } = useDisclosure();
   const [tempBlockData, setTempBlockData] = useState({});
 
   useEffect(() => {
@@ -341,7 +332,9 @@ export default function Admin() {
                       </Link>
                     </Tooltip>
                   </InputGroup>
-                  <UserProfile profile={profile} />
+                  <UserProfile profile={profile}>
+                    <Button onClick={openEditProfileModal}>編輯個人檔案</Button>
+                  </UserProfile>
                 </>
               )}
 
@@ -351,7 +344,7 @@ export default function Admin() {
                     <SortableBlock
                       key={index}
                       blockItem={blockItem}
-                      onModalOpen={onModalOpen}
+                      openEditBlockModal={openEditBlockModal}
                       setTempBlockData={setTempBlockData}
                       themeColor={profile.themeColor}
                     />
@@ -361,17 +354,22 @@ export default function Admin() {
           </Flex>
         </Container>
       </Box>
-
       <BlockEditorModal
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isEditBlockModalOpen}
+        onClose={closeEditBlockModal}
         setBlockItems={setBlockItems}
         tempBlockData={tempBlockData}
-        setTempBlockData={setTempBlockData}
         themeColor={profile.themeColor}
       />
+
+      <ProfileEditorModal
+        isOpen={isEditProfileModalOpen}
+        onClose={closeEditProfileModal}
+        profile={profile}
+        setProfile={setProfile}
+        themeColor={profile.themeColor}
+      />
+      
     </Box>
   );
 }
-
-

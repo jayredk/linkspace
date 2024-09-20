@@ -20,14 +20,18 @@ import {
   iconMap,
 } from '../constants/utilityMaps';
 
-export default function UserProfile({ profile }) {
+export default function UserProfile({ profile, children }) {
+  // const  = props;
+  // console.log(props);
+  // retunr
+  // // if (!profile) return;
   return (
     <VStack
       position="relative"
       w="100%"
       spacing="1rem"
       p="3rem"
-      pb="1rem"
+      pb="rem"
     >
       <Tooltip label="分享" borderRadius="1.5rem">
         <IconButton
@@ -67,6 +71,7 @@ export default function UserProfile({ profile }) {
           );
         })}
       </Wrap>
+      {children}
     </VStack>
   );
 }
