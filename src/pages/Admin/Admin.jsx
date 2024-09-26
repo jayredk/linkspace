@@ -32,6 +32,7 @@ import {
 
 import {
   MdContentCopy,
+  MdCheck,
   MdDelete,
   MdDragIndicator,
   MdEdit,
@@ -199,6 +200,24 @@ export default function Admin() {
   const [profile, setProfile] = useState({});
   const [blockItems, setBlockItems] = useState([]);
 
+  const [isUrlCopy, setIsUrlCopy] = useState(false);
+
+  const handleCopyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.siteUrl);
+      setIsUrlCopy(true);
+      
+      setTimeout(() => {
+        setIsUrlCopy(false);
+      }, 2000);
+    } catch (error) {
+      console.log('複製失敗');
+      
+    }
+    
+  };
+
+
   const {
     isOpen: isEditProfileModalOpen,
     onOpen: openEditProfileModal,
@@ -307,7 +326,8 @@ export default function Admin() {
                         aria-label="Copy website URL"
                         colorScheme="teal"
                         variant="outline"
-                        icon={<Icon as={MdContentCopy} />}
+                        onClick={handleCopyUrl}
+                        icon={<Icon as={isUrlCopy ? MdCheck : MdContentCopy} />}
                         _hover={{
                           background: 'white',
                         }}
@@ -369,7 +389,7 @@ export default function Admin() {
         setProfile={setProfile}
         themeColor={profile.themeColor}
       />
-      
+
     </Box>
   );
 }
