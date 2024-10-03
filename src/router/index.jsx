@@ -1,24 +1,15 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import { Text } from '@chakra-ui/react';
 import Admin from '../pages/Admin/Admin';
 import User from '../pages/User';
 import Signup from '../pages/Signup';
 import Login from '../pages/Login';
+import Home from '../pages/Home';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: (
-      <Text
-        bgGradient="linear(to-l, #7928CA, #FF0080)"
-        bgClip="text"
-        fontSize="6xl"
-        fontWeight="extrabold"
-      >
-        Landing page
-      </Text>
-    ),
+    element: <Home />
   },
   {
     path: '/admin',
