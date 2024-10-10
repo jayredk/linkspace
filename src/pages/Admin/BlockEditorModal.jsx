@@ -75,7 +75,6 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 export default function BlockEditorModal({
   tempBlockData,
-  setTempBlockData,
   isOpen,
   onClose,
   setBlockItems,
@@ -108,6 +107,7 @@ export default function BlockEditorModal({
     const { name } = e.currentTarget;
 
     switch (name) {
+      // text-button
       case 'fontSize':
         setModalState({
           ...modalState,
@@ -224,6 +224,47 @@ export default function BlockEditorModal({
         break;
       }
 
+      // square board
+      case 'block-text': {
+        const { index } = e.currentTarget.dataset;
+        const newBlocks = JSON.parse(JSON.stringify(modalState.blocks));
+
+        newBlocks[index].text = e.currentTarget.value;
+
+        setModalState({
+          ...modalState,
+          blocks: newBlocks,
+        });
+
+        break;
+      }
+
+      case 'linkUrl': {
+        const { index } = e.currentTarget.dataset;
+        const newBlocks = JSON.parse(JSON.stringify(modalState.blocks));
+
+        newBlocks[index].linkUrl = e.currentTarget.value;
+
+        setModalState({
+          ...modalState,
+          blocks: newBlocks,
+        });
+
+        break;
+      }
+
+      // video-player
+      case 'videoUrl': {
+        const videoUrl = e.currentTarget.value;
+
+        setModalState({
+          ...modalState,
+          videoUrl,
+        });
+
+        break;
+      }
+
       default:
         break;
     }
@@ -238,7 +279,6 @@ export default function BlockEditorModal({
       );
       const newItems = [...prevState];
       newItems[index] = { ...updatedModalState };
-      console.log(newItems);
       return newItems;
     });
     setModalState({});
@@ -251,13 +291,27 @@ export default function BlockEditorModal({
 
   function handleImageChange(e) {
     const image = e.currentTarget.files[0];
-    const { index } = e.currentTarget.dataset;
-
-    const newButtons = JSON.parse(JSON.stringify(buttons));
+    const { type, index } = e.currentTarget.dataset;
 
     const imageUrl = URL.createObjectURL(image);
 
-    newButtons[index].imageUrl = imageUrl;
+    let newData = null;
+
+    switch (type) {
+      case 'buttons':
+        newData = JSON.parse(JSON.stringify(buttons));
+        newData[index].imageUrl = imageUrl;
+        break;
+
+      case 'blocks':
+        newData = JSON.parse(JSON.stringify(modalState.blocks));
+        newData[index].imageUrl = imageUrl;
+        break;
+
+      default:
+        break;
+    }
+    
 
     setTempCroppedImage(null);
 
@@ -268,7 +322,7 @@ export default function BlockEditorModal({
 
     setModalState({
       ...modalState,
-      buttons: newButtons,
+      [type]: newData,
     });
 
     onCropModalOpen();
@@ -324,17 +378,37 @@ export default function BlockEditorModal({
   useEffect(() => {
     if (tempCroppedImage) {
       setModalState((prevState) => {
-        const newButtons = JSON.parse(JSON.stringify(prevState.buttons || []));
+        let type = null;
+        let newData = null;
 
-        newButtons[tempImageInfo.index].imageUrl = tempCroppedImage;
+        switch (modalState.type) {
+          case 'text-button': 
+            type = 'buttons';
+            newData = JSON.parse(JSON.stringify(prevState.buttons || []));
+
+            newData[tempImageInfo.index].imageUrl = tempCroppedImage;
+            break;
+          
+
+          case 'square-board':
+            type = 'blocks';
+            newData = JSON.parse(JSON.stringify(prevState.blocks || []));
+
+            newData[tempImageInfo.index].imageUrl = tempCroppedImage;
+            break;
+
+          default:
+            break;
+        }
+        
 
         return {
           ...prevState,
-          buttons: newButtons,
+          [type]: newData,
         };
       });
     }
-  }, [tempCroppedImage, tempImageInfo.index]);
+  }, [tempCroppedImage, tempImageInfo.index, modalState.type]);
 
   return (
     <>
@@ -357,144 +431,304 @@ export default function BlockEditorModal({
             backgroundColor="#000"
             color="#fff"
             display="flex"
+            justifyContent="space-between"
             alignItems="center"
             position="absolute"
             left="0"
             right="0"
-            mb="1.5rem"
+            py="1.25rem"
           >
-            <Heading size="lg">編輯區塊</Heading>
-            <ModalCloseButton onClick={handleClose} color="#fff" />
+            <Heading size="md">編輯區塊</Heading>
+            <ModalCloseButton onClick={handleClose} position="static" />
           </ModalHeader>
           <ModalBody maxW="50%" mt="6rem">
-            <Flex>
-              <Box>
-                <Heading as="h3" size="md" mb="1rem">
-                  按鈕樣式
-                </Heading>
-                <Wrap spacing="2rem" borderRadius="20px" mb="2rem">
-                  <WrapItem
-                    backgroundColor="gray.400"
+            {tempBlockData.type === 'text-button' && (
+              <Flex>
+                <Box>
+                  <Heading as="h3" size="md" mb="1rem">
+                    按鈕樣式
+                  </Heading>
+                  <Wrap spacing="2rem" borderRadius="20px" mb="2rem">
+                    <WrapItem
+                      backgroundColor="gray.400"
+                      borderRadius="20px"
+                      p="0.5rem 0.75rem"
+                    >
+                      <HStack spacing="24px">
+                        <Text fontWeight="500">按鈕填滿</Text>
+                        <Switch
+                          name="isSolid"
+                          onChange={handleModalStateChange}
+                          isChecked={isSolid}
+                        />
+                      </HStack>
+                    </WrapItem>
+                    <WrapItem
+                      backgroundColor="gray.400"
+                      borderRadius="20px"
+                      p="0.5rem 0.75rem"
+                    >
+                      <HStack spacing="24px">
+                        <Text fontWeight="500">按鈕圖片</Text>
+                        <Switch
+                          name="hasImage"
+                          onChange={handleModalStateChange}
+                          isChecked={hasImage}
+                        />
+                      </HStack>
+                    </WrapItem>
+                    <WrapItem
+                      backgroundColor="gray.400"
+                      borderRadius="20px"
+                      p="0.5rem 0.75rem"
+                    >
+                      <HStack spacing="24px">
+                        <Text fontWeight="500">按鈕副標</Text>
+                        <Switch
+                          name="hasSubtitle"
+                          onChange={handleModalStateChange}
+                          isChecked={hasSubtitle}
+                        />
+                      </HStack>
+                    </WrapItem>
+                  </Wrap>
+                  <Heading as="h3" size="md" mb="1rem">
+                    字體大小
+                  </Heading>
+                  <RadioGroup
                     borderRadius="20px"
-                    p="0.5rem 0.75rem"
+                    mb="2rem"
+                    name="fontSize"
+                    value={fontSize}
                   >
-                    <HStack spacing="24px">
-                      <Text fontWeight="500">按鈕填滿</Text>
-                      <Switch
-                        name="isSolid"
+                    <Stack
+                      direction="row"
+                      backgroundColor="gray.400"
+                      borderRadius="20px"
+                      p="0.5rem 0.75rem"
+                    >
+                      <Radio
                         onChange={handleModalStateChange}
-                        isChecked={isSolid}
-                      />
-                    </HStack>
-                  </WrapItem>
-                  <WrapItem
-                    backgroundColor="gray.400"
-                    borderRadius="20px"
-                    p="0.5rem 0.75rem"
-                  >
-                    <HStack spacing="24px">
-                      <Text fontWeight="500">按鈕圖片</Text>
-                      <Switch
-                        name="hasImage"
+                        value="sm"
+                        mx="0.5rem"
+                      >
+                        小
+                      </Radio>
+                      <Radio
                         onChange={handleModalStateChange}
-                        isChecked={hasImage}
-                      />
-                    </HStack>
-                  </WrapItem>
-                  <WrapItem
-                    backgroundColor="gray.400"
-                    borderRadius="20px"
-                    p="0.5rem 0.75rem"
-                  >
-                    <HStack spacing="24px">
-                      <Text fontWeight="500">按鈕副標</Text>
-                      <Switch
-                        name="hasSubtitle"
+                        value="md"
+                        mx="0.5rem"
+                      >
+                        中
+                      </Radio>
+                      <Radio
                         onChange={handleModalStateChange}
-                        isChecked={hasSubtitle}
+                        value="lg"
+                        mx="0.5rem"
+                      >
+                        大
+                      </Radio>
+                      <Radio
+                        onChange={handleModalStateChange}
+                        value="xl"
+                        mx="0.5rem"
+                      >
+                        特大
+                      </Radio>
+                    </Stack>
+                  </RadioGroup>
+                  {buttons.map((button, index) => {
+                    return (
+                      <BlockInfoEditor
+                        key={index}
+                        buttons={buttons}
+                        button={button}
+                        index={index}
+                        hasImage={hasImage}
+                        hasSubtitle={hasSubtitle}
+                        isSolid={isSolid}
+                        fontSize={fontSize}
+                        handleModalStateChange={handleModalStateChange}
+                        handleImageChange={handleImageChange}
+                        onCropModalOpen={onCropModalOpen}
                       />
-                    </HStack>
-                  </WrapItem>
-                </Wrap>
-                <Heading as="h3" size="md" mb="1rem">
-                  字體大小
-                </Heading>
-                <RadioGroup
-                  borderRadius="20px"
-                  mb="2rem"
-                  name="fontSize"
-                  value={fontSize}
-                >
-                  <Stack
-                    direction="row"
-                    backgroundColor="gray.400"
-                    borderRadius="20px"
-                    p="0.5rem 0.75rem"
-                  >
-                    <Radio
-                      onChange={handleModalStateChange}
-                      value="sm"
-                      mx="0.5rem"
-                    >
-                      小
-                    </Radio>
-                    <Radio
-                      onChange={handleModalStateChange}
-                      value="md"
-                      mx="0.5rem"
-                    >
-                      中
-                    </Radio>
-                    <Radio
-                      onChange={handleModalStateChange}
-                      value="lg"
-                      mx="0.5rem"
-                    >
-                      大
-                    </Radio>
-                    <Radio
-                      onChange={handleModalStateChange}
-                      value="xl"
-                      mx="0.5rem"
-                    >
-                      特大
-                    </Radio>
-                  </Stack>
-                </RadioGroup>
-                {buttons.map((button, index) => {
-                  return (
-                    <BlockInfoEditor
-                      key={index}
-                      buttons={buttons}
-                      button={button}
-                      index={index}
-                      hasImage={hasImage}
-                      hasSubtitle={hasSubtitle}
-                      isSolid={isSolid}
-                      fontSize={fontSize}
-                      handleModalStateChange={handleModalStateChange}
-                      handleImageChange={handleImageChange}
-                      onCropModalOpen={onCropModalOpen}
-                    />
-                  );
-                })}
+                    );
+                  })}
 
-                <Button
-                  name="newButton"
-                  onClick={handleModalStateChange}
-                  isDisabled={buttons.length === 5}
-                  w="100%"
-                  borderRadius="lg"
-                  bgColor="gray.700"
-                  color="white"
-                  _hover={{
-                    bgColor: 'gray.600',
-                  }}
-                >
-                  新增按鈕
-                </Button>
-              </Box>
-            </Flex>
+                  <Button
+                    name="newButton"
+                    onClick={handleModalStateChange}
+                    isDisabled={buttons.length === 5}
+                    w="100%"
+                    borderRadius="lg"
+                    bgColor="gray.700"
+                    color="white"
+                    _hover={{
+                      bgColor: 'gray.600',
+                    }}
+                  >
+                    新增按鈕
+                  </Button>
+                </Box>
+              </Flex>
+            )}
+
+            {tempBlockData.type === 'banner-board' && (
+              <Flex>
+                <Heading>方形看板</Heading>
+              </Flex>
+            )}
+
+            {tempBlockData.type === 'square-board' &&
+              modalState.blocks?.map((block, index) => (
+                <Card key={index} borderRadius="20px" mb="1rem">
+                  <CardBody>
+                    <Flex justifyContent="space-between" alignItems="center">
+                      <Heading as="h3" fontSize="1.25rem">
+                        方格看板資訊
+                      </Heading>
+                      <IconButton
+                        isDisabled={block.length === 1}
+                        name="removeButton"
+                        data-index={index}
+                        onClick={handleModalStateChange}
+                        icon={<Icon as={MdClose} />}
+                        bgColor="gray.600"
+                        color="white"
+                        _hover={{
+                          bgColor: 'gray.700',
+                        }}
+                      ></IconButton>
+                    </Flex>
+                    <Divider my="0.5rem" />
+                    <Flex alignItems="center" mb="1rem">
+                      {
+                        <>
+                          {block.imageUrl ? (
+                            <Box position="relative">
+                              <Image
+                                maxW="80px"
+                                mr="1rem"
+                                rounded="xl"
+                                objectFit="cover"
+                                src={block.imageUrl}
+                                alt="Dan Abramov"
+                              />
+                              <Input
+                                data-index={index}
+                                onChange={handleImageChange}
+                                id={`uploadBtn${index}`}
+                                accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                                position="absolute"
+                                inset="0"
+                                height="100%"
+                                opacity="0"
+                                maxW="80px"
+                                mr="1rem"
+                                rounded="xl"
+                                type="file"
+                              />
+                            </Box>
+                          ) : (
+                            <label
+                              style={{
+                                position: 'relative',
+                                width: '100px',
+                                height: '100px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginRight: '1rem',
+                                backgroundColor: '#E2E8F0',
+                                borderRadius: '20px',
+                              }}
+                              htmlFor={`uploadBtn${index}`}
+                            >
+                              <Icon fontSize="1.5rem" as={MdImage}></Icon>
+                              <Input
+                                data-type="blocks"
+                                data-index={index}
+                                onChange={handleImageChange}
+                                id={`uploadBtn${index}`}
+                                accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                                position="absolute"
+                                inset="0"
+                                opacity="0"
+                                maxW="80px"
+                                mr="1rem"
+                                rounded="xl"
+                                type="file"
+                              />
+                            </label>
+                          )}
+
+                          <Box flexGrow="1">
+                            <Flex gap="0.5rem" mb="0.5rem">
+                              <Button flexGrow="1">
+                                上傳圖片
+                                <label
+                                  htmlFor={`uploadBtn${index}`}
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    position: 'absolute',
+                                    cursor: 'pointer',
+                                  }}
+                                ></label>
+                              </Button>
+                              <Button
+                                isDisabled={!block.imageUrl}
+                                flexGrow="1"
+                                onClick={onCropModalOpen}
+                              >
+                                裁切圖片
+                              </Button>
+                            </Flex>
+                          </Box>
+                        </>
+                      }
+                    </Flex>
+                    <Flex alignItems="center" mb="1rem">
+                      <Icon as={MdTitle} mr="1rem" fontSize="xl" />
+                      <Input
+                        name="block-text"
+                        data-index={index}
+                        value={block.text}
+                        onChange={handleModalStateChange}
+                        backgroundColor="gray.400"
+                        placeholder="按鈕文字"
+                      />
+                    </Flex>
+                    <Flex alignItems="center" mb="1rem">
+                      <Icon as={BsLink45Deg} mr="1rem" fontSize="xl" />
+                      <Input
+                        name="linkUrl"
+                        data-index={index}
+                        value={block.linkUrl}
+                        onChange={handleModalStateChange}
+                        backgroundColor="gray.400"
+                        placeholder="輸入連結"
+                      />
+                    </Flex>
+                  </CardBody>
+                </Card>
+              ))}
+
+            {tempBlockData.type === 'double-square-board' && (
+              <Flex>
+                <Heading>雙方格看板</Heading>
+              </Flex>
+            )}
+
+            {tempBlockData.type === 'video-player' && (
+              <Input
+                name="videoUrl"
+                value={modalState.videoUrl}
+                onChange={handleModalStateChange}
+                borderColor="gray"
+                placeholder="輸入 youtube 網址"
+              />
+            )}
           </ModalBody>
 
           <ModalFooter
@@ -503,8 +737,9 @@ export default function BlockEditorModal({
             flexGrow="1"
             maxW="50%"
             mt="6rem"
+            pb="3rem"
           >
-            <Container>
+            <Container overflowY="auto" pb="3rem">
               <VStack
                 spacing={4}
                 flexGrow="1"
@@ -521,6 +756,9 @@ export default function BlockEditorModal({
 
             <Button
               onClick={handleSave}
+              position="absolute"
+              bottom="1rem"
+              right="3rem"
               alignSelf="flex-end"
               colorScheme="blue"
             >
@@ -619,6 +857,7 @@ function BlockInfoEditor({
                 >
                   <Icon fontSize="1.5rem" as={MdImage}></Icon>
                   <Input
+                    data-type="buttons"
                     data-index={index}
                     onChange={handleImageChange}
                     id={`uploadBtn${index}`}
