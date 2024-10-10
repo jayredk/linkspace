@@ -184,13 +184,14 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
               bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
               color="white"
               fontSize="sm"
+              textAlign="left"
               position="absolute"
               bottom="0"
               left="0"
               right="0"
               p="1rem"
             >
-              {blockItem.text}
+              {block.text}
             </Text>
           </Link>
         ))}
@@ -259,7 +260,7 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
           }}
         >
           <lite-youtube
-            videoid={blockItem.videoId}
+            videoid={getVideoId(blockItem.videoUrl)}
             playlabel={'Play: ' + blockItem.videoDescription}
           >
             <a
@@ -276,4 +277,16 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
       )}
     </Box>
   );
+}
+
+function getVideoId(url) {
+  const regex =
+    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  let videoId = null;
+  const match = url.match(regex);
+
+  if (match) {
+    videoId = match[1];
+  }
+  return videoId;
 }
