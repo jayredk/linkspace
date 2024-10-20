@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { auth } from '../utils/firebase';
+import { auth, db } from '../utils/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 import {
@@ -23,6 +24,8 @@ import {
 
 import { FcGoogle } from 'react-icons/fc';
 
+const DOMAIN_URL = 'https://linkspace.com/';
+
 export default function Signup() {
   const navigate = useNavigate();
 
@@ -38,11 +41,72 @@ export default function Signup() {
   const onSubmit = async (values) => {
     try {
       const { mail, password } = values;
-      await createUserWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         auth,
         mail,
         password
       );
+
+      const { user } = userCredential;
+
+      const custom_url = user.uid.substring(0, 8);
+
+      const defaultUserData = {
+        custom_url: custom_url,
+        profile: {
+          avatar: `https://api.dicebear.com/6.x/initials/svg?seed='使用者'`,
+          email: user.email,
+          name: '新使用者',
+          description: '歡迎來到我的頁面！',
+          siteUrl: `${DOMAIN_URL}${custom_url}`,
+          bgColor: 'black',
+          textColor: 'white',
+          themeColor: 'blue',
+          links: [
+            {
+              icon: 'facebook',
+              text: 'Facebook',
+              url: '',
+            },
+            {
+              icon: 'youtube',
+              text: 'Youtube',
+              url: '',
+            },
+            {
+              icon: 'instagram',
+              text: 'Instagram',
+              url: '',
+            },
+          ],
+        },
+        blocks: [
+          {
+            id: crypto.randomUUID(),
+            type: 'text-button',
+            isSolid: false,
+            hasSubtitle: false,
+            hasImage: false,
+            fontSize: 'sm',
+            buttons: [
+              {
+                effect: 'none',
+                text: '歡迎來到我的頁面！我正在建設中...',
+                subText: '',
+                icon: 'pin',
+                linkUrl: '',
+              },
+            ],
+          },
+        ],
+        metadata: {
+          createdAt: new Date(),
+          lastUpdated: new Date(),
+          version: 1,
+        },
+      };
+
+      await setDoc(doc(db, 'users', user.uid), defaultUserData);
       
       navigate('/login');
     } catch (error) {
