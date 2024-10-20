@@ -4,6 +4,7 @@ import MultiTypeBlock from '../../components/MultiTypeBlock';
 import UserProfile from '../../components/UserProfile';
 import BlockEditorModal from './BlockEditorModal';
 import ProfileEditorModal from './ProfileEditorModal';
+import { useUserActions } from '../../stores/userStore';
 
 import {
   Avatar,
@@ -131,13 +132,13 @@ function DraggableItemPanel() {
 // };
 
 function SortableBlock({
-  blockItem,
+  block,
   openEditBlockModal,
   setTempBlockData,
   themeColor,
 }) {
   const handleEditBlock = () => {
-    setTempBlockData(blockItem);
+    setTempBlockData(block);
     openEditBlockModal();
   };
 
@@ -187,18 +188,21 @@ function SortableBlock({
         </HStack>
       </Flex>
 
-      <MultiTypeBlock blockItem={blockItem} themeColor={themeColor} />
+      <MultiTypeBlock block={block} themeColor={themeColor} />
     </Box>
   );
 }
 
 
-import { fetchUserBlockItems, fetchUserProfile } from '../../apis';
-const userId = 'durayray';
+// import { fetchUserBlockItems, fetchUserProfile } from '../../apis';
+// const userId = 'durayray';
+// const userId = 'briantseng';
 
 export default function Admin() {
   const [profile, setProfile] = useState({});
-  const [blockItems, setBlockItems] = useState([]);
+  const [blocks, setBlocks] = useState([]);
+
+  const { getUserInfo } = useUserActions();
 
   const [isUrlCopy, setIsUrlCopy] = useState(false);
 
@@ -229,15 +233,16 @@ export default function Admin() {
 
   useEffect(() => {
     const loadUser = async () => {
-      const profileData = await fetchUserProfile(userId);
-      setProfile(profileData.profile);
+      // const profileData = await fetchUserProfile(userId);
+      const userData = await getUserInfo();
+      setProfile(userData.profile);
 
-      const blockItemsData = await fetchUserBlockItems(userId);
-      setBlockItems(blockItemsData.blockItems);
+      // const blockItemsData = await fetchUserBlockItems(userId);
+      setBlocks(userData.blocks);
     };
 
     loadUser();
-  }, []);
+  }, [getUserInfo]);
 
   return (
     <Box bgColor={bgColorsMap[profile.bgColor]}>
@@ -358,12 +363,12 @@ export default function Admin() {
                 </>
               )}
 
-              {blockItems &&
-                blockItems.map((blockItem, index) => {
+              {blocks &&
+                blocks.map((block, index) => {
                   return (
                     <SortableBlock
                       key={index}
-                      blockItem={blockItem}
+                      block={block}
                       openEditBlockModal={openEditBlockModal}
                       setTempBlockData={setTempBlockData}
                       themeColor={profile.themeColor}
@@ -377,7 +382,7 @@ export default function Admin() {
       <BlockEditorModal
         isOpen={isEditBlockModalOpen}
         onClose={closeEditBlockModal}
-        setBlockItems={setBlockItems}
+        setBlocks={setBlocks}
         tempBlockData={tempBlockData}
         themeColor={profile.themeColor}
       />

@@ -24,17 +24,17 @@ import {
   MdImage,
 } from 'react-icons/md';
 
-export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
+export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
   return (
     <Box w="100%" bgColor="transparent" borderRadius="md">
-      {blockItem.type === 'text-button' && (
+      {block.type === 'text-button' && (
         <VStack
           spacing={4}
           flexGrow="1"
           align="stretch"
           textAlign="center"
         >
-          {blockItem.buttons.map((button, index) => {
+          {block.buttons.map((button, index) => {
             return (
               <Link
                 style={{ '--animate-duration': '2s' }}
@@ -48,9 +48,9 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
                 display="flex"
                 alignItems="center"
                 backgroundColor={
-                  blockItem.isSolid ? themeColorsMap[themeColor] : 'transparent'
+                  block.isSolid ? themeColorsMap[themeColor] : 'transparent'
                 }
-                color={blockItem.isSolid ? '#fff' : themeColorsMap[themeColor]}
+                color={block.isSolid ? '#fff' : themeColorsMap[themeColor]}
                 textDecoration="none"
                 border="2px"
                 borderColor={themeColorsMap[themeColor]}
@@ -59,28 +59,28 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
                 _hover={{
                   transform: 'scale(1.03)',
                   textDecoration: 'none',
-                  backgroundColor: blockItem.isSolid
+                  backgroundColor: block.isSolid
                     ? '#fff'
                     : themeColorsMap[themeColor],
-                  color: blockItem.isSolid
+                  color: block.isSolid
                     ? themeColorsMap[themeColor]
                     : '#fff',
                 }}
               >
-                {blockItem.hasSubtitle && !blockItem.hasImage && (
+                {block.hasSubtitle && !block.hasImage && (
                   <Icon
                     as={iconMap[button.icon]}
-                    fontSize={iconSizeMapWithSubtitle[blockItem.fontSize]}
+                    fontSize={iconSizeMapWithSubtitle[block.fontSize]}
                   />
                 )}
-                {!blockItem.hasSubtitle && !blockItem.hasImage && (
+                {!block.hasSubtitle && !block.hasImage && (
                   <Icon
                     as={iconMap[button.icon]}
-                    fontSize={iconSizeMap[blockItem.fontSize]}
+                    fontSize={iconSizeMap[block.fontSize]}
                   />
                 )}
 
-                {blockItem.hasImage && button.imageUrl && (
+                {block.hasImage && button.imageUrl && (
                   <Flex
                     justifyContent="center"
                     alignItems="center"
@@ -98,7 +98,7 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
                   </Flex>
                 )}
 
-                {blockItem.hasImage && !button.imageUrl && (
+                {block.hasImage && !button.imageUrl && (
                   <Flex
                     justifyContent="center"
                     alignItems="center"
@@ -111,9 +111,9 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
                   </Flex>
                 )}
 
-                {blockItem.hasSubtitle ? (
+                {block.hasSubtitle ? (
                   <Text
-                    fontSize={fontSizeMapWithSubtitle[blockItem.fontSize]}
+                    fontSize={fontSizeMapWithSubtitle[block.fontSize]}
                     mx="auto"
                   >
                     {button.text}
@@ -123,7 +123,7 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
                   </Text>
                 ) : (
                   <Text
-                    fontSize={fontSizeMap[blockItem.fontSize]}
+                    fontSize={fontSizeMap[block.fontSize]}
                     fontWeight="bold"
                     mx="auto"
                   >
@@ -136,8 +136,8 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
         </VStack>
       )}
 
-      {blockItem.type === 'banner-board' &&
-        blockItem.blocks.map((block, index) => (
+      {block.type === 'banner-board' &&
+        block.blocks.map((block, index) => (
           <Link
             key={index}
             href={block.linkUrl}
@@ -152,19 +152,20 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
               bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
               color="white"
               fontSize="sm"
+              textAlign="left"
               position="absolute"
               bottom="0"
               left="0"
               right="0"
               p="1rem"
             >
-              {blockItem.text}
+              {block.text}
             </Text>
           </Link>
         ))}
 
-      {blockItem.type === 'square-board' &&
-        blockItem.blocks.map((block, index) => (
+      {block.type === 'square-board' &&
+        block.blocks.map((block, index) => (
           <Link
             key={index}
             href={block.linkUrl}
@@ -196,9 +197,9 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
           </Link>
         ))}
 
-      {blockItem.type === 'double-square-board' && (
+      {block.type === 'double-square-board' && (
         <SimpleGrid columns={2} spacing={4}>
-          {blockItem.blocks.map((block, index) => {
+          {block.blocks.map((block, index) => {
             return (
               <Link
                 key={index}
@@ -237,7 +238,7 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
         </SimpleGrid>
       )}
 
-      {blockItem.type === 'video-player' && (
+      {block.type === 'video-player' && (
         <Box
           sx={{
             '.lty-playbtn': {
@@ -260,8 +261,8 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
           }}
         >
           <lite-youtube
-            videoid={getVideoId(blockItem.videoUrl)}
-            playlabel={'Play: ' + blockItem.videoDescription}
+            videoid={getVideoId(block.videoUrl)}
+            playlabel={'Play: ' + block.videoDescription}
           >
             <a
               href="https://youtube.com/watch?v=DZkbDCSdC1Q"
@@ -269,7 +270,7 @@ export default function MultiTypeBlock({ blockItem, themeColor, isAnimating }) {
               title="Play Video"
             >
               <span className="lyt-visually-hidden">
-                Play Video: {blockItem.videoDescription}
+                Play Video: {block.videoDescription}
               </span>
             </a>
           </lite-youtube>
