@@ -3,6 +3,8 @@ import { auth } from '../utils/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
+import { useUserActions } from '../stores/userStore';
+
 import {
   AbsoluteCenter,
   Box,
@@ -32,10 +34,25 @@ export default function Login() {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const { setUser } = useUserActions();
+
   const onSubmit = async(values) => {
     try {
       const { mail, password } = values;
-      await signInWithEmailAndPassword(auth, mail, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        mail,
+        password
+      );
+
+      const { user } = userCredential;
+      console.log(user);
+      
+      setUser({
+        email: user.email,
+        uid: user.uid,
+      });
+      
 
       navigate('/admin');
     } catch (err) {
@@ -145,7 +162,7 @@ export default function Login() {
         w="100%"
         objectFit="cover"
         objectPosition="center"
-        src="https://blog.kakaocdn.net/dn/bwuXOu/btqJINwjkuy/HNPIOdAA7zCAwQmpi4WJm0/img.jpg"
+        src="https://i.imgur.com/oiNIiHQ.jpeg"
       ></Image>
     </Flex>
   );
