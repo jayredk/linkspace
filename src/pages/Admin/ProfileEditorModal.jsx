@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import UserProfile from '../../components/UserProfile';
 import CropImageModal from './CropImageModal';
 
+import { useUser } from '../../stores/userStore';
+import { db } from '../../utils/firebase';
+
 import {
   bgColorsMap,
   iconMap,
@@ -51,11 +54,9 @@ import {
 } from 'react-icons/md';
 
 
-
-
-
 // import firebase from '../../utils/firebase';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { doc, updateDoc } from 'firebase/firestore';
 
 
 export default function ProfileEditorModal({
@@ -64,6 +65,9 @@ export default function ProfileEditorModal({
   profile,
   setProfile,
 }) {
+  const user = useUser();
+  const userId = user?.uid;
+
   const [tempProfile, setTempProfile] = useState({ ...profile });
 
   useEffect(() => {
@@ -196,10 +200,18 @@ export default function ProfileEditorModal({
       avatar = await handleUploadImage();
     }
 
-    setProfile({
+    const docRef = doc(db, 'users', userId);
+
+    const newProfile = {
       ...tempProfile,
-      avatar: avatar || tempProfile.avatar
+      avatar: avatar || tempProfile.avatar,
+    };
+
+    await updateDoc(docRef, {
+      profile: newProfile,
     });
+
+    setProfile(newProfile);
     setTempProfile({});
     onClose();
   }

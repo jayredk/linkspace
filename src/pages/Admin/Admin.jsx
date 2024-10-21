@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 import MultiTypeBlock from '../../components/MultiTypeBlock';
 import UserProfile from '../../components/UserProfile';
 import BlockEditorModal from './BlockEditorModal';
 import ProfileEditorModal from './ProfileEditorModal';
-import { useUserActions } from '../../stores/userStore';
+import { useUser, useSetUser } from '../../stores/userStore';
+import { getUserInfo } from '../../services/userService';
 
 import {
   Avatar,
@@ -51,7 +53,6 @@ import 'lite-youtube-embed/src/lite-yt-embed.js';
 import {
   bgColorsMap
 } from '../../constants/utilityMaps';
-
 
 function DraggableItemPanel() {
   return (
@@ -202,7 +203,8 @@ export default function Admin() {
   const [profile, setProfile] = useState({});
   const [blocks, setBlocks] = useState([]);
 
-  const { getUserInfo } = useUserActions();
+  const user = useUser();
+  const setUser = useSetUser();
 
   const [isUrlCopy, setIsUrlCopy] = useState(false);
 
@@ -233,16 +235,30 @@ export default function Admin() {
 
   useEffect(() => {
     const loadUser = async () => {
-      // const profileData = await fetchUserProfile(userId);
-      const userData = await getUserInfo();
-      setProfile(userData.profile);
-
-      // const blockItemsData = await fetchUserBlockItems(userId);
-      setBlocks(userData.blocks);
+      try {
+        const userData = await getUserInfo(user.uid);
+        setProfile(userData.profile);
+        setBlocks(userData.blocks);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    loadUser();
-  }, [getUserInfo]);
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log(currentUser);
+      
+      if (currentUser) {
+        setUser({
+          email: currentUser.email,
+          uid: currentUser.uid,
+        });
+        loadUser();
+      }
+    });
+
+    return () => unsubscribe();
+  }, [setUser, user.uid]);
 
   return (
     <Box bgColor={bgColorsMap[profile.bgColor]}>

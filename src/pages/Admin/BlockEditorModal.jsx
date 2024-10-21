@@ -3,18 +3,15 @@ import { useEffect, useState } from 'react';
 import MultiTypeBlock from '../../components/MultiTypeBlock';
 import CropImageModal from './CropImageModal';
 
+import { useUser } from '../../stores/userStore';
+import { db } from '../../utils/firebase';
+
 import {
-  effectMap,
-  fontSizeMap,
-  fontSizeMapWithSubtitle,
-  iconSizeMap,
-  iconSizeMapWithSubtitle,
-  iconMap,
-  iconArray
+  iconArray,
+  iconMap
 } from '../../constants/utilityMaps';
 
 import {
-  AspectRatio,
   Box,
   Button,
   Card,
@@ -28,7 +25,6 @@ import {
   IconButton,
   Image,
   Input,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -52,7 +48,7 @@ import {
   useDisclosure,
   VStack,
   Wrap,
-  WrapItem,
+  WrapItem
 } from '@chakra-ui/react';
 
 import {
@@ -69,7 +65,7 @@ import { IoInformation } from 'react-icons/io5';
 import { BiTimer } from 'react-icons/bi';
 
 
-import firebase from '../../utils/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 
@@ -80,6 +76,9 @@ export default function BlockEditorModal({
   setBlocks,
   themeColor,
 }) {
+  const user = useUser();
+  const userId = user?.uid;
+  
   const [modalState, setModalState] = useState(tempBlockData);
 
   const {
@@ -271,18 +270,32 @@ export default function BlockEditorModal({
   }
 
   async function handleSave() {
-    const updatedModalState = await handleUploadImage();
+    const docRef = doc(db, 'users', userId);
+    let newBlocks = null;
 
-    setBlocks((prevState) => {
-      const index = prevState.findIndex(
-        (item) => item.id === updatedModalState.id
-      );
-      const newItems = [...prevState];
-      newItems[index] = { ...updatedModalState };
-      return newItems;
-    });
-    setModalState({});
-    onClose();
+    try {
+      const updatedModalState = await handleUploadImage();
+
+      
+
+      setBlocks((prevState) => {
+        const index = prevState.findIndex(
+          (item) => item.id === updatedModalState.id
+        );
+        const newItems = [...prevState];
+        newItems[index] = { ...updatedModalState };
+        newBlocks = newItems;
+        return newItems;
+      });
+
+      await updateDoc(docRef, {
+        blocks: newBlocks,
+      });
+      setModalState({});
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   function handleClose() {

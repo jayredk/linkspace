@@ -1,27 +1,20 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-import { db } from '../utils/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+const useUserStore = create(
+  persist(
+    (set, get) => ({
+      user: {},
+      setUser: (user) => set({ user }),
+    }),
+    {
+      name: 'user-storage',
+      getStorage: () => localStorage,
+      partialize: (state) => ({ user: state.user }),
+    }
+  )
+);
 
-const useUserStore = create((set, get) => ({
-  email: '',
-  uid: '',
-  actions: {
-    setUser: (user) =>
-      set((state) => ({
-        ...state,
-        ...user,
-      })),
-    getUserInfo: async () => {
-      console.log(get().uid);
-      
-      const userDoc = await getDoc(doc(db, 'users', get().uid));
+export const useUser = () => useUserStore((state) => state.user);
 
-      console.log(userDoc.data());
-      return userDoc.data();
-    },
-  },
-}));
-
-
-export const useUserActions = () => useUserStore((state) => state.actions);
+export const useSetUser = () => useUserStore((state) => state.setUser);

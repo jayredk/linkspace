@@ -3,7 +3,7 @@ import { auth } from '../utils/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
-import { useUserActions } from '../stores/userStore';
+import { useSetUser } from '../stores/userStore';
 
 import {
   AbsoluteCenter,
@@ -34,7 +34,7 @@ export default function Login() {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const { setUser } = useUserActions();
+  const setUser = useSetUser();
 
   const onSubmit = async(values) => {
     try {
