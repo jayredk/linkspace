@@ -13,6 +13,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Center,
   Container,
   Divider,
   Flex,
@@ -101,7 +102,7 @@ export default function ProfileEditorModal({
       }
 
       case 'link': {
-        const linkIndex = parseInt(e.target.dataset.index);
+        const linkIndex = parseInt(e.currentTarget.dataset.index);
 
         setTempProfile((prevState) => {
           const updatedLinks = prevState.links.map((link, index) =>
@@ -121,12 +122,46 @@ export default function ProfileEditorModal({
         break;
       }
 
+      case 'newLink': {
+        const newLink = {
+          icon: '',
+          text: '',
+          url: '',
+        };
+
+        setTempProfile((prevState) => {
+          const updatedLinks = [...prevState.links];
+          updatedLinks.push(newLink);
+
+          return {
+            ...prevState,
+            links: updatedLinks,
+          };
+        });
+        break;
+      }
+
+      case 'removeLink': {
+        const linkIndex = parseInt(e.currentTarget.dataset.index);
+
+        setTempProfile((prevState) => {
+          const updatedLinks = [...prevState.links];
+          updatedLinks.splice(linkIndex, 1);
+
+          return {
+            ...prevState,
+            links: updatedLinks,
+          };
+        });
+        break;
+      }
+
       case 'bgColor': {
         setTempProfile((prevState) => {
           return {
             ...prevState,
             bgColor: value,
-            textColor: value === 'black' ? 'white' : 'black'
+            textColor: value === 'black' ? 'white' : 'black',
           };
         });
         break;
@@ -323,6 +358,9 @@ export default function ProfileEditorModal({
                               value={link.url}
                             />
                             <IconButton
+                              name="removeLink"
+                              data-index={index}
+                              onClick={handleTempProfileChange}
                               colorScheme="red"
                               fontSize="1.25rem"
                               aria-label="delete"
@@ -331,6 +369,16 @@ export default function ProfileEditorModal({
                           </Flex>
                         ))}
                     </VStack>
+                    <Center my="1rem">
+                      <Button
+                        px="2rem"
+                        isDisabled={tempProfile.links?.length >= 8}
+                        name="newLink"
+                        onClick={handleTempProfileChange}
+                      >
+                        新增連結
+                      </Button>
+                    </Center>
                     {/* <VStack spacing={2}>
                 <Flex
                   w="100%"
