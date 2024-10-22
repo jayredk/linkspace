@@ -50,11 +50,12 @@ export default function Signup() {
       const { user } = userCredential;
 
       const custom_url = user.uid.substring(0, 8);
+      const avatarSeed = crypto.randomUUID().substring(0, 5);
 
       const defaultUserData = {
         custom_url: custom_url,
         profile: {
-          avatar: `https://api.dicebear.com/6.x/initials/svg?seed='使用者'`,
+          avatar: `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${avatarSeed}`,
           email: user.email,
           name: '新使用者',
           description: '歡迎來到我的頁面！',
