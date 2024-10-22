@@ -1,49 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import MultiTypeBlock from '../components/MultiTypeBlock';
 import UserProfile from '../components/UserProfile';
 
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../utils/firebase';
 
-import { fetchUserProfile, fetchUserBlockItems } from '../apis';
+import { Box, Container, Heading, VStack } from '@chakra-ui/react';
 
-import {
-  AspectRatio,
-  Avatar,
-  Box,
-  Container,
-  Flex,
-  Heading,
-  Icon,
-  IconButton,
-  Image,
-  Link,
-  SimpleGrid,
-  Text,
-  Tooltip,
-  VStack,
-  Wrap,
-  WrapItem,
-} from '@chakra-ui/react';
-
-import { MdIosShare, MdImage } from 'react-icons/md';
 
 import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'lite-youtube-embed/src/lite-yt-embed.js';
 
-import {
-  themeColorsMap,
-  bgColorsMap,
-  textColorMap,
-  effectMap,
-  fontSizeMap,
-  fontSizeMapWithSubtitle,
-  iconSizeMap,
-  iconSizeMapWithSubtitle,
-  iconMap,
-} from '../constants/utilityMaps';
 
-
+import { bgColorsMap } from '../constants/utilityMaps';
 
 
 export default function User() {
@@ -51,42 +22,49 @@ export default function User() {
   const { userId } = params;
 
   const [profile, setProfile] = useState({});
-  const [blockItems, setBlockItems] = useState([]);
+  const [blocks, setBlocks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
-      const profileData = await fetchUserProfile(userId);
+      setIsLoading(true);
+      try {
+        const userRef = collection(db, 'users');
+        const q = query(userRef, where('custom_url', '==', userId));
+        const querySnapshot = await getDocs(q);
 
-      if (profileData.profile) {
-        setProfile(profileData.profile);
-      }
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
 
-      const blockItemsData = await fetchUserBlockItems(userId);
-
-      if (blockItemsData.blockItems) {
-        setBlockItems(blockItemsData.blockItems);
+          setProfile(userData.profile);
+          setBlocks(userData.blocks);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     loadUser();
   }, [userId]);
 
+  if (!isLoading && Object.keys(profile).length === 0) return (
+    <Heading>此頁面不存在</Heading>
+  );
+
   return (
-    <Box bgColor={bgColorsMap[profile.bgColor]}>
+    <Box bgColor={bgColorsMap[profile.bgColor]} minH="100vh">
       <Container maxW="lg" py="4rem">
         <VStack spacing={8}>
-          {Object.keys(profile).length === 0 && blockItems.length === 0 && (
-            <Heading>此頁面不存在</Heading>
-          )}
-          {Object.keys(profile).length && (
-            <UserProfile profile={profile}/>
-          )}
 
-          {blockItems.map((item, index) => {
+          {Object.keys(profile).length && <UserProfile profile={profile} />}
+
+          {blocks.map((block, index) => {
             return (
               <MultiTypeBlock
                 key={index}
-                blockItem={item}
+                block={block}
                 themeColor={profile.themeColor}
                 isAnimating={true}
               />
