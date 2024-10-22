@@ -195,11 +195,7 @@ function SortableBlock({
 }
 
 
-// import { fetchUserBlockItems, fetchUserProfile } from '../../apis';
-// const userId = 'durayray';
-// const userId = 'briantseng';
-
-export default function Admin() {
+export default function Dashboard() {
   const [profile, setProfile] = useState({});
   const [blocks, setBlocks] = useState([]);
 
@@ -212,17 +208,14 @@ export default function Admin() {
     try {
       await navigator.clipboard.writeText(profile.siteUrl);
       setIsUrlCopy(true);
-      
+
       setTimeout(() => {
         setIsUrlCopy(false);
       }, 2000);
     } catch (error) {
       console.log('複製失敗');
-      
     }
-    
   };
-
 
   const {
     isOpen: isEditProfileModalOpen,
@@ -230,7 +223,11 @@ export default function Admin() {
     onClose: closeEditProfileModal,
   } = useDisclosure();
 
-  const { isOpen: isEditBlockModalOpen, onOpen: openEditBlockModal, onClose: closeEditBlockModal } = useDisclosure();
+  const {
+    isOpen: isEditBlockModalOpen,
+    onOpen: openEditBlockModal,
+    onClose: closeEditBlockModal,
+  } = useDisclosure();
   const [tempBlockData, setTempBlockData] = useState({});
 
   useEffect(() => {
@@ -247,7 +244,7 @@ export default function Admin() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       console.log(currentUser);
-      
+
       if (currentUser) {
         setUser({
           email: currentUser.email,
@@ -410,7 +407,6 @@ export default function Admin() {
         setProfile={setProfile}
         themeColor={profile.themeColor}
       />
-
     </Box>
   );
 }

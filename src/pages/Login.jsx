@@ -54,7 +54,7 @@ export default function Login() {
       });
       
 
-      navigate('/admin');
+      navigate('/dashboard');
     } catch (err) {
       console.error(err.message);
     }

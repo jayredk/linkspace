@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import Admin from '../pages/Admin/Admin';
+import Dashboard from '../pages/Dashboard/Dashboard';
 import User from '../pages/User';
 import Signup from '../pages/Signup';
 import Login from '../pages/Login';
@@ -12,8 +12,8 @@ export const router = createBrowserRouter([
     element: <Home />
   },
   {
-    path: '/admin',
-    element: <Admin />,
+    path: '/dashboard',
+    element: <Dashboard />,
   },
   {
     path: '/:userId',
