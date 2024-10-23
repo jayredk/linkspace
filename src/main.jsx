@@ -4,7 +4,10 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 
 async function enableMocking() {
-  if (import.meta.env.DEV === false) {
+  if (
+    import.meta.env.DEV === false ||
+    import.meta.env.VITE_ENABLE_MSW === 'false'
+  ) {
     return;
   }
 
