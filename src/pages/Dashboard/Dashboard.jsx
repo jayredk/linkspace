@@ -274,6 +274,7 @@ export default function Dashboard() {
           mx={{ base: '0.5rem', md: '4rem' }}
         >
           <Link
+            to="/dashboard"
             p="0.75rem"
             fontSize="1.75rem"
             fontWeight="bold"
