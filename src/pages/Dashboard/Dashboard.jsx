@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
+import { DndContext, useDraggable } from '@dnd-kit/core';
+
 import MultiTypeBlock from '../../components/MultiTypeBlock';
 import UserProfile from '../../components/UserProfile';
 import BlockEditorModal from './BlockEditorModal';
@@ -54,7 +56,16 @@ import {
   bgColorsMap
 } from '../../constants/utilityMaps';
 
+
 function DraggableItemPanel() {
+  const [blockItems,] = useState([
+    { id: '1', content: '文字按鈕', type: 'task' },
+    { id: '2', content: '橫幅看板', type: 'bug' },
+    { id: '3', content: '方型看板', type: 'feature' },
+    { id: '4', content: '雙方格看板', type: 'task' },
+    { id: '5', content: '影片播放器', type: 'task' },
+  ]);
+
   return (
     <VStack
       display={{
@@ -62,6 +73,7 @@ function DraggableItemPanel() {
         lg: 'block',
       }}
       position="fixed"
+      zIndex="999"
       top="10rem"
       left="5rem"
       bottom="3rem"
@@ -76,29 +88,55 @@ function DraggableItemPanel() {
         區塊數量 0 / 8
       </Text>
       <SimpleGrid columns={2} spacing={4}>
+        {blockItems.map((item) => (
+          <DraggableItem key={item.id} item={item} />
+        ))}
+      </SimpleGrid>
+    </VStack>
+  );
+}
+
+function DraggableItem({ item }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useDraggable({
+      id: item.id,
+    });
+
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transition,
+  };
+
+  return (
+    <Box
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+    >
         <Tooltip
-          hasArrow
-          label="純文字按鈕，可一次收整多連結"
-          placement="top"
+        hasArrow
+        label="純文字按鈕，可一次收整多連結"
+        placement="top"
+        borderRadius="1.5rem"
+        p="1rem 2rem"
+      >
+        <Flex
+          bgColor="white"
+          borderColor="gray.100"
+          borderWidth="1px"
+          borderStyle="solid"
           borderRadius="1.5rem"
-          p="1rem 2rem"
+          boxShadow="rgba(50, 50, 0, 0.05) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px"
+          justifyContent="center"
+          alignItems="center"
+          w="100px"
+          h="100px"
+          p="1rem"
         >
-          <Flex
-            bgColor="white"
-            borderColor="gray.100"
-            borderWidth="1px"
-            borderStyle="solid"
-            borderRadius="1.5rem"
-            boxShadow="rgba(50, 50, 0, 0.05) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px"
-            justifyContent="center"
-            alignItems="center"
-            w="100px"
-            h="100px"
-            p="1rem"
-          >
-            文字按鈕
-          </Flex>
-        </Tooltip>
+          {item.content}
+        </Flex>
+      </Tooltip>
         <Tooltip
           hasArrow
           label="2:1 橫式看板，具備輪播功能"
@@ -321,75 +359,78 @@ export default function Dashboard() {
           <Flex justifyContent="space-between">
             <DraggableItemPanel />
 
-            <VStack w="100%" spacing={8}>
-              {Object.keys(profile).length && (
-                <>
-                  <InputGroup
-                    bgColor="white"
-                    borderColor="gray.50"
-                    borderRadius="1.5rem"
-                    focusBorderColor="gray.50"
-                    boxShadow="0 1px 2px 0 rgba(0, 0, 0, 0.05)"
-                    alignItems="center"
-                    p="0.5rem 1rem"
-                    w="100%"
-                  >
-                    <Input
-                      isReadOnly
-                      border="0"
-                      size="lg"
-                      value={profile.siteUrl}
-                    />
-                    <Tooltip label="複製網址" borderRadius="1.5rem">
-                      <IconButton
-                        aria-label="Copy website URL"
-                        colorScheme="teal"
-                        variant="outline"
-                        onClick={handleCopyUrl}
-                        icon={<Icon as={isUrlCopy ? MdCheck : MdContentCopy} />}
-                        _hover={{
-                          background: 'white',
-                        }}
+              <VStack w="100%" spacing={8}>
+                {Object.keys(profile).length && (
+                  <>
+                    <InputGroup
+                      bgColor="white"
+                      borderColor="gray.50"
+                      borderRadius="1.5rem"
+                      focusBorderColor="gray.50"
+                      boxShadow="0 1px 2px 0 rgba(0, 0, 0, 0.05)"
+                      alignItems="center"
+                      p="0.5rem 1rem"
+                      w="100%"
+                    >
+                      <Input
+                        isReadOnly
+                        border="0"
+                        size="lg"
+                        value={profile.siteUrl}
                       />
-                    </Tooltip>
-                    <Tooltip label="開啟頁面" borderRadius="1.5rem">
-                      <Link
-                        href={profile.siteUrl}
-                        isExternal
-                        aria-label="Go to the website"
-                        colorScheme="teal"
-                        border="1px"
-                        borderRadius="md"
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        minW="2.5rem"
-                        minH="2.5rem"
-                        ml="0.5rem"
-                      >
-                        <Icon as={FiExternalLink} />
-                      </Link>
-                    </Tooltip>
-                  </InputGroup>
-                  <UserProfile profile={profile}>
+                      <Tooltip label="複製網址" borderRadius="1.5rem">
+                        <IconButton
+                          aria-label="Copy website URL"
+                          colorScheme="teal"
+                          variant="outline"
+                          onClick={handleCopyUrl}
+                          icon={
+                            <Icon as={isUrlCopy ? MdCheck : MdContentCopy} />
+                          }
+                          _hover={{
+                            background: 'white',
+                          }}
+                        />
+                      </Tooltip>
+                      <Tooltip label="開啟頁面" borderRadius="1.5rem">
+                        <Link
+                          href={profile.siteUrl}
+                          isExternal
+                          aria-label="Go to the website"
+                          colorScheme="teal"
+                          border="1px"
+                          borderRadius="md"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          minW="2.5rem"
+                          minH="2.5rem"
+                          ml="0.5rem"
+                        >
+                          <Icon as={FiExternalLink} />
+                        </Link>
+                      </Tooltip>
+                    </InputGroup>
+                    <UserProfile profile={profile}>
                     <Button onClick={openEditProfileModal}>編輯個人檔案</Button>
                   </UserProfile>
                 </>
               )}
 
-              {blocks &&
-                blocks.map((block, index) => {
-                  return (
-                    <SortableBlock
-                      key={index}
-                      block={block}
-                      openEditBlockModal={openEditBlockModal}
-                      setTempBlockData={setTempBlockData}
-                      themeColor={profile.themeColor}
-                    />
-                  );
-                })}
-            </VStack>
+                {blocks &&
+                    blocks.map((block, index) => {
+                      return (
+                        <SortableBlock
+                          key={index}
+                          block={block}
+                          openEditBlockModal={openEditBlockModal}
+                          setTempBlockData={setTempBlockData}
+                          themeColor={profile.themeColor}
+                        />
+                      );
+                    })}
+              </VStack>
+            </DndContext>
           </Flex>
         </Container>
       </Box>
