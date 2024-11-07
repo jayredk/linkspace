@@ -23,10 +23,12 @@ import {
 } from '@chakra-ui/react';
 
 import { FcGoogle } from 'react-icons/fc';
+import { useSetUser } from '../stores/userStore';
 
 
 export default function Signup() {
   const navigate = useNavigate();
+  const setUser = useSetUser();
 
   const {
     handleSubmit,
@@ -50,13 +52,14 @@ export default function Signup() {
 
       const slug = user.uid.substring(0, 8);
       const avatarSeed = crypto.randomUUID().substring(0, 5);
+      const username = mail.match(/^([a-zA-Z0-9._%+-]+)@/)[1];
 
       const defaultUserData = {
         slug,
         profile: {
           avatar: `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${avatarSeed}`,
           email: user.email,
-          name: '新使用者',
+          name: username,
           description: '歡迎來到我的頁面！',
           bgColor: 'black',
           textColor: 'white',
@@ -106,10 +109,20 @@ export default function Signup() {
       };
 
       await setDoc(doc(db, 'users', user.uid), defaultUserData);
+
+      setUser({
+        uid: user.uid,
+      });
       
-      navigate('/login');
+      navigate('/create-site-id');
     } catch (error) {
-      console.error(error);
+      if (
+        error?.message === 'Firebase: Error (auth/email-already-in-use).'
+      ) {
+        alert('此信箱已被註冊');
+      } else {
+        alert(error?.message);
+      }
     }
   };
 
