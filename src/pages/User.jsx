@@ -30,7 +30,7 @@ export default function User() {
       setIsLoading(true);
       try {
         const userRef = collection(db, 'users');
-        const q = query(userRef, where('custom_url', '==', userId));
+        const q = query(userRef, where('slug', '==', userId));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {

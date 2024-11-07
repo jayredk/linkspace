@@ -24,7 +24,6 @@ import {
 
 import { FcGoogle } from 'react-icons/fc';
 
-const DOMAIN_URL = 'https://linkspace.com/';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -49,17 +48,16 @@ export default function Signup() {
 
       const { user } = userCredential;
 
-      const custom_url = user.uid.substring(0, 8);
+      const slug = user.uid.substring(0, 8);
       const avatarSeed = crypto.randomUUID().substring(0, 5);
 
       const defaultUserData = {
-        custom_url: custom_url,
+        slug,
         profile: {
           avatar: `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${avatarSeed}`,
           email: user.email,
           name: '新使用者',
           description: '歡迎來到我的頁面！',
-          siteUrl: `${DOMAIN_URL}${custom_url}`,
           bgColor: 'black',
           textColor: 'white',
           themeColor: 'blue',

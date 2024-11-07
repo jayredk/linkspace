@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 import { DndContext, DragOverlay, useDraggable } from '@dnd-kit/core';
@@ -38,7 +38,7 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
 
 import {
@@ -47,7 +47,7 @@ import {
   MdDelete,
   MdDragIndicator,
   MdEdit,
-  MdLogout
+  MdLogout,
 } from 'react-icons/md';
 
 import { BsCopy } from 'react-icons/bs';
@@ -57,10 +57,7 @@ import { FiExternalLink } from 'react-icons/fi';
 import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'lite-youtube-embed/src/lite-yt-embed.js';
 
-
-import {
-  bgColorsMap
-} from '../../constants/utilityMaps';
+import { bgColorsMap } from '../../constants/utilityMaps';
 
 const blockNameMap = {
   'text-button': '文字按鈕',
@@ -167,13 +164,21 @@ function DraggableItemPanel({ blcokNums }) {
 }
 
 function DraggableItem({ item }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useDraggable({
-      id: item.id,
-    });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useDraggable({
+    id: item.id,
+  });
 
   const style = {
-    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : undefined,
     transition,
   };
 
@@ -253,16 +258,14 @@ function DragOverlayItem({ block, themeColor }) {
               icon={<Icon as={MdDelete} />}
             />
           </Tooltip>
-          <Button rightIcon={<Icon as={MdEdit} />}>
-            編輯
-          </Button>
+          <Button rightIcon={<Icon as={MdEdit} />}>編輯</Button>
         </HStack>
       </Flex>
 
       <MultiTypeBlock block={block} themeColor={themeColor} />
     </Box>
   );
-};
+}
 
 // const handleEditBlock = (item) => {
 //   setTempBlockData(item);
@@ -276,7 +279,6 @@ function SortableBlock({
   themeColor,
   isTranslate,
 }) {
-
   const {
     attributes,
     listeners,
@@ -362,10 +364,10 @@ function SortableBlock({
   );
 }
 
-
 export default function Dashboard() {
   const [profile, setProfile] = useState({});
   const [blocks, setBlocks] = useState([]);
+  const [slug, setSlug] = useState('');
 
   const user = useUser();
   const setUser = useSetUser();
@@ -402,7 +404,9 @@ export default function Dashboard() {
     const loadUser = async () => {
       try {
         const userData = await getUserInfo(user.uid);
+
         setProfile(userData.profile);
+        setSlug(userData.slug);
         setBlocks(userData.blocks);
       } catch (error) {
         console.error(error);
@@ -432,8 +436,8 @@ export default function Dashboard() {
   const handleDragStart = (event) => {
     const isDragFromBlockItems = defaultBlockItems.some(
       (item) => event.active.id === item.id
-    ); 
-    
+    );
+
     setIsFromBlockItems(isDragFromBlockItems);
     setActiveDragBlockId(event.active.id);
   };
@@ -474,7 +478,7 @@ export default function Dashboard() {
     activeItem = { ...activeItem };
     activeItem.id = crypto.randomUUID();
 
-    if (active.id === over.id)  return;
+    if (active.id === over.id) return;
 
     if (isFromBlockItems) {
       const overIndex = blocks.findIndex((item) => item.id === over.id);
@@ -490,14 +494,13 @@ export default function Dashboard() {
       const oldIndex = blocks.findIndex((item) => item.id === active.id);
       const newIndex = blocks.findIndex((item) => item.id === over.id);
       const newBlocks = arrayMove(blocks, oldIndex, newIndex);
-      
+
       setBlocks(newBlocks);
       updateUserBlocks(user.uid, newBlocks);
     }
 
     setHoverBlockIndex(null);
   };
-
 
   return (
     <Box bgColor={bgColorsMap[profile.bgColor]}>
@@ -584,7 +587,7 @@ export default function Dashboard() {
                         isReadOnly
                         border="0"
                         size="lg"
-                        value={profile.siteUrl}
+                        value={`${import.meta.env.VITE_DOMAIN_NAME}/${slug}`}
                       />
                       <Tooltip label="複製網址" borderRadius="1.5rem">
                         <IconButton
@@ -602,7 +605,7 @@ export default function Dashboard() {
                       </Tooltip>
                       <Tooltip label="開啟頁面" borderRadius="1.5rem">
                         <Link
-                          href={profile.siteUrl}
+                          href={`${import.meta.env.VITE_DOMAIN_NAME}/${slug}`}
                           isExternal
                           aria-label="Go to the website"
                           colorScheme="teal"
@@ -635,7 +638,7 @@ export default function Dashboard() {
                       const isShowPlaceholder = hoverBlockIndex === index;
 
                       return (
-                        <>
+                        <React.Fragment key={block.id}>
                           <Box
                             display={isShowPlaceholder ? 'block' : 'none'}
                             overflow="hidden"
@@ -648,14 +651,13 @@ export default function Dashboard() {
                             transition="opacity .5s"
                           />
                           <SortableBlock
-                            key={index}
                             block={block}
                             openEditBlockModal={openEditBlockModal}
                             setTempBlockData={setTempBlockData}
                             themeColor={profile.themeColor}
                             isTranslate={index >= parseInt(hoverBlockIndex)}
                           />
-                        </>
+                        </React.Fragment>
                       );
                     })}
                 </SortableContext>
