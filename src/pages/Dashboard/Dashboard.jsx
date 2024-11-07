@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-import { DndContext, useDraggable } from '@dnd-kit/core';
+import { DndContext, DragOverlay, useDraggable } from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
 
 import MultiTypeBlock from '../../components/MultiTypeBlock';
 import UserProfile from '../../components/UserProfile';
@@ -56,15 +62,79 @@ import {
   bgColorsMap
 } from '../../constants/utilityMaps';
 
+const blockNameMap = {
+  'text-button': '文字按鈕',
+  'banner-board': '橫幅看板',
+  'square-board': '方格看板',
+  'double-square-board': '雙方格看板',
+  'video-player': '影音播放器',
+};
 
-function DraggableItemPanel() {
-  const [blockItems,] = useState([
-    { id: '1', content: '文字按鈕', type: 'task' },
-    { id: '2', content: '橫幅看板', type: 'bug' },
-    { id: '3', content: '方型看板', type: 'feature' },
-    { id: '4', content: '雙方格看板', type: 'task' },
-    { id: '5', content: '影片播放器', type: 'task' },
-  ]);
+const defaultBlockItems = [
+  {
+    id: 1,
+    type: 'text-button',
+    isSolid: false,
+    hasSubtitle: false,
+    fontSize: 'sm',
+    buttons: [
+      {
+        effect: 'none',
+        text: '輸入文字',
+        subText: '',
+        icon: 'instagram',
+        linkUrl: '',
+      },
+    ],
+  },
+  {
+    id: 2,
+    type: 'banner-board',
+    blocks: [
+      {
+        imageUrl: '',
+        text: '',
+        linkUrl: '',
+      },
+    ],
+  },
+  {
+    id: 3,
+    type: 'square-board',
+    blocks: [
+      {
+        imageUrl: '',
+        text: '',
+        linkUrl: '',
+      },
+    ],
+  },
+  {
+    id: 4,
+    type: 'double-square-board',
+    blocks: [
+      {
+        imageUrl: '',
+        text: '',
+        linkUrl: '',
+      },
+      {
+        imageUrl: '',
+        text: '',
+        linkUrl: '',
+      },
+    ],
+  },
+  {
+    id: 5,
+    type: 'video-player',
+    videoUrl: 'https://www.youtube.com/watch?v=ZSfiWjFjXdE',
+    videoDescription: '',
+  },
+];
+
+function DraggableItemPanel({ blcokNums }) {
+  const [blockItems] = useState(defaultBlockItems);
 
   return (
     <VStack
@@ -85,7 +155,7 @@ function DraggableItemPanel() {
       gap="1rem"
     >
       <Text alignSelf="flex-start" ml="0.75rem" mb="1rem">
-        區塊數量 0 / 8
+        區塊數量 {blcokNums} / 8
       </Text>
       <SimpleGrid columns={2} spacing={4}>
         {blockItems.map((item) => (
@@ -114,7 +184,8 @@ function DraggableItem({ item }) {
       {...listeners}
       {...attributes}
     >
-        <Tooltip
+      <Tooltip
+        isDisabled={isDragging}
         hasArrow
         label="純文字按鈕，可一次收整多連結"
         placement="top"
@@ -134,53 +205,14 @@ function DraggableItem({ item }) {
           h="100px"
           p="1rem"
         >
-          {item.content}
+          {blockNameMap[item.type]}
         </Flex>
       </Tooltip>
-        <Tooltip
-          hasArrow
-          label="2:1 橫式看板，具備輪播功能"
-          placement="top"
-          borderRadius="1.5rem"
-          p="1rem 2rem"
-        >
-          <Flex
-            bgColor="white"
-            borderColor="gray.100"
-            borderWidth="1px"
-            borderStyle="solid"
-            borderRadius="1.5rem"
-            boxShadow="rgba(50, 50, 0, 0.05) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px"
-            justifyContent="center"
-            alignItems="center"
-            w="100px"
-            h="100px"
-            p="1rem"
-          >
-            橫幅看板
-          </Flex>
-        </Tooltip>
-      </SimpleGrid>
-    </VStack>
+    </Box>
   );
 }
 
-// const handleEditBlock = (item) => {
-//   setTempBlockData(item);
-//   openEditBlockModal();
-// };
-
-function SortableBlock({
-  block,
-  openEditBlockModal,
-  setTempBlockData,
-  themeColor,
-}) {
-  const handleEditBlock = () => {
-    setTempBlockData(block);
-    openEditBlockModal();
-  };
-
+function DragOverlayItem({ block, themeColor }) {
   return (
     <Box
       overflow="hidden"
@@ -197,6 +229,104 @@ function SortableBlock({
       >
         <HStack spacing={2}>
           <IconButton
+            aria-label="Sort block"
+            bgColor="transparent"
+            cursor="grab"
+            fontSize="1.25rem"
+            icon={<Icon as={MdDragIndicator} />}
+          />
+          <Switch />
+        </HStack>
+        <HStack spacing={2}>
+          <Tooltip label="複製" borderRadius="1.5rem">
+            <IconButton
+              aria-label="Copy block"
+              bgColor="transparent"
+              icon={<Icon as={BsCopy} />}
+            />
+          </Tooltip>
+          <Tooltip label="刪除" borderRadius="1.5rem">
+            <IconButton
+              aria-label="Delete block"
+              bgColor="transparent"
+              fontSize="1.25rem"
+              icon={<Icon as={MdDelete} />}
+            />
+          </Tooltip>
+          <Button rightIcon={<Icon as={MdEdit} />}>
+            編輯
+          </Button>
+        </HStack>
+      </Flex>
+
+      <MultiTypeBlock block={block} themeColor={themeColor} />
+    </Box>
+  );
+};
+
+// const handleEditBlock = (item) => {
+//   setTempBlockData(item);
+//   openEditBlockModal();
+// };
+
+function SortableBlock({
+  block,
+  openEditBlockModal,
+  setTempBlockData,
+  themeColor,
+  isTranslate,
+}) {
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: block.id,
+  });
+
+  const getTransformStyle = () => {
+    if (isTranslate) return 'translateY(20px)';
+
+    return transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : undefined;
+  };
+
+  const style = {
+    transform: getTransformStyle(),
+    transition: isTranslate ? 'transform .5s' : transition,
+  };
+
+  const handleEditBlock = () => {
+    setTempBlockData(block);
+    openEditBlockModal();
+  };
+
+  return (
+    <Box
+      ref={setNodeRef}
+      {...attributes}
+      style={style}
+      overflow="hidden"
+      w="100%"
+      opacity={isDragging ? 0.5 : 1}
+      bgColor="white"
+      borderTopRadius="1rem"
+      borderBottomRadius="xl"
+    >
+      <Flex
+        bgColor="gray.200"
+        borderTopRadius="1rem"
+        justifyContent="space-between"
+        p="0.5rem 1rem"
+      >
+        <HStack spacing={2}>
+          <IconButton
+            {...listeners}
             aria-label="Sort block"
             bgColor="transparent"
             cursor="grab"
@@ -281,7 +411,7 @@ export default function Dashboard() {
 
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log(currentUser);
+      // console.log(currentUser);
 
       if (currentUser) {
         setUser({
@@ -294,6 +424,77 @@ export default function Dashboard() {
 
     return () => unsubscribe();
   }, [setUser, user.uid]);
+
+  const [activeDragBlockId, setActiveDragBlockId] = useState(null);
+  const [hoverBlockIndex, setHoverBlockIndex] = useState(null);
+  const [isFromBlockItems, setIsFromBlockItems] = useState(false);
+
+  const handleDragStart = (event) => {
+    const isDragFromBlockItems = defaultBlockItems.some(
+      (item) => event.active.id === item.id
+    ); 
+    
+    setIsFromBlockItems(isDragFromBlockItems);
+    setActiveDragBlockId(event.active.id);
+  };
+
+  const handleDragOver = (event) => {
+    const { active, over } = event;
+
+    if (!over) {
+      setHoverBlockIndex(null);
+      setActiveDragBlockId(null);
+      return;
+    }
+
+    if (isFromBlockItems) {
+      const overIndex = blocks.findIndex((item) => item.id === over.id);
+      setHoverBlockIndex(overIndex);
+
+      let activeItem = [...defaultBlockItems, ...blocks].find(
+        (item) => item.id === active.id
+      );
+      activeItem = { ...activeItem };
+      activeItem.id = crypto.randomUUID();
+    }
+  };
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (!over) {
+      setActiveDragBlockId(null);
+      setHoverBlockIndex(null);
+      return;
+    }
+
+    let activeItem = [...defaultBlockItems, ...blocks].find(
+      (item) => item.id === active.id
+    );
+    activeItem = { ...activeItem };
+    activeItem.id = crypto.randomUUID();
+
+    if (active.id === over.id)  return;
+
+    if (isFromBlockItems) {
+      const overIndex = blocks.findIndex((item) => item.id === over.id);
+      const newBlocks = [...blocks];
+      if (overIndex === -1) {
+        return [...blocks, activeItem];
+      }
+      newBlocks.splice(overIndex, 0, activeItem);
+
+      setBlocks(newBlocks);
+    } else {
+      const oldIndex = blocks.findIndex((item) => item.id === active.id);
+      const newIndex = blocks.findIndex((item) => item.id === over.id);
+      const newBlocks = arrayMove(blocks, oldIndex, newIndex);
+      setBlocks(newBlocks);
+    }
+
+    setHoverBlockIndex(null);
+  };
+
 
   return (
     <Box bgColor={bgColorsMap[profile.bgColor]}>
@@ -357,8 +558,12 @@ export default function Dashboard() {
       >
         <Container maxW="lg" pt="10rem" pb="5rem">
           <Flex justifyContent="space-between">
-            <DraggableItemPanel />
-
+            <DndContext
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDragEnd={handleDragEnd}
+            >
+              <DraggableItemPanel blcokNums={blocks.length} />
               <VStack w="100%" spacing={8}>
                 {Object.keys(profile).length && (
                   <>
@@ -412,24 +617,56 @@ export default function Dashboard() {
                       </Tooltip>
                     </InputGroup>
                     <UserProfile profile={profile}>
-                    <Button onClick={openEditProfileModal}>編輯個人檔案</Button>
-                  </UserProfile>
-                </>
-              )}
-
-                {blocks &&
+                      <Button onClick={openEditProfileModal}>
+                        編輯個人檔案
+                      </Button>
+                    </UserProfile>
+                  </>
+                )}
+                <SortableContext
+                  items={blocks}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {blocks &&
                     blocks.map((block, index) => {
+                      const isShowPlaceholder = hoverBlockIndex === index;
+
                       return (
-                        <SortableBlock
-                          key={index}
-                          block={block}
-                          openEditBlockModal={openEditBlockModal}
-                          setTempBlockData={setTempBlockData}
-                          themeColor={profile.themeColor}
-                        />
+                        <>
+                          <Box
+                            display={isShowPlaceholder ? 'block' : 'none'}
+                            overflow="hidden"
+                            w="100%"
+                            h={'160px'}
+                            opacity={isShowPlaceholder ? '1' : '0'}
+                            bgColor="gray"
+                            borderTopRadius="1rem"
+                            borderBottomRadius="xl"
+                            transition="opacity .5s"
+                          />
+                          <SortableBlock
+                            key={index}
+                            block={block}
+                            openEditBlockModal={openEditBlockModal}
+                            setTempBlockData={setTempBlockData}
+                            themeColor={profile.themeColor}
+                            isTranslate={index >= parseInt(hoverBlockIndex)}
+                          />
+                        </>
                       );
                     })}
+                </SortableContext>
               </VStack>
+              <DragOverlay>
+                {!isFromBlockItems ? (
+                  <DragOverlayItem
+                    block={blocks.find(
+                      (block) => block.id === activeDragBlockId
+                    )}
+                    themeColor={profile.themeColor}
+                  />
+                ) : null}
+              </DragOverlay>
             </DndContext>
           </Flex>
         </Container>
