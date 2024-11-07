@@ -14,7 +14,7 @@ import UserProfile from '../../components/UserProfile';
 import BlockEditorModal from './BlockEditorModal';
 import ProfileEditorModal from './ProfileEditorModal';
 import { useUser, useSetUser } from '../../stores/userStore';
-import { getUserInfo } from '../../services/userService';
+import { getUserInfo, updateUserBlocks } from '../../services/userService';
 
 import {
   Avatar,
@@ -485,11 +485,14 @@ export default function Dashboard() {
       newBlocks.splice(overIndex, 0, activeItem);
 
       setBlocks(newBlocks);
+      updateUserBlocks(user.uid, newBlocks);
     } else {
       const oldIndex = blocks.findIndex((item) => item.id === active.id);
       const newIndex = blocks.findIndex((item) => item.id === over.id);
       const newBlocks = arrayMove(blocks, oldIndex, newIndex);
+      
       setBlocks(newBlocks);
+      updateUserBlocks(user.uid, newBlocks);
     }
 
     setHoverBlockIndex(null);
