@@ -25,6 +25,8 @@ import {
 import { FcGoogle } from 'react-icons/fc';
 import { useSetUser } from '../stores/userStore';
 
+import bg_Alicia from '../assets/images/bg-alicia.webp';
+
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -252,7 +254,7 @@ export default function Signup() {
         w="100%"
         objectFit="cover"
         objectPosition="center"
-        src="https://i.imgur.com/GfqMv2z.png"
+        src={bg_Alicia}
       ></Image>
     </Flex>
   );

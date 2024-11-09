@@ -26,6 +26,8 @@ import {
 
 import { FcGoogle } from 'react-icons/fc';
 
+import bg_IU from '../assets/images/bg-IU.webp';
+
 export default function Login() {
   const navigate = useNavigate();
   const {
@@ -162,7 +164,7 @@ export default function Login() {
         w="100%"
         objectFit="cover"
         objectPosition="center"
-        src="https://i.imgur.com/oiNIiHQ.jpeg"
+        src={bg_IU}
       ></Image>
     </Flex>
   );
