@@ -20,7 +20,9 @@ import {
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import AllInOnePlace from '../assets/images/home-1.png';
+import feature_1 from '../assets/images/feature-1.svg';
+import feature_2 from '../assets/images/feature-2.png';
+import feature_3 from '../assets/images/feature-3.png';
 
 const testimonials = [
   {
@@ -107,7 +109,7 @@ export default function Home() {
           </Flex>
         </Box>
 
-        <Center as="section" pt="3rem" pb="10rem">
+        <Center as="section" pt={{ base: '6rem', md: '3rem' }} pb="12rem">
           <Stack spacing="2rem" alignItems="center">
             <Flex
               p="0.5rem"
@@ -179,48 +181,78 @@ export default function Home() {
           </Stack>
         </Center>
 
-        <Flex
-          as="section"
-          justifyContent="center"
-          alignItems="center"
-          mb="3rem"
-        >
-          <Box maxW="40%">
-            <Heading mb="1rem">一次整合所有連結</Heading>
-            <Text>
-              整合所有社群連結，連結你的 Instagram、YouTube、Threads 與 Tiktok。
-            </Text>
-            <Text>建立個人品牌、活動專頁達成導流與銷售等經營目標。</Text>
-          </Box>
-          <Image
-            maxW="50%"
-            src={AllInOnePlace}
-            boxSize="40%"
-            alt="all link in one place"
-          />
-        </Flex>
-
-        <Flex
-          as="section"
-          flexDirection="row-reverse"
-          justifyContent="center"
-          alignItems="center"
-          mb="3rem"
-        >
-          <Box maxW="40%">
-            <Heading mb="1rem">一次整合所有連結</Heading>
-            <Text>
-              整合所有社群連結，連結你的 Instagram、YouTube、Threads 與 Tiktok。
-            </Text>
-            <Text>建立個人品牌、活動專頁達成導流與銷售等經營目標。</Text>
-          </Box>
-          <Image
-            maxW="50%"
-            src={AllInOnePlace}
-            boxSize="40%"
-            alt="all link in one place"
-          />
-        </Flex>
+        <Box as="section">
+          <Heading
+            id="feature"
+            fontSize="2xl"
+            fontWeight="bold"
+            textAlign="center"
+            pt="4rem"
+            mb="8rem"
+          >
+            你可以做到...
+          </Heading>
+          <Flex
+            flexDirection={{ base: 'column-reverse', md: 'row' }}
+            justifyContent="center"
+            alignItems="center"
+            mb="8rem"
+            gap="6rem"
+          >
+            <Box maxW={{ base: '90%', md: '40%' }}>
+              <Heading as="h3" mb="1rem">
+                多元區塊選擇
+              </Heading>
+              <Text>從文字連結到影音播放器，滿足所有展示需求。</Text>
+            </Box>
+            <Image
+              maxW={{ base: '80%', md: '40%' }}
+              src={feature_1}
+              boxSize={{ base: '80%', md: '40%' }}
+              alt="all link in one place"
+            />
+          </Flex>
+          <Flex
+            flexDirection={{ base: 'column-reverse', md: 'row-reverse' }}
+            justifyContent="center"
+            alignItems="center"
+            mb="8rem"
+            gap="3rem"
+          >
+            <Box maxW={{ base: '90%', md: '40%' }}>
+              <Heading mb="1rem">輕鬆編輯，自由調整</Heading>
+              <Text>簡單拖放、即時預覽，快速打造屬於你的專屬頁面。</Text>
+            </Box>
+            <Image
+              maxW="80%"
+              src={feature_2}
+              boxSize={{ base: '80%', md: '50%' }}
+              alt="all link in one place"
+            />
+          </Flex>
+          <Flex
+            flexDirection={{ base: 'column-reverse', md: 'row' }}
+            justifyContent="center"
+            alignItems="center"
+            gap="4rem"
+            mb="8rem"
+          >
+            <Box maxW={{ base: '90%', md: '40%' }}>
+              <Heading mb="1rem">一次整合所有社群</Heading>
+              <Text>
+                將你的所有社群連結集中於一處，連結你的
+                Instagram、YouTube、Threads 與 Tiktok。
+              </Text>
+              <Text>建立個人品牌，方便分享，增加曝光</Text>
+            </Box>
+            <Image
+              maxW={{ base: '70%', md: '40%' }}
+              src={feature_3}
+              boxSize={{ base: '70%', md: '40%' }}
+              alt="all link in one place"
+            />
+          </Flex>
+        </Box>
 
         <Center mb="4rem">
           <Heading>使用者心得</Heading>
@@ -238,7 +270,11 @@ export default function Home() {
             >
               <CardHeader>
                 <Center>
-                  <Avatar size="xl" name="Dan Abrahmov" src={testimonial.avatar} />
+                  <Avatar
+                    size="xl"
+                    name="Dan Abrahmov"
+                    src={testimonial.avatar}
+                  />
                 </Center>
               </CardHeader>
               <CardBody maxW="80%" margin="auto">
