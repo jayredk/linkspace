@@ -65,6 +65,9 @@ export default function Home() {
             <Hide below="md">
               <Wrap spacing="1.5rem">
                 <WrapItem>
+                  <ScrollLink to="#feature">功能介紹</ScrollLink>
+                </WrapItem>
+                <WrapItem>
                   <Link to="/">精選帳號</Link>
                 </WrapItem>
                 <WrapItem>
@@ -312,5 +315,18 @@ export default function Home() {
         </Flex>
       </Container>
     </Box>
+  );
+}
+
+function ScrollLink({ to, children }) {
+  const handleClick = (e) => {
+    e.preventDefault();
+    document.querySelector(to).scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <a href={to} onClick={handleClick}>
+      {children}
+    </a>
   );
 }
