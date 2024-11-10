@@ -11,6 +11,7 @@ import {
   Heading,
   Hide,
   Image,
+  keyframes,
   SimpleGrid,
   Stack,
   Text,
@@ -26,21 +27,86 @@ import feature_3 from '../assets/images/feature-3.png';
 
 const testimonials = [
   {
-    avatar: 'https://bit.ly/kent-c-dodds',
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1731247828117?alt=media&token=fa64034d-f87a-4de5-bde0-0f028ced1319',
     content:
-      '實際使用下來覺得回不去了，連結多了圖像更加豐富，增加消費者點選欲望、一目了然。',
+      '使用過後，我發現回不去了。把圖片整合到連結中，讓內容更具視覺吸引力，也提高了點擊率',
   },
   {
-    avatar: 'https://bit.ly/dan-abramov',
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1731210830729?alt=media&token=1d254545-676b-4849-b4fd-901ead890ff2',
     content:
-      '超好用的連結工具！頁面美編自由度很高🧡操作容易，簡單把你的網址變精緻！',
+      '好用的連結工具！自由設計頁面的靈活度高💜 操作容易，只需幾個步驟就能完成一個吸睛的網站！',
   },
   {
-    avatar: 'https://bit.ly/ryan-florence',
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1731245301246?alt=media&token=e62f0be5-0e09-4cdc-875c-a3eae2177707',
     content:
-      '如果是個人創作者沒有資源建立官方網頁，這是不錯的選擇，透過更細節的介紹呈現特色商品、傳遞品牌理念。',
+      '對於沒有資源建立官方網頁的個人創作者，這是個不錯的選擇，透過多種方式呈現商品、導流。',
   },
 ];
+
+const highlightUsers = [
+  {
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1729588953818?alt=media&token=4b100c05-3101-46fc-bfc3-f0166ab3f31f',
+    name: '曾博恩',
+    link: 'https://linkspace-one.vercel.app/briantseng',
+  },
+  {
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1729589503453?alt=media&token=43e66fcd-40f3-4d4a-a367-0fa9b9096d51',
+    name: '阿滴',
+    link: 'https://linkspace-one.vercel.app/durayray',
+  },
+  {
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1731245301246?alt=media&token=e62f0be5-0e09-4cdc-875c-a3eae2177707',
+    name: '末羊子',
+    link: 'https://linkspace-one.vercel.app/dontkjoanne',
+  },
+  {
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1731245775123?alt=media&token=b832bfdd-7e40-4ae6-b536-effb3801c636',
+    name: 'Ahoi/厚子',
+    link: 'https://linkspace-one.vercel.app/ahoiii',
+  },
+  {
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1731247037021?alt=media&token=902c3c8f-20f6-46de-a6ce-6676b38facfc',
+    name: 'Aerysky',
+    link: 'https://linkspace-one.vercel.app/aerysky',
+  },
+  {
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1731247828117?alt=media&token=fa64034d-f87a-4de5-bde0-0f028ced1319',
+    name: '陪沈團',
+    link: 'https://linkspace-one.vercel.app/moneyshen',
+  },
+  {
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2F1731210830729?alt=media&token=1d254545-676b-4849-b4fd-901ead890ff2',
+    name: 'IU',
+    link: 'https://linkspace-one.vercel.app/dlwlrma',
+  },
+  {
+    avatar:
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2FblockStudio.gif?alt=media&token=5a4a60b9-852a-49af-a53d-1efbab397faa',
+    name: '版塊設計',
+    link: 'https://linkspace-one.vercel.app/blockstudio',
+  },
+];
+
+const marqueeLeft = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - 3rem));
+  }
+`;
+
+const marqueeLeftAnimation = `${marqueeLeft} 20s linear infinite`;
 
 
 export default function Home() {
@@ -68,7 +134,7 @@ export default function Home() {
                   <ScrollLink to="#feature">功能介紹</ScrollLink>
                 </WrapItem>
                 <WrapItem>
-                  <Link to="/">精選帳號</Link>
+                  <ScrollLink to="#highlight">精選帳號</ScrollLink>
                 </WrapItem>
                 <WrapItem>
                   <Link to="/">關於我們</Link>
@@ -238,7 +304,6 @@ export default function Home() {
             justifyContent="center"
             alignItems="center"
             gap="4rem"
-            mb="8rem"
           >
             <Box maxW={{ base: '90%', md: '40%' }}>
               <Heading mb="1rem">一次整合所有社群</Heading>
@@ -256,37 +321,86 @@ export default function Home() {
             />
           </Flex>
         </Box>
-
-        <Center mb="4rem">
-          <Heading>使用者心得</Heading>
-        </Center>
-        <SimpleGrid columns={3} spacing={16}>
-          {testimonials.map((testimonial) => (
-            <Card
-              key={testimonial.avatar}
-              border="1px solid"
-              borderColor="#1f1f1f"
-              borderRadius="30px"
-              bgGradient="linear(180deg,#1e1e1e 0%,rgb(20,20,20) 100%)"
-              color="inherit"
-              py="3rem"
-            >
-              <CardHeader>
-                <Center>
-                  <Avatar
-                    size="xl"
-                    name="Dan Abrahmov"
-                    src={testimonial.avatar}
-                  />
-                </Center>
-              </CardHeader>
-              <CardBody maxW="80%" margin="auto">
-                <Text>{testimonial.content}</Text>
-              </CardBody>
-            </Card>
-          ))}
-        </SimpleGrid>
       </Container>
+
+      <Box py="6rem">
+        <Center mb="6rem">
+          <Heading id="highlight" pt="3rem">
+            精選帳號
+          </Heading>
+        </Center>
+
+        <Flex overflow="hidden" gap="3rem">
+          <Flex
+            as="ul"
+            gap="3rem"
+            animation={marqueeLeftAnimation}
+          >
+            {highlightUsers.map((user) => (
+              <Box key={user.link} as="li" listStyleType="none">
+                <Link to={user.link} target="_blank">
+                  <Avatar src={user.avatar} size="2xl" mb="1rem"></Avatar>
+                  <Heading as="h4" textAlign="center" fontSize="lg">
+                    {user.name}
+                  </Heading>
+                </Link>
+              </Box>
+            ))}
+          </Flex>
+
+          <Flex
+            as="ul"
+            gap="3rem"
+            animation={marqueeLeftAnimation}
+          >
+            {highlightUsers.map((user) => (
+              <Box key={user.link} as="li" listStyleType="none">
+                <Link to={user.link} target="_blank">
+                  <Avatar src={user.avatar} size="2xl" mb="1rem"></Avatar>
+                  <Heading as="h4" textAlign="center" fontSize="lg">
+                    {user.name}
+                  </Heading>
+                </Link>
+              </Box>
+            ))}
+          </Flex>
+        </Flex>
+      </Box>
+
+      <Container maxW="1200px">
+        <Box as="section">
+          <Center mb="4rem">
+            <Heading pt="4rem">使用者心得</Heading>
+          </Center>
+          <SimpleGrid columns={3} spacing={16}>
+            {testimonials.map((testimonial) => (
+              <Card
+                key={testimonial.avatar}
+                border="1px solid"
+                borderColor="#1f1f1f"
+                borderRadius="30px"
+                bgGradient="linear(180deg,#1e1e1e 0%,rgb(20,20,20) 100%)"
+                color="inherit"
+                py="3rem"
+              >
+                <CardHeader>
+                  <Center>
+                    <Avatar
+                      size="xl"
+                      name="Dan Abrahmov"
+                      src={testimonial.avatar}
+                    />
+                  </Center>
+                </CardHeader>
+                <CardBody maxW="80%" margin="auto">
+                  <Text>{testimonial.content}</Text>
+                </CardBody>
+              </Card>
+            ))}
+          </SimpleGrid>
+        </Box>
+      </Container>
+
       <Container
         as="footer"
         maxW="100%"
