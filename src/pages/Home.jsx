@@ -18,8 +18,11 @@ import {
   Wrap,
   WrapItem
 } from '@chakra-ui/react';
-import React from 'react';
 import { Link } from 'react-router-dom';
+
+import avatar_1 from '../assets/images/home-avatar-1.jpg';
+import avatar_2 from '../assets/images/home-avatar-2.jpg';
+import avatar_3 from '../assets/images/home-avatar-3.jpg';
 
 import feature_1 from '../assets/images/feature-1.svg';
 import feature_2 from '../assets/images/feature-2.png';
@@ -137,7 +140,7 @@ export default function Home() {
                   <ScrollLink to="#highlight">精選帳號</ScrollLink>
                 </WrapItem>
                 <WrapItem>
-                  <Link to="/">關於我們</Link>
+                  <ScrollLink to="#feedback">用戶心得</ScrollLink>
                 </WrapItem>
               </Wrap>
             </Hide>
@@ -192,17 +195,17 @@ export default function Home() {
                 <Avatar
                   borderColor="transparent"
                   name="Ryan Florence"
-                  src="https://bit.ly/ryan-florence"
+                  src={avatar_1}
                 />
                 <Avatar
                   borderColor="transparent"
                   name="Kent Dodds"
-                  src="https://bit.ly/kent-c-dodds"
+                  src={avatar_2}
                 />
                 <Avatar
                   borderColor="transparent"
                   name="Christian Nwamba"
-                  src="https://bit.ly/code-beast"
+                  src={avatar_3}
                 />
               </AvatarGroup>
               <Text fontSize="sm">35,000+ 人都在使用</Text>
@@ -323,7 +326,7 @@ export default function Home() {
         </Box>
       </Container>
 
-      <Box py="6rem">
+      <Box py="4rem">
         <Center mb="6rem">
           <Heading id="highlight" pt="3rem">
             精選帳號
@@ -331,11 +334,7 @@ export default function Home() {
         </Center>
 
         <Flex overflow="hidden" gap="3rem">
-          <Flex
-            as="ul"
-            gap="3rem"
-            animation={marqueeLeftAnimation}
-          >
+          <Flex as="ul" gap="3rem" animation={marqueeLeftAnimation}>
             {highlightUsers.map((user) => (
               <Box key={user.link} as="li" listStyleType="none">
                 <Link to={user.link} target="_blank">
@@ -348,11 +347,7 @@ export default function Home() {
             ))}
           </Flex>
 
-          <Flex
-            as="ul"
-            gap="3rem"
-            animation={marqueeLeftAnimation}
-          >
+          <Flex as="ul" gap="3rem" animation={marqueeLeftAnimation}>
             {highlightUsers.map((user) => (
               <Box key={user.link} as="li" listStyleType="none">
                 <Link to={user.link} target="_blank">
@@ -367,20 +362,24 @@ export default function Home() {
         </Flex>
       </Box>
 
-      <Container maxW="1200px">
+      <Container maxW="1200px" py="4rem">
         <Box as="section">
           <Center mb="4rem">
-            <Heading pt="4rem">使用者心得</Heading>
+            <Heading id="feedback" pt="4rem">
+              用戶心得
+            </Heading>
           </Center>
-          <SimpleGrid columns={3} spacing={16}>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={16}>
             {testimonials.map((testimonial) => (
               <Card
                 key={testimonial.avatar}
                 border="1px solid"
-                borderColor="#1f1f1f"
+                borderColor="#222222"
                 borderRadius="30px"
                 bgGradient="linear(180deg,#1e1e1e 0%,rgb(20,20,20) 100%)"
                 color="inherit"
+                maxW={{ base: '80%', sm: '70%', md: '100%'}}
+                marginX="auto"
                 py="3rem"
               >
                 <CardHeader>
@@ -399,18 +398,45 @@ export default function Home() {
             ))}
           </SimpleGrid>
         </Box>
+
+        <Center as="section" flexDirection="column" py="8rem">
+          <Heading mb="4rem">心動了嗎？快來使用！</Heading>
+          <Box
+            py="1rem"
+            bgGradient="linear(to-br, #e6d9ca, #efe5dc, #ffffff)"
+            color="#151515"
+            borderRadius="2xl"
+            boxShadow="0px 3px 10px #e6d9ca"
+            fontSize="xl"
+            fontWeight="bold"
+            _hover={{
+              bg: '#fff',
+            }}
+            sx={{
+              '& a': {
+                padding: '2rem',
+              },
+            }}
+          >
+            <Link to="/signup">立即註冊</Link>
+          </Box>
+        </Center>
       </Container>
 
-      <Container
-        as="footer"
-        maxW="100%"
-        px="5rem"
-        py="2rem"
-      >
-        <Flex justifyContent="space-between" alignItems="center">
+      <Container as="footer" maxW="100%" px="5rem">
+        <Flex
+          flexDirection={{ base: 'column', md: 'row' }}
+          justifyContent="space-between"
+          alignItems="center"
+          gap="3rem"
+          py="2rem"
+          borderTop="1px"
+          borderColor="#222222"
+        >
           <Heading opacity="0.5" userSelect="none">
             Linkspace
           </Heading>
+          <Text color="gray">此為個人實驗網站，無商業用途</Text>
           <Text display="flex">
             Made with love by&nbsp;
             <Link target="_blank" to="https://github.com/jayredk">
