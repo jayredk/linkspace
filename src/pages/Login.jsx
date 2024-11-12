@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { useSetUser } from '../stores/userStore';
 
+import GoogleAuthButton from '../components/GoogleAuthButton';
+
 import {
   AbsoluteCenter,
   Box,
@@ -24,9 +26,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { FcGoogle } from 'react-icons/fc';
 
 import bg_IU from '../assets/images/bg-IU.webp';
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -84,18 +86,10 @@ export default function Login() {
               letterSpacing="0.05em"
             >
               登入
-            </Heading>
-            <Button
-              w="100%"
-              py="1.25rem"
-              bgColor="white"
-              border="1px"
-              borderColor="gray.300"
-              borderRadius="md"
-              leftIcon={<FcGoogle fontSize="1.5rem" />}
-            >
+            </Heading>            
+            <GoogleAuthButton isRegister={true}>
               透過 Google 帳號登入
-            </Button>
+            </GoogleAuthButton>
             <Box position="relative" py="8">
               <Divider />
               <AbsoluteCenter bg="white" color="gray.600" px="4">

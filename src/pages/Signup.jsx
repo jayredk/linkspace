@@ -4,6 +4,10 @@ import { auth, db } from '../utils/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
+import { useSetUser } from '../stores/userStore';
+
+import GoogleAuthButton from '../components/GoogleAuthButton';
+
 import {
   AbsoluteCenter,
   Box,
@@ -21,9 +25,6 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-
-import { FcGoogle } from 'react-icons/fc';
-import { useSetUser } from '../stores/userStore';
 
 import bg_Alicia from '../assets/images/bg-alicia.webp';
 
@@ -149,17 +150,7 @@ export default function Signup() {
             >
               建立帳號
             </Heading>
-            <Button
-              w="100%"
-              py="1.25rem"
-              bgColor="white"
-              border="1px"
-              borderColor="gray.300"
-              borderRadius="md"
-              leftIcon={<FcGoogle fontSize="1.5rem" />}
-            >
-              透過 Google 帳號註冊
-            </Button>
+            <GoogleAuthButton isRegister={false}>透過 Google 帳號註冊</GoogleAuthButton>
             <Box position="relative" py="8">
               <Divider />
               <AbsoluteCenter bg="white" color="gray.600" px="4">
