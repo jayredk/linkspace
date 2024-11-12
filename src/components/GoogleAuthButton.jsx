@@ -8,7 +8,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { useSetUser } from '../stores/userStore';
 import { useNavigate } from 'react-router-dom';
 
-export default function GoogleAuthButton({ isRegister, children }) {
+export default function GoogleAuthButton({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const setUser = useSetUser();
@@ -18,16 +18,10 @@ export default function GoogleAuthButton({ isRegister, children }) {
 
     try {
       const userCredential = await signInWithPopup(auth, googleProvider);
-      const { user } = userCredential;
+      const { user, _tokenResponse } = userCredential;
+      
 
-      if (isRegister) {
-        setUser({
-          email: user.email,
-          uid: user.uid,
-        });
-
-        navigate('/dashboard');
-      } else {
+      if (_tokenResponse?.isNewUser) {
         const slug = user.uid.substring(0, 8);
         const avatarSeed = crypto.randomUUID().substring(0, 5);
         const username = user.email.match(/^([a-zA-Z0-9._%+-]+)@/)[1];
@@ -94,6 +88,13 @@ export default function GoogleAuthButton({ isRegister, children }) {
         });
 
         navigate('/create-site-id');
+      } else {
+        setUser({
+          email: user.email,
+          uid: user.uid,
+        });
+
+        navigate('/dashboard');
       }
       
     } catch (error) {

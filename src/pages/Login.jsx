@@ -50,7 +50,6 @@ export default function Login() {
       );
 
       const { user } = userCredential;
-      console.log(user);
       
       setUser({
         email: user.email,
@@ -87,7 +86,7 @@ export default function Login() {
             >
               登入
             </Heading>            
-            <GoogleAuthButton isRegister={true}>
+            <GoogleAuthButton>
               透過 Google 帳號登入
             </GoogleAuthButton>
             <Box position="relative" py="8">

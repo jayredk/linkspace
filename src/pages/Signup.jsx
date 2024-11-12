@@ -150,7 +150,7 @@ export default function Signup() {
             >
               建立帳號
             </Heading>
-            <GoogleAuthButton isRegister={false}>透過 Google 帳號註冊</GoogleAuthButton>
+            <GoogleAuthButton>透過 Google 帳號註冊</GoogleAuthButton>
             <Box position="relative" py="8">
               <Divider />
               <AbsoluteCenter bg="white" color="gray.600" px="4">
