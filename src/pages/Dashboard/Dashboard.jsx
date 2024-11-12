@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 import { DndContext, DragOverlay, useDraggable } from '@dnd-kit/core';
 import {
@@ -89,7 +90,8 @@ const defaultBlockItems = [
     type: 'banner-board',
     blocks: [
       {
-        imageUrl: '',
+        imageUrl:
+          'https://images.unsplash.com/photo-1729710221382-ee37d2305ff1?q=80&w=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         text: '',
         linkUrl: '',
       },
@@ -100,7 +102,8 @@ const defaultBlockItems = [
     type: 'square-board',
     blocks: [
       {
-        imageUrl: '',
+        imageUrl:
+          'https://images.unsplash.com/photo-1729710221382-ee37d2305ff1?q=80&w=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         text: '',
         linkUrl: '',
       },
@@ -111,12 +114,14 @@ const defaultBlockItems = [
     type: 'double-square-board',
     blocks: [
       {
-        imageUrl: '',
+        imageUrl:
+          'https://images.unsplash.com/photo-1729710221382-ee37d2305ff1?q=80&w=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         text: '',
         linkUrl: '',
       },
       {
-        imageUrl: '',
+        imageUrl:
+          'https://images.unsplash.com/photo-1729710221382-ee37d2305ff1?q=80&w=900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
         text: '',
         linkUrl: '',
       },
@@ -267,10 +272,6 @@ function DragOverlayItem({ block, themeColor }) {
   );
 }
 
-// const handleEditBlock = (item) => {
-//   setTempBlockData(item);
-//   openEditBlockModal();
-// };
 
 function SortableBlock({
   block,
@@ -383,7 +384,7 @@ export default function Dashboard() {
         setIsUrlCopy(false);
       }, 2000);
     } catch (error) {
-      console.log('複製失敗');
+      alert('複製失敗');
     }
   };
 
@@ -400,6 +401,19 @@ export default function Dashboard() {
   } = useDisclosure();
   const [tempBlockData, setTempBlockData] = useState({});
 
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   useEffect(() => {
     const loadUser = async () => {
       try {
@@ -409,25 +423,25 @@ export default function Dashboard() {
         setSlug(userData.slug);
         setBlocks(userData.blocks);
       } catch (error) {
-        console.error(error);
+        alert(error);
       }
     };
 
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      // console.log(currentUser);
-
       if (currentUser) {
         setUser({
           email: currentUser.email,
           uid: currentUser.uid,
         });
         loadUser();
+      } else {
+        navigate('/');
       }
     });
 
     return () => unsubscribe();
-  }, [setUser, user.uid]);
+  }, [setUser, user.uid, navigate]);
 
   const [activeDragBlockId, setActiveDragBlockId] = useState(null);
   const [hoverBlockIndex, setHoverBlockIndex] = useState(null);
@@ -548,6 +562,7 @@ export default function Dashboard() {
                   w="100%"
                   justifyContent="flex-start"
                   leftIcon={<Icon as={MdLogout} />}
+                  onClick={handleLogout}
                 >
                   登出
                 </Button>
