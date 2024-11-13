@@ -43,7 +43,7 @@ export default function UserProfile({ profile, children }) {
           icon={<Icon fontSize="1.5rem" as={MdIosShare} />}
         />
       </Tooltip>
-      <Avatar size="2xl" src={profile.avatar} />
+      <Avatar size="2xl" src={profile.avatar} ignoreFallback={true} />
       <Box textAlign="center" color={textColorMap[profile.textColor]}>
         <Heading as="h1" size="md" mb="0.5rem">
           {profile.name}

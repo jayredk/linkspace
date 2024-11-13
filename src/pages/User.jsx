@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 import MultiTypeBlock from '../components/MultiTypeBlock';
 import UserProfile from '../components/UserProfile';
@@ -7,7 +7,7 @@ import UserProfile from '../components/UserProfile';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 
-import { Box, Container, Heading, VStack } from '@chakra-ui/react';
+import { Box, Container, Heading, Skeleton, Text, VStack } from '@chakra-ui/react';
 
 
 import 'lite-youtube-embed/src/lite-yt-embed.css';
@@ -55,23 +55,51 @@ export default function User() {
 
   return (
     <Box bgColor={bgColorsMap[profile.bgColor]} minH="100vh">
-      <Container maxW="lg" py="4rem">
-        <VStack spacing={8}>
+      <Skeleton
+        isLoaded={!isLoading}
+        startColor="#1a1a1a"
+        endColor="#000"
+        fadeDuration={1.5}
+        minH="100vh"
+      >
+        <Container maxW="lg" py="4rem">
+          <VStack spacing={8}>
+            {Object.keys(profile).length && <UserProfile profile={profile} />}
 
-          {Object.keys(profile).length && <UserProfile profile={profile} />}
+            {blocks.map((block, index) => {
+              return (
+                <MultiTypeBlock
+                  key={index}
+                  block={block}
+                  themeColor={profile.themeColor}
+                  isAnimating={true}
+                />
+              );
+            })}
+          </VStack>
+        </Container>
+      </Skeleton>
 
-          {blocks.map((block, index) => {
-            return (
-              <MultiTypeBlock
-                key={index}
-                block={block}
-                themeColor={profile.themeColor}
-                isAnimating={true}
-              />
-            );
-          })}
-        </VStack>
-      </Container>
+      <Box
+        as="footer"
+        bgColor="#111"
+        py="2rem"
+        textAlign="center"
+      >
+        <Link to="/">
+          <Text
+            color="#FCF6EE"
+            fontSize="1.5rem"
+            fontWeight="bold"
+            letterSpacing="0.05em"
+            _hover={{
+              textDecoration: 'none',
+            }}
+          >
+            Linkspace
+          </Text>
+        </Link>
+      </Box>
     </Box>
   );
 }

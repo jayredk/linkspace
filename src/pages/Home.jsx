@@ -94,7 +94,7 @@ const highlightUsers = [
   },
   {
     avatar:
-      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2FblockStudio.gif?alt=media&token=5a4a60b9-852a-49af-a53d-1efbab397faa',
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2Fblockstudio.webp?alt=media&token=10f79308-3888-4d75-aa56-420e16586c1f',
     name: '版塊設計',
     link: 'https://linkspace-one.vercel.app/blockstudio',
   },
@@ -346,7 +346,6 @@ export default function Home() {
               </Box>
             ))}
           </Flex>
-
           <Flex as="ul" gap="3rem" animation={marqueeLeftAnimation}>
             {highlightUsers.map((user) => (
               <Box key={user.link} as="li" listStyleType="none">
@@ -378,7 +377,7 @@ export default function Home() {
                 borderRadius="30px"
                 bgGradient="linear(180deg,#1e1e1e 0%,rgb(20,20,20) 100%)"
                 color="inherit"
-                maxW={{ base: '80%', sm: '70%', md: '100%'}}
+                maxW={{ base: '80%', sm: '70%', md: '100%' }}
                 marginX="auto"
                 py="3rem"
               >
