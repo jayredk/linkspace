@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Avatar,
   Box,
@@ -12,7 +14,7 @@ import {
   WrapItem,
 } from '@chakra-ui/react';
 
-import { MdIosShare } from 'react-icons/md';
+import { MdCheck, MdIosShare } from 'react-icons/md';
 
 import {
   themeColorsMap,
@@ -20,19 +22,27 @@ import {
   iconMap,
 } from '../constants/utilityMaps';
 
-export default function UserProfile({ profile, children }) {
-  // const  = props;
-  // console.log(props);
-  // retunr
-  // // if (!profile) return;
+export default function UserProfile({ profile, slug, children }) {
+  const [isUrlCopy, setIsUrlCopy] = useState(false);
+
+  const handleCopyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `${import.meta.env.VITE_DOMAIN_NAME}/${slug}`
+      );
+      setIsUrlCopy(true);
+
+      setTimeout(() => {
+        setIsUrlCopy(false);
+      }, 2000);
+    } catch (error) {
+      alert('複製失敗');
+    }
+  };
+
+
   return (
-    <VStack
-      position="relative"
-      w="100%"
-      spacing="1rem"
-      p="3rem"
-      pb="rem"
-    >
+    <VStack position="relative" w="100%" spacing="1rem" p="3rem" pb="rem">
       <Tooltip label="分享" borderRadius="1.5rem">
         <IconButton
           position="absolute"
@@ -40,7 +50,10 @@ export default function UserProfile({ profile, children }) {
           top="1rem"
           color={themeColorsMap[profile.themeColor]}
           bgColor="transparent"
-          icon={<Icon fontSize="1.5rem" as={MdIosShare} />}
+          icon={
+            <Icon fontSize="1.5rem" as={isUrlCopy ? MdCheck : MdIosShare} />
+          }
+          onClick={handleCopyUrl}
         />
       </Tooltip>
       <Avatar size="2xl" src={profile.avatar} ignoreFallback={true} />

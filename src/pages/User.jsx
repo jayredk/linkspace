@@ -23,6 +23,7 @@ export default function User() {
 
   const [profile, setProfile] = useState({});
   const [blocks, setBlocks] = useState([]);
+  const [slug, setSlug] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function User() {
           const userData = querySnapshot.docs[0].data();
 
           setProfile(userData.profile);
+          setSlug(userData.slug);
           setBlocks(userData.blocks);
         }
       } catch (error) {
@@ -64,7 +66,7 @@ export default function User() {
       >
         <Container maxW="lg" py="4rem">
           <VStack spacing={8}>
-            {Object.keys(profile).length && <UserProfile profile={profile} />}
+            {Object.keys(profile).length && <UserProfile profile={profile} slug={slug} />}
 
             {blocks.map((block, index) => {
               return (
