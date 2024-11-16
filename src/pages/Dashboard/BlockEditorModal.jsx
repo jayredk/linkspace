@@ -423,6 +423,7 @@ export default function BlockEditorModal({
 
           case 'banner-board':
           case 'square-board':
+          case 'double-square-board':
             type = 'blocks';
             newData = JSON.parse(JSON.stringify(prevState.blocks || []));
 
@@ -660,12 +661,15 @@ export default function BlockEditorModal({
                             justifyContent: 'center',
                             alignItems: 'center',
                             marginRight: '1rem',
-                            backgroundColor: '#E2E8F0',
-                            borderRadius: '20px',
                           }}
                           htmlFor={`uploadBtn${index}`}
                         >
-                          <AspectRatio w="100%" ratio={2 / 1}>
+                          <AspectRatio
+                            w="100%"
+                            bgColor="#E2E8F0"
+                            borderRadius="20px"
+                            ratio={2 / 1}
+                          >
                             <Box>
                               <Icon boxSize="50%" as={MdImage} />
                             </Box>
@@ -761,92 +765,97 @@ export default function BlockEditorModal({
                       ></IconButton>
                     </Flex>
                     <Divider my="0.5rem" />
-                    <Flex alignItems="center" mb="1rem">
-                      {
-                        <>
-                          {block.imageUrl ? (
-                            <Box position="relative">
-                              <Image
-                                maxW="80px"
-                                mr="1rem"
-                                rounded="xl"
-                                objectFit="cover"
-                                src={block.imageUrl}
-                                alt="Dan Abramov"
-                              />
-                              <Input
-                                data-index={index}
-                                onChange={handleImageChange}
-                                id={`uploadBtn${index}`}
-                                accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
-                                position="absolute"
-                                inset="0"
-                                height="100%"
-                                opacity="0"
-                                maxW="80px"
-                                mr="1rem"
-                                rounded="xl"
-                                type="file"
-                              />
+                    {block.imageUrl ? (
+                      <Box position="relative" w="100%" mb="1rem">
+                        <AspectRatio maxW="50%" ratio={1 / 1} mx="auto">
+                          <Image
+                            w="100%"
+                            mr="1rem"
+                            rounded="xl"
+                            objectFit="cover"
+                            src={block.imageUrl}
+                            alt={block.text}
+                          />
+                        </AspectRatio>
+                        <Input
+                          data-index={index}
+                          onChange={handleImageChange}
+                          id={`uploadBtn${index}`}
+                          accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                          position="absolute"
+                          inset="0"
+                          height="100%"
+                          opacity="0"
+                          maxW="80px"
+                          mr="1rem"
+                          rounded="xl"
+                          type="file"
+                        />
+                      </Box>
+                    ) : (
+                      <Box mb="1rem">
+                        <label
+                          style={{
+                            position: 'relative',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginRight: '1rem',
+                          }}
+                          htmlFor={`uploadBtn${index}`}
+                        >
+                          <AspectRatio
+                            w="50%"
+                            bgColor="#E2E8F0"
+                            borderRadius="20px"
+                            ratio={1 / 1}
+                            mx="auto"
+                          >
+                            <Box>
+                              <Icon boxSize="50%" as={MdImage}></Icon>
                             </Box>
-                          ) : (
+                          </AspectRatio>
+                          <Input
+                            data-type="blocks"
+                            data-index={index}
+                            onChange={handleImageChange}
+                            id={`uploadBtn${index}`}
+                            accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                            position="absolute"
+                            inset="0"
+                            opacity="0"
+                            maxW="80px"
+                            mr="1rem"
+                            rounded="xl"
+                            type="file"
+                          />
+                        </label>
+                      </Box>
+                    )}
+                    <Flex alignItems="center" mb="1rem">
+                      <Box flexGrow="1">
+                        <Flex gap="0.5rem" mb="0.5rem">
+                          <Button flexGrow="1">
+                            上傳圖片
                             <label
-                              style={{
-                                position: 'relative',
-                                width: '100px',
-                                height: '100px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginRight: '1rem',
-                                backgroundColor: '#E2E8F0',
-                                borderRadius: '20px',
-                              }}
                               htmlFor={`uploadBtn${index}`}
-                            >
-                              <Icon fontSize="1.5rem" as={MdImage}></Icon>
-                              <Input
-                                data-type="blocks"
-                                data-index={index}
-                                onChange={handleImageChange}
-                                id={`uploadBtn${index}`}
-                                accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
-                                position="absolute"
-                                inset="0"
-                                opacity="0"
-                                maxW="80px"
-                                mr="1rem"
-                                rounded="xl"
-                                type="file"
-                              />
-                            </label>
-                          )}
-
-                          <Box flexGrow="1">
-                            <Flex gap="0.5rem" mb="0.5rem">
-                              <Button flexGrow="1">
-                                上傳圖片
-                                <label
-                                  htmlFor={`uploadBtn${index}`}
-                                  style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    position: 'absolute',
-                                    cursor: 'pointer',
-                                  }}
-                                ></label>
-                              </Button>
-                              <Button
-                                isDisabled={!tempImageInfo.imageUrl}
-                                flexGrow="1"
-                                onClick={onCropModalOpen}
-                              >
-                                裁切圖片
-                              </Button>
-                            </Flex>
-                          </Box>
-                        </>
-                      }
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                position: 'absolute',
+                                cursor: 'pointer',
+                              }}
+                            ></label>
+                          </Button>
+                          <Button
+                            isDisabled={!tempImageInfo.imageUrl}
+                            flexGrow="1"
+                            onClick={onCropModalOpen}
+                          >
+                            裁切圖片
+                          </Button>
+                        </Flex>
+                      </Box>
                     </Flex>
                     <Flex alignItems="center" mb="1rem">
                       <Icon as={MdTitle} mr="1rem" fontSize="xl" />
@@ -874,9 +883,144 @@ export default function BlockEditorModal({
                 </Card>
               ))}
             {tempBlockData.type === 'double-square-board' && (
-              <Flex>
-                <Heading>雙方格看板</Heading>
-              </Flex>
+              modalState.blocks?.map((block, index) => (
+                <Card key={index} borderRadius="20px" mb="1rem">
+                  <CardBody>
+                    <Flex justifyContent="space-between" alignItems="center">
+                      <Heading as="h3" fontSize="1.25rem">
+                        雙方格看板資訊
+                      </Heading>
+                      <IconButton
+                        isDisabled={block.length === 1}
+                        name="removeButton"
+                        data-index={index}
+                        onClick={handleModalStateChange}
+                        icon={<Icon as={MdClose} />}
+                        bgColor="gray.600"
+                        color="white"
+                        _hover={{
+                          bgColor: 'gray.700',
+                        }}
+                      ></IconButton>
+                    </Flex>
+                    <Divider my="0.5rem" />
+                    {block.imageUrl ? (
+                      <Box position="relative" w="100%" mb="1rem">
+                        <AspectRatio maxW="50%" ratio={1 / 1} mx="auto">
+                          <Image
+                            w="100%"
+                            mr="1rem"
+                            rounded="xl"
+                            objectFit="cover"
+                            src={block.imageUrl}
+                            alt={block.text}
+                          />
+                        </AspectRatio>
+                        <Input
+                          data-index={index}
+                          onChange={handleImageChange}
+                          id={`uploadBtn${index}`}
+                          accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                          position="absolute"
+                          inset="0"
+                          height="100%"
+                          opacity="0"
+                          maxW="80px"
+                          mr="1rem"
+                          rounded="xl"
+                          type="file"
+                        />
+                      </Box>
+                    ) : (
+                      <Box mb="1rem">
+                        <label
+                          style={{
+                            position: 'relative',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginRight: '1rem',
+                          }}
+                          htmlFor={`uploadBtn${index}`}
+                        >
+                          <AspectRatio
+                            w="50%"
+                            bgColor="#E2E8F0"
+                            borderRadius="20px"
+                            ratio={1 / 1}
+                            mx="auto"
+                          >
+                            <Box>
+                              <Icon boxSize="50%" as={MdImage}></Icon>
+                            </Box>
+                          </AspectRatio>
+                          <Input
+                            data-type="blocks"
+                            data-index={index}
+                            onChange={handleImageChange}
+                            id={`uploadBtn${index}`}
+                            accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                            position="absolute"
+                            inset="0"
+                            opacity="0"
+                            maxW="80px"
+                            mr="1rem"
+                            rounded="xl"
+                            type="file"
+                          />
+                        </label>
+                      </Box>
+                    )}
+                    <Flex alignItems="center" mb="1rem">
+                      <Box flexGrow="1">
+                        <Flex gap="0.5rem" mb="0.5rem">
+                          <Button flexGrow="1">
+                            上傳圖片
+                            <label
+                              htmlFor={`uploadBtn${index}`}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                position: 'absolute',
+                                cursor: 'pointer',
+                              }}
+                            ></label>
+                          </Button>
+                          <Button
+                            isDisabled={!tempImageInfo.imageUrl}
+                            flexGrow="1"
+                            onClick={onCropModalOpen}
+                          >
+                            裁切圖片
+                          </Button>
+                        </Flex>
+                      </Box>
+                    </Flex>
+                    <Flex alignItems="center" mb="1rem">
+                      <Icon as={MdTitle} mr="1rem" fontSize="xl" />
+                      <Input
+                        name="block-text"
+                        data-index={index}
+                        value={block.text}
+                        onChange={handleModalStateChange}
+                        backgroundColor="gray.400"
+                        placeholder="按鈕文字"
+                      />
+                    </Flex>
+                    <Flex alignItems="center" mb="1rem">
+                      <Icon as={BsLink45Deg} mr="1rem" fontSize="xl" />
+                      <Input
+                        name="linkUrl"
+                        data-index={index}
+                        value={block.linkUrl}
+                        onChange={handleModalStateChange}
+                        backgroundColor="gray.400"
+                        placeholder="輸入連結"
+                      />
+                    </Flex>
+                  </CardBody>
+                </Card>
+              ))
             )}
             {tempBlockData.type === 'video-player' && (
               <Card borderRadius="20px" mb="1rem">
@@ -994,7 +1138,7 @@ function BlockInfoEditor({
                     rounded="xl"
                     objectFit="cover"
                     src={button.imageUrl}
-                    alt="Dan Abramov"
+                    alt={button.text}
                   />
                   <Input
                     data-index={index}
