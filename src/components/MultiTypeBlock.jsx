@@ -24,17 +24,22 @@ import {
   MdImage,
 } from 'react-icons/md';
 
-export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
+export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
   return (
-    <Box w="100%" bgColor="transparent" borderRadius="md">
-      {block.type === 'text-button' && (
+    <Box
+      as="section"
+      w="100%"
+      bgColor="transparent"
+      borderRadius="md"
+    >
+      {section.type === 'text-button' && (
         <VStack
           spacing={4}
           flexGrow="1"
           align="stretch"
           textAlign="center"
         >
-          {block.buttons.map((button, index) => {
+          {section.buttons.map((button, index) => {
             return (
               <Link
                 style={{ '--animate-duration': '2s' }}
@@ -48,9 +53,9 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                 display="flex"
                 alignItems="center"
                 backgroundColor={
-                  block.isSolid ? themeColorsMap[themeColor] : 'transparent'
+                  section.isSolid ? themeColorsMap[themeColor] : 'transparent'
                 }
-                color={block.isSolid ? '#fff' : themeColorsMap[themeColor]}
+                color={section.isSolid ? '#fff' : themeColorsMap[themeColor]}
                 textDecoration="none"
                 border="2px"
                 borderColor={themeColorsMap[themeColor]}
@@ -59,26 +64,26 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                 _hover={{
                   transform: 'scale(1.03)',
                   textDecoration: 'none',
-                  backgroundColor: block.isSolid
+                  backgroundColor: section.isSolid
                     ? '#fff'
                     : themeColorsMap[themeColor],
-                  color: block.isSolid ? themeColorsMap[themeColor] : '#fff',
+                  color: section.isSolid ? themeColorsMap[themeColor] : '#fff',
                 }}
               >
-                {block.hasSubtitle && !block.hasImage && (
+                {section.hasSubtitle && !section.hasImage && (
                   <Icon
                     as={iconMap[button.icon]}
-                    fontSize={iconSizeMapWithSubtitle[block.fontSize]}
+                    fontSize={iconSizeMapWithSubtitle[section.fontSize]}
                   />
                 )}
-                {!block.hasSubtitle && !block.hasImage && (
+                {!section.hasSubtitle && !section.hasImage && (
                   <Icon
                     as={iconMap[button.icon]}
-                    fontSize={iconSizeMap[block.fontSize]}
+                    fontSize={iconSizeMap[section.fontSize]}
                   />
                 )}
 
-                {block.hasImage && button.imageUrl && (
+                {section.hasImage && button.imageUrl && (
                   <Flex
                     justifyContent="center"
                     alignItems="center"
@@ -96,7 +101,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                   </Flex>
                 )}
 
-                {block.hasImage && !button.imageUrl && (
+                {section.hasImage && !button.imageUrl && (
                   <Flex
                     justifyContent="center"
                     alignItems="center"
@@ -109,9 +114,9 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                   </Flex>
                 )}
 
-                {block.hasSubtitle ? (
+                {section.hasSubtitle ? (
                   <Text
-                    fontSize={fontSizeMapWithSubtitle[block.fontSize]}
+                    fontSize={fontSizeMapWithSubtitle[section.fontSize]}
                     fontWeight="bold"
                     mx="auto"
                   >
@@ -127,7 +132,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                   </Text>
                 ) : (
                   <Text
-                    fontSize={fontSizeMap[block.fontSize]}
+                    fontSize={fontSizeMap[section.fontSize]}
                     fontWeight="bold"
                     mx="auto"
                   >
@@ -140,8 +145,8 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
         </VStack>
       )}
 
-      {block.type === 'banner-board' &&
-        block.blocks.map((block, index) => (
+      {section.type === 'banner-board' &&
+        section.blocks.map((block, index) => (
           <Link
             key={index}
             href={block.linkUrl}
@@ -181,8 +186,8 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
           </Link>
         ))}
 
-      {block.type === 'square-board' &&
-        block.blocks.map((block, index) => (
+      {section.type === 'square-board' &&
+        section.blocks.map((block, index) => (
           <Link
             key={index}
             href={block.linkUrl}
@@ -222,9 +227,9 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
           </Link>
         ))}
 
-      {block.type === 'double-square-board' && (
+      {section.type === 'double-square-board' && (
         <SimpleGrid columns={2} spacing={4}>
-          {block.blocks.map((block, index) => {
+          {section.blocks.map((block, index) => {
             return (
               <Link
                 key={index}
@@ -270,7 +275,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
         </SimpleGrid>
       )}
 
-      {block.type === 'video-player' && (
+      {section.type === 'video-player' && (
         <Box
           sx={{
             '.lty-playbtn': {
@@ -293,15 +298,15 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
           }}
         >
           <lite-youtube
-            videoid={getVideoId(block.videoUrl)}
-            playlabel={'Play: ' + block.videoDescription}
+            videoid={getVideoId(section.videoUrl)}
+            playlabel={'Play: ' + section.videoDescription}
             style={{
-              backgroundImage: `url(https://i.ytimg.com/vi/${getVideoId(block.videoUrl)}/hqdefault.jpg)`,
+              backgroundImage: `url(https://i.ytimg.com/vi/${getVideoId(section.videoUrl)}/hqdefault.jpg)`,
             }}
           >
             <a href="#" className="lty-playbtn" title="Play Video">
               <span className="lyt-visually-hidden">
-                Play Video: {block.videoDescription}
+                Play Video: {section.videoDescription}
               </span>
             </a>
           </lite-youtube>

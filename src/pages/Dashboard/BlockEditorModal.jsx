@@ -71,16 +71,16 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 
 export default function BlockEditorModal({
-  tempBlockData,
+  tempSection,
   isOpen,
   onClose,
-  setBlocks,
+  setSections,
   themeColor,
 }) {
   const user = useUser();
   const userId = user?.uid;
   
-  const [modalState, setModalState] = useState(tempBlockData);
+  const [modalState, setModalState] = useState(tempSection);
 
   const {
     isOpen: isCropModalOpen,
@@ -284,7 +284,7 @@ export default function BlockEditorModal({
 
       
 
-      setBlocks((prevState) => {
+      setSections((prevState) => {
         const index = prevState.findIndex(
           (item) => item.id === updatedModalState.id
         );
@@ -314,7 +314,7 @@ export default function BlockEditorModal({
       imageUrl: null,
       index: null,
     });
-    setModalState(tempBlockData);
+    setModalState(tempSection);
   }
 
   function handleImageChange(e) {
@@ -404,8 +404,8 @@ export default function BlockEditorModal({
   }
 
   useEffect(() => {
-    setModalState(tempBlockData);
-  }, [tempBlockData]);
+    setModalState(tempSection);
+  }, [tempSection]);
 
   useEffect(() => {
     if (tempCroppedImage) {
@@ -475,7 +475,7 @@ export default function BlockEditorModal({
             <ModalCloseButton onClick={handleClose} position="static" />
           </ModalHeader>
           <ModalBody maxW="50%" mt="6rem">
-            {tempBlockData.type === 'text-button' && (
+            {tempSection.type === 'text-button' && (
               <Flex>
                 <Box>
                   <Heading as="h3" size="md" mb="1rem">
@@ -605,7 +605,7 @@ export default function BlockEditorModal({
                 </Box>
               </Flex>
             )}
-            {tempBlockData.type === 'banner-board' &&
+            {tempSection.type === 'banner-board' &&
               modalState.blocks?.map((block, index) => (
                 <Card key={index} borderRadius="20px" mb="1rem">
                   <CardBody>
@@ -743,7 +743,7 @@ export default function BlockEditorModal({
                   </CardBody>
                 </Card>
               ))}
-            {tempBlockData.type === 'square-board' &&
+            {tempSection.type === 'square-board' &&
               modalState.blocks?.map((block, index) => (
                 <Card key={index} borderRadius="20px" mb="1rem">
                   <CardBody>
@@ -882,7 +882,7 @@ export default function BlockEditorModal({
                   </CardBody>
                 </Card>
               ))}
-            {tempBlockData.type === 'double-square-board' && (
+            {tempSection.type === 'double-square-board' && (
               modalState.blocks?.map((block, index) => (
                 <Card key={index} borderRadius="20px" mb="1rem">
                   <CardBody>
@@ -1022,7 +1022,7 @@ export default function BlockEditorModal({
                 </Card>
               ))
             )}
-            {tempBlockData.type === 'video-player' && (
+            {tempSection.type === 'video-player' && (
               <Card borderRadius="20px" mb="1rem">
                 <CardBody>
                   <Flex justifyContent="space-between" alignItems="center">
@@ -1062,7 +1062,7 @@ export default function BlockEditorModal({
                 textAlign="center"
               >
                 <MultiTypeBlock
-                  block={modalState}
+                  section={modalState}
                   themeColor={themeColor}
                   isAnimating={true}
                 />

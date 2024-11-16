@@ -2,7 +2,12 @@ import { Fragment, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
-import { DndContext, DragOverlay, useDraggable } from '@dnd-kit/core';
+import {
+  closestCorners,
+  DndContext,
+  DragOverlay,
+  useDraggable,
+} from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
@@ -15,11 +20,10 @@ import UserProfile from '../../components/UserProfile';
 import BlockEditorModal from './BlockEditorModal';
 import ProfileEditorModal from './ProfileEditorModal';
 import { useUser, useSetUser } from '../../stores/userStore';
-import { getUserInfo, updateUserBlocks } from '../../services/userService';
+import { getUserInfo, updateUserSections } from '../../services/userService';
 
 import {
   AlertDialog,
-  AlertDialogBody,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
@@ -48,7 +52,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { motion } from 'framer-motion';
 
 import {
   MdContentCopy,
@@ -76,7 +79,7 @@ const blockNameMap = {
   'video-player': '影音播放器',
 };
 
-const defaultBlockItems = [
+const defaultSectionItems = [
   {
     id: 1,
     type: 'text-button',
@@ -148,8 +151,8 @@ const defaultBlockItems = [
   },
 ];
 
-function DraggableItemPanel({ blcokNums }) {
-  const [blockItems] = useState(defaultBlockItems);
+function DraggableItemPanel({ sectionNums }) {
+  const [blockItems] = useState(defaultSectionItems);
 
   return (
     <VStack
@@ -170,7 +173,7 @@ function DraggableItemPanel({ blcokNums }) {
       gap="1rem"
     >
       <Text alignSelf="flex-start" ml="0.75rem" mb="1rem">
-        區塊數量 {blcokNums} / 8
+        區塊數量 {sectionNums} / 8
       </Text>
       <SimpleGrid columns={2} spacing={4}>
         {blockItems.map((item) => (
@@ -235,7 +238,7 @@ function DraggableItem({ item }) {
   );
 }
 
-function DragOverlayItem({ block, themeColor }) {
+function DragOverlayItem({ section, themeColor }) {
   return (
     <Box
       overflow="hidden"
@@ -252,7 +255,7 @@ function DragOverlayItem({ block, themeColor }) {
       >
         <HStack spacing={2}>
           <IconButton
-            aria-label="Sort block"
+            aria-label="Sort section"
             bgColor="transparent"
             cursor="grab"
             fontSize="1.25rem"
@@ -263,14 +266,14 @@ function DragOverlayItem({ block, themeColor }) {
         <HStack spacing={2}>
           <Tooltip label="複製" borderRadius="1.5rem">
             <IconButton
-              aria-label="Copy block"
+              aria-label="Copy section"
               bgColor="transparent"
               icon={<Icon as={BsCopy} />}
             />
           </Tooltip>
           <Tooltip label="刪除" borderRadius="1.5rem">
             <IconButton
-              aria-label="Delete block"
+              aria-label="Delete section"
               bgColor="transparent"
               fontSize="1.25rem"
               icon={<Icon as={MdDelete} />}
@@ -280,17 +283,17 @@ function DragOverlayItem({ block, themeColor }) {
         </HStack>
       </Flex>
 
-      <MultiTypeBlock block={block} themeColor={themeColor} />
+      <MultiTypeBlock section={section} themeColor={themeColor} />
     </Box>
   );
 }
 
 
-function SortableBlock({
-  block,
-  setBlocks,
-  openEditBlockModal,
-  setTempBlockData,
+function SortableSection({
+  section,
+  setSections,
+  openEditSectionModal,
+  setTempSection,
   themeColor,
   isTranslate,
 }) {
@@ -302,7 +305,7 @@ function SortableBlock({
     transition,
     isDragging,
   } = useSortable({
-    id: block.id,
+    id: section.id,
   });
 
   const user = useUser();
@@ -325,65 +328,64 @@ function SortableBlock({
     transition: isTranslate ? 'transform .5s' : transition,
   };
 
-  const handleEditBlock = () => {
-    setTempBlockData(block);
-    openEditBlockModal();
+  const handleEditSection = () => {
+    setTempSection(section);
+    openEditSectionModal();
   };
 
-  const toggleBlockPublic = () => {
-    let newBlocks = null;
-    const currentBlock = block;
+  const toggleSectionPublic = () => {
+    let newSections = null;
+    const currentSection = section;
 
-    setBlocks((prevState) => {
-      newBlocks = prevState.map((block) => {
-        if (block.id === currentBlock.id) {
+    setSections((prevState) => {
+      newSections = prevState.map((section) => {
+        if (section.id === currentSection.id) {
           return {
-            ...block,
-            is_public: !block.is_public
+            ...section,
+            is_public: !section.is_public
           };
         }
 
-        return block;
+        return section;
       });
 
-      return newBlocks;
+      return newSections;
       
     });
-    updateUserBlocks(user.uid, newBlocks);
+    updateUserSections(user.uid, newSections);
   };
 
-  const handleCopyBlock = async () => {
-    let newBlocks = null;
-    const currentBlock = block;
+  const handleCopySection = async () => {
+    let newSections = null;
+    const currentSection = section;
 
 
-    setBlocks((prevState) => {
+    setSections((prevState) => {
       const newIndex =
-          prevState.findIndex((block) => block.id === currentBlock.id) + 1;
+          prevState.findIndex((section) => section.id === currentSection.id) + 1;
 
-      newBlocks = [...prevState];
-      newBlocks.splice(newIndex, 0, { ...currentBlock, id: crypto.randomUUID() });
+      newSections = [...prevState];
+      newSections.splice(newIndex, 0, { ...currentSection, id: crypto.randomUUID() });
 
-      return newBlocks;
+      return newSections;
     });
-    updateUserBlocks(user.uid, newBlocks);
+    updateUserSections(user.uid, newSections);
 
   };
 
-  const handleDeleteBlock = async () => {
-    let newBlocks = null;
-    const currentBlock = block;
+  const handleDeleteSection = async () => {
+    let newSections = null;
+    const currentBlock = section;
 
 
-    setBlocks((prevState) => {
-      newBlocks = prevState.filter(
-        (block) => block.id !== currentBlock.id
+    setSections((prevState) => {
+      newSections = prevState.filter(
+        (section) => section.id !== currentBlock.id
       );
 
-      return newBlocks;
+      return newSections;
     });
-    updateUserBlocks(user.uid, newBlocks);
-
+    updateUserSections(user.uid, newSections);
   };
 
   const confirmAction = async () => {
@@ -391,11 +393,11 @@ function SortableBlock({
 
     switch (action) {
       case 'delete':
-        await handleDeleteBlock();
+        await handleDeleteSection();
         break;
 
       case 'copy':
-        await handleCopyBlock();
+        await handleCopySection();
         break;
 
       default:
@@ -444,8 +446,8 @@ function SortableBlock({
                 icon={<Icon as={MdDragIndicator} />}
               />
               <Switch
-                isChecked={block.is_public}
-                onChange={toggleBlockPublic}
+                isChecked={section.is_public}
+                onChange={toggleSectionPublic}
               />
             </HStack>
             <HStack spacing={2}>
@@ -473,16 +475,16 @@ function SortableBlock({
                 />
               </Tooltip>
               <Button
-                onClick={handleEditBlock}
+                onClick={handleEditSection}
                 rightIcon={<Icon as={MdEdit} />}
               >
-                編輯
+                    編輯
               </Button>
             </HStack>
           </Flex>
-          <MultiTypeBlock block={block} themeColor={themeColor} />
+          <MultiTypeBlock section={section} themeColor={themeColor} />
           <Box
-            hidden={block.is_public ? true : false}
+            hidden={section.is_public ? true : false}
             userSelect="none"
             cursor="default"
             position="absolute"
@@ -525,7 +527,7 @@ function SortableBlock({
 
 export default function Dashboard() {
   const [profile, setProfile] = useState({});
-  const [blocks, setBlocks] = useState([]);
+  const [sections, setSections] = useState([]);
   const [slug, setSlug] = useState('');
 
   const user = useUser();
@@ -555,11 +557,11 @@ export default function Dashboard() {
   } = useDisclosure();
 
   const {
-    isOpen: isEditBlockModalOpen,
-    onOpen: openEditBlockModal,
-    onClose: closeEditBlockModal,
+    isOpen: isEditSectionModalOpen,
+    onOpen: openEditSectionModal,
+    onClose: closeEditSectionModal,
   } = useDisclosure();
-  const [tempBlockData, setTempBlockData] = useState({});
+  const [tempSection, setTempSection] = useState({});
 
   const navigate = useNavigate();
 
@@ -581,7 +583,7 @@ export default function Dashboard() {
 
         setProfile(userData.profile);
         setSlug(userData.slug);
-        setBlocks(userData.blocks);
+        setSections(userData.sections);
       } catch (error) {
         alert(error);
       }
@@ -603,33 +605,33 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, [setUser, user.uid, navigate]);
 
-  const [activeDragBlockId, setActiveDragBlockId] = useState(null);
-  const [hoverBlockIndex, setHoverBlockIndex] = useState(null);
-  const [isFromBlockItems, setIsFromBlockItems] = useState(false);
+  const [activeDragSectionId, setActiveDragSectionId] = useState(null);
+  const [hoverSectionIndex, setHoverSectionIndex] = useState(null);
+  const [isFromSectionItems, setIsFromSectionItems] = useState(false);
 
   const handleDragStart = (event) => {
-    const isDragFromBlockItems = defaultBlockItems.some(
+    const isDragFromBlockItems = defaultSectionItems.some(
       (item) => event.active.id === item.id
     );
 
-    setIsFromBlockItems(isDragFromBlockItems);
-    setActiveDragBlockId(event.active.id);
+    setIsFromSectionItems(isDragFromBlockItems);
+    setActiveDragSectionId(event.active.id);
   };
 
   const handleDragOver = (event) => {
     const { active, over } = event;
 
     if (!over) {
-      setHoverBlockIndex(null);
-      setActiveDragBlockId(null);
+      setHoverSectionIndex(null);
+      setActiveDragSectionId(null);
       return;
     }
 
-    if (isFromBlockItems) {
-      const overIndex = blocks.findIndex((item) => item.id === over.id);
-      setHoverBlockIndex(overIndex);
+    if (isFromSectionItems) {
+      const overIndex = sections.findIndex((item) => item.id === over.id);
+      setHoverSectionIndex(overIndex);
 
-      let activeItem = [...defaultBlockItems, ...blocks].find(
+      let activeItem = [...defaultSectionItems, ...sections].find(
         (item) => item.id === active.id
       );
       activeItem = { ...activeItem };
@@ -641,12 +643,12 @@ export default function Dashboard() {
     const { active, over } = event;
 
     if (!over) {
-      setActiveDragBlockId(null);
-      setHoverBlockIndex(null);
+      setActiveDragSectionId(null);
+      setHoverSectionIndex(null);
       return;
     }
 
-    let activeItem = [...defaultBlockItems, ...blocks].find(
+    let activeItem = [...defaultSectionItems, ...sections].find(
       (item) => item.id === active.id
     );
     activeItem = { ...activeItem };
@@ -654,26 +656,26 @@ export default function Dashboard() {
 
     if (active.id === over.id) return;
 
-    if (isFromBlockItems) {
-      const overIndex = blocks.findIndex((item) => item.id === over.id);
-      const newBlocks = [...blocks];
+    if (isFromSectionItems) {
+      const overIndex = sections.findIndex((item) => item.id === over.id);
+      const newSections = [...sections];
       if (overIndex === -1) {
-        return [...blocks, activeItem];
+        return [...sections, activeItem];
       }
-      newBlocks.splice(overIndex, 0, activeItem);
+      newSections.splice(overIndex, 0, activeItem);
 
-      setBlocks(newBlocks);
-      updateUserBlocks(user.uid, newBlocks);
+      setSections(newSections);
+      updateUserSections(user.uid, newSections);
     } else {
-      const oldIndex = blocks.findIndex((item) => item.id === active.id);
-      const newIndex = blocks.findIndex((item) => item.id === over.id);
-      const newBlocks = arrayMove(blocks, oldIndex, newIndex);
+      const oldIndex = sections.findIndex((item) => item.id === active.id);
+      const newIndex = sections.findIndex((item) => item.id === over.id);
+      const newSections = arrayMove(sections, oldIndex, newIndex);
 
-      setBlocks(newBlocks);
-      updateUserBlocks(user.uid, newBlocks);
+      setSections(newSections);
+      updateUserSections(user.uid, newSections);
     }
 
-    setHoverBlockIndex(null);
+    setHoverSectionIndex(null);
   };
 
   return (
@@ -740,11 +742,12 @@ export default function Dashboard() {
         <Container maxW="lg" pt="10rem" pb="5rem">
           <Flex justifyContent="space-between">
             <DndContext
+              collisionDetection={closestCorners}
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
             >
-              <DraggableItemPanel blcokNums={blocks.length} />
+              <DraggableItemPanel sectionNums={sections.length} />
               <VStack w="100%" spacing={8}>
                 {Object.keys(profile).length && (
                   <>
@@ -805,15 +808,15 @@ export default function Dashboard() {
                   </>
                 )}
                 <SortableContext
-                  items={blocks}
+                  items={sections}
                   strategy={verticalListSortingStrategy}
                 >
-                  {blocks &&
-                    blocks.map((block, index) => {
-                      const isShowPlaceholder = hoverBlockIndex === index;
+                  {sections &&
+                    sections.map((section, index) => {
+                      const isShowPlaceholder = hoverSectionIndex === index;
 
                       return (
-                        <Fragment key={block.id}>
+                        <Fragment key={section.id}>
                           <Box
                             display={isShowPlaceholder ? 'block' : 'none'}
                             overflow="hidden"
@@ -825,13 +828,13 @@ export default function Dashboard() {
                             borderBottomRadius="xl"
                             transition="opacity .5s"
                           />
-                          <SortableBlock
-                            block={block}
-                            setBlocks={setBlocks}
-                            openEditBlockModal={openEditBlockModal}
-                            setTempBlockData={setTempBlockData}
+                          <SortableSection
+                            section={section}
+                            setSections={setSections}
+                            openEditSectionModal={openEditSectionModal}
+                            setTempSection={setTempSection}
                             themeColor={profile.themeColor}
-                            isTranslate={index >= parseInt(hoverBlockIndex)}
+                            isTranslate={index >= parseInt(hoverSectionIndex)}
                           />
                         </Fragment>
                       );
@@ -839,10 +842,10 @@ export default function Dashboard() {
                 </SortableContext>
               </VStack>
               <DragOverlay>
-                {!isFromBlockItems ? (
+                {!isFromSectionItems ? (
                   <DragOverlayItem
-                    block={blocks.find(
-                      (block) => block.id === activeDragBlockId
+                    section={sections.find(
+                      (section) => section.id === activeDragSectionId
                     )}
                     themeColor={profile.themeColor}
                   />
@@ -853,10 +856,10 @@ export default function Dashboard() {
         </Container>
       </Box>
       <BlockEditorModal
-        isOpen={isEditBlockModalOpen}
-        onClose={closeEditBlockModal}
-        setBlocks={setBlocks}
-        tempBlockData={tempBlockData}
+        isOpen={isEditSectionModalOpen}
+        onClose={closeEditSectionModal}
+        setSections={setSections}
+        tempSection={tempSection}
         themeColor={profile.themeColor}
       />
 
