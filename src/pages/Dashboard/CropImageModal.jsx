@@ -26,7 +26,6 @@ import getCroppedImg from '../../utils/cropImage';
 
 export default function CropImageModal({
   isOpen,
-  onOpen,
   onClose,
   tempImageInfo,
   setTempCroppedImage,
@@ -66,11 +65,7 @@ export default function CropImageModal({
   };
 
   return (
-    <Modal
-      closeOnOverlayClick={false}
-      isOpen={isOpen}
-      onClose={onClose}
-    >
+    <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent maxW="600px" rounded="3xl">
         <Flex alignItems="center" px="1.5rem" py="1rem">
@@ -98,7 +93,7 @@ export default function CropImageModal({
               crop={crop}
               rotation={rotation}
               zoom={zoom}
-              aspect={1 / 1}
+              aspect={tempImageInfo.type === 'rectangle' ? `${2 / 1}` : `${1 / 1}`}
               onCropChange={setCrop}
               onCropComplete={onCropComplete}
               onZoomChange={setZoom}

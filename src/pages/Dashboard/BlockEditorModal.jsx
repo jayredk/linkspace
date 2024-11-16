@@ -12,6 +12,7 @@ import {
 } from '../../constants/utilityMaps';
 
 import {
+  AspectRatio,
   Box,
   Button,
   Card,
@@ -88,11 +89,14 @@ export default function BlockEditorModal({
   } = useDisclosure();
 
   const [tempImageInfo, setTempImageInfo] = useState({
+    type: null,
     imageUrl: null,
     index: null,
   });
 
   const [tempCroppedImage, setTempCroppedImage] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     buttons = [],
@@ -273,6 +277,8 @@ export default function BlockEditorModal({
     const docRef = doc(db, 'users', userId);
     let newBlocks = null;
 
+    setIsLoading(true);
+
     try {
       const updatedModalState = await handleUploadImage();
 
@@ -291,14 +297,23 @@ export default function BlockEditorModal({
       await updateDoc(docRef, {
         blocks: newBlocks,
       });
+      setTempCroppedImage(null);
       setModalState({});
       onClose();
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   function handleClose() {
+    setTempCroppedImage(null);
+    setTempImageInfo({
+      type: null,
+      imageUrl: null,
+      index: null,
+    });
     setModalState(tempBlockData);
   }
 
@@ -329,6 +344,7 @@ export default function BlockEditorModal({
     setTempCroppedImage(null);
 
     setTempImageInfo({
+      type: modalState.type === "banner-board" ? 'rectangle' : 'square',
       imageUrl,
       index,
     });
@@ -343,11 +359,13 @@ export default function BlockEditorModal({
 
   async function handleUploadImage() {
     const uploadImages = [];
+    const type = buttons.length > 0 ? 'buttons' : 'blocks';
+    let uploadData = modalState[type];
 
     await Promise.all(
-      buttons.map(async (button, index) => {
-        if (button.imageUrl?.startsWith('blob')) {
-          const imageBlob = await fetch(button.imageUrl).then((res) =>
+      uploadData.map(async (item, index) => {
+        if (item.imageUrl?.startsWith('blob')) {
+          const imageBlob = await fetch(item.imageUrl).then((res) =>
             res.blob()
           );
 
@@ -359,7 +377,7 @@ export default function BlockEditorModal({
       })
     );
 
-    const newButtons = JSON.parse(JSON.stringify(buttons));
+    const newData = JSON.parse(JSON.stringify(uploadData));
 
     await Promise.all(
       uploadImages.map(async (image) => {
@@ -374,13 +392,14 @@ export default function BlockEditorModal({
 
         const imageUrl = await getDownloadURL(snapshot.ref);
 
-        newButtons[image.index].imageUrl = imageUrl;
+        newData[image.index].imageUrl = imageUrl;
       })
     );
-
+    console.log('fired' ,type);
+    
     return {
       ...modalState,
-      buttons: newButtons,
+      [type]: newData,
     };
   }
 
@@ -395,14 +414,14 @@ export default function BlockEditorModal({
         let newData = null;
 
         switch (modalState.type) {
-          case 'text-button': 
+          case 'text-button':
             type = 'buttons';
             newData = JSON.parse(JSON.stringify(prevState.buttons || []));
 
             newData[tempImageInfo.index].imageUrl = tempCroppedImage;
             break;
-          
 
+          case 'banner-board':
           case 'square-board':
             type = 'blocks';
             newData = JSON.parse(JSON.stringify(prevState.blocks || []));
@@ -607,91 +626,92 @@ export default function BlockEditorModal({
                       ></IconButton>
                     </Flex>
                     <Divider my="0.5rem" />
+                    {block.imageUrl ? (
+                      <Box position="relative" mb="1rem">
+                        <Image
+                          maxW="100%"
+                          mr="1rem"
+                          rounded="xl"
+                          objectFit="cover"
+                          src={block.imageUrl}
+                          alt={block.text}
+                        />
+                        <Input
+                          data-index={index}
+                          onChange={handleImageChange}
+                          id={`uploadBtn${index}`}
+                          accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                          position="absolute"
+                          inset="0"
+                          height="100%"
+                          opacity="0"
+                          maxW="80px"
+                          mr="1rem"
+                          rounded="xl"
+                          type="file"
+                        />
+                      </Box>
+                    ) : (
+                      <Box mb="1rem">
+                        <label
+                          style={{
+                            position: 'relative',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginRight: '1rem',
+                            backgroundColor: '#E2E8F0',
+                            borderRadius: '20px',
+                          }}
+                          htmlFor={`uploadBtn${index}`}
+                        >
+                          <AspectRatio w="100%" ratio={2 / 1}>
+                            <Box>
+                              <Icon boxSize="50%" as={MdImage} />
+                            </Box>
+                          </AspectRatio>
+                          <Input
+                            data-type="blocks"
+                            data-index={index}
+                            onChange={handleImageChange}
+                            id={`uploadBtn${index}`}
+                            accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
+                            position="absolute"
+                            inset="0"
+                            opacity="0"
+                            maxW="80px"
+                            mr="1rem"
+                            rounded="xl"
+                            type="file"
+                          />
+                        </label>
+                      </Box>
+                    )}
                     <Flex alignItems="center" mb="1rem">
                       {
-                        <>
-                          {block.imageUrl ? (
-                            <Box position="relative">
-                              <Image
-                                maxW="80px"
-                                mr="1rem"
-                                rounded="xl"
-                                objectFit="cover"
-                                src={block.imageUrl}
-                                alt="Dan Abramov"
-                              />
-                              <Input
-                                data-index={index}
-                                onChange={handleImageChange}
-                                id={`uploadBtn${index}`}
-                                accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
-                                position="absolute"
-                                inset="0"
-                                height="100%"
-                                opacity="0"
-                                maxW="80px"
-                                mr="1rem"
-                                rounded="xl"
-                                type="file"
-                              />
-                            </Box>
-                          ) : (
-                            <label
-                              style={{
-                                position: 'relative',
-                                width: '100px',
-                                height: '100px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginRight: '1rem',
-                                backgroundColor: '#E2E8F0',
-                                borderRadius: '20px',
-                              }}
-                              htmlFor={`uploadBtn${index}`}
+                        <Box flexGrow="1">
+                          <Flex gap="0.5rem" mb="0.5rem">
+                            <Button flexGrow="1">
+                              上傳圖片
+                              <label
+                                htmlFor={`uploadBtn${index}`}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  position: 'absolute',
+                                  cursor: 'pointer',
+                                }}
+                              ></label>
+                            </Button>
+                            <Button
+                              isDisabled={!tempImageInfo.imageUrl}
+                              flexGrow="1"
+                              onClick={onCropModalOpen}
                             >
-                              <Icon fontSize="1.5rem" as={MdImage}></Icon>
-                              <Input
-                                data-type="blocks"
-                                data-index={index}
-                                onChange={handleImageChange}
-                                id={`uploadBtn${index}`}
-                                accept="image/apng,image/gif,image/bmp,image/jpeg,image/png,image/webp"
-                                position="absolute"
-                                inset="0"
-                                opacity="0"
-                                maxW="80px"
-                                mr="1rem"
-                                rounded="xl"
-                                type="file"
-                              />
-                            </label>
-                          )}
-
-                          <Box flexGrow="1">
-                            <Flex gap="0.5rem" mb="0.5rem">
-                              <Button flexGrow="1">
-                                上傳圖片
-                                <label
-                                  htmlFor={`uploadBtn${index}`}
-                                  style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    position: 'absolute',
-                                    cursor: 'pointer',
-                                  }}
-                                ></label>
-                              </Button>
-                              <Button
-                                isDisabled={!block.imageUrl}
-                                flexGrow="1"
-                                onClick={onCropModalOpen}
-                              >
-                                裁切圖片
-                              </Button>
-                            </Flex>
-                          </Box>
-                        </>
+                              裁切圖片
+                            </Button>
+                          </Flex>
+                        </Box>
                       }
                     </Flex>
                     <Flex alignItems="center" mb="1rem">
@@ -817,7 +837,7 @@ export default function BlockEditorModal({
                                 ></label>
                               </Button>
                               <Button
-                                isDisabled={!block.imageUrl}
+                                isDisabled={!tempImageInfo.imageUrl}
                                 flexGrow="1"
                                 onClick={onCropModalOpen}
                               >
@@ -907,6 +927,7 @@ export default function BlockEditorModal({
 
             <Button
               onClick={handleSave}
+              isLoading={isLoading}
               position="absolute"
               bottom="1rem"
               right="3rem"
@@ -920,7 +941,6 @@ export default function BlockEditorModal({
       </Modal>
       <CropImageModal
         isOpen={isCropModalOpen}
-        onOpen={onCropModalOpen}
         onClose={onCropModalClose}
         tempImageInfo={tempImageInfo}
         setTempCroppedImage={setTempCroppedImage}
