@@ -859,13 +859,26 @@ export default function BlockEditorModal({
               </Flex>
             )}
             {tempBlockData.type === 'video-player' && (
-              <Input
-                name="videoUrl"
-                value={modalState.videoUrl}
-                onChange={handleModalStateChange}
-                borderColor="gray"
-                placeholder="輸入 youtube 網址"
-              />
+              <Card borderRadius="20px" mb="1rem">
+                <CardBody>
+                  <Flex justifyContent="space-between" alignItems="center">
+                    <Heading as="h3" fontSize="1.25rem">
+                      影音播放器資訊
+                    </Heading>
+                  </Flex>
+                  <Divider my="0.5rem" />
+                  <Flex alignItems="center" mb="1rem">
+                    <Icon as={BsLink45Deg} mr="1rem" fontSize="xl" />
+                    <Input
+                      name="videoUrl"
+                      value={modalState.videoUrl}
+                      onChange={handleModalStateChange}
+                      borderColor="gray"
+                      placeholder="輸入 youtube 網址"
+                    />
+                  </Flex>
+                </CardBody>
+              </Card>
             )}
           </ModalBody>
 
