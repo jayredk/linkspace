@@ -112,10 +112,16 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                 {block.hasSubtitle ? (
                   <Text
                     fontSize={fontSizeMapWithSubtitle[block.fontSize]}
+                    fontWeight="bold"
                     mx="auto"
                   >
                     {button.text}
-                    <Text as="span" display="block" fontSize="md">
+                    <Text
+                      as="span"
+                      display="block"
+                      fontSize="md"
+                      fontWeight="medium"
+                    >
                       {button.subText}
                     </Text>
                   </Text>
@@ -144,21 +150,34 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
             position="relative"
           >
             <AspectRatio w="100%" ratio={2 / 1}>
-              <Image src={block.imageUrl} alt={block.text} objectFit="cover" />
+              {block.imageUrl ? (
+                <Image
+                  src={block.imageUrl}
+                  alt={block.text}
+                  objectFit="cover"
+                  borderRadius="lg"
+                />
+              ) : (
+                <Box bgColor="#E2E8F0">
+                  <Icon boxSize="50%" as={MdImage} />
+                </Box>
+              )}
             </AspectRatio>
-            <Text
-              bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-              color="white"
-              fontSize="sm"
-              textAlign="left"
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              p="1rem"
-            >
-              {block.text}
-            </Text>
+            {block.text && (
+              <Text
+                bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+                color="white"
+                fontSize="sm"
+                textAlign="left"
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                p="1rem"
+              >
+                {block.text}
+              </Text>
+            )}
           </Link>
         ))}
 
@@ -172,26 +191,34 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
             position="relative"
           >
             <AspectRatio w="100%" ratio={1 / 1}>
-              <Image
-                src={block.imageUrl}
-                alt={block.text}
-                objectFit="cover"
-                borderRadius="lg"
-              />
+              {block.imageUrl ? (
+                <Image
+                  src={block.imageUrl}
+                  alt={block.text}
+                  objectFit="cover"
+                  borderRadius="lg"
+                />
+              ) : (
+                <Box bgColor="#E2E8F0">
+                  <Icon boxSize="50%" as={MdImage} />
+                </Box>
+              )}
             </AspectRatio>
-            <Text
-              bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-              color="white"
-              fontSize="sm"
-              textAlign="left"
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              p="1rem"
-            >
-              {block.text}
-            </Text>
+            {block.text && (
+              <Text
+                bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+                color="white"
+                fontSize="sm"
+                textAlign="left"
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                p="1rem"
+              >
+                {block.text}
+              </Text>
+            )}
           </Link>
         ))}
 
@@ -210,26 +237,33 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                 }}
               >
                 <AspectRatio w="100%" ratio={1 / 1}>
-                  <Image
-                    src={block.imageUrl}
-                    alt={block.text}
-                    borderRadius="md"
-                    objectFit="cover"
-                  />
+                  {block.imageUrl ? (
+                    <Image
+                      src={block.imageUrl}
+                      alt={block.text}
+                      borderRadius="md"
+                      objectFit="cover"
+                    />
+                  ) : (
+                    <Box bgColor="#E2E8F0">
+                      <Icon boxSize="50%" as={MdImage} />
+                    </Box>
+                  )}
                 </AspectRatio>
-                <Text
-                  bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-                  borderRadius="md"
-                  color="white"
-                  fontSize="sm"
-                  position="absolute"
-                  bottom="0"
-                  left="0"
-                  right="0"
-                  p="1rem"
-                >
-                  {block.text}
-                </Text>
+                {block.text && (
+                  <Text
+                    bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+                    color="white"
+                    fontSize="sm"
+                    textAlign="left"
+                    position="absolute"
+                    bottom="0"
+                    left="0"
+                    right="0"
+                    p="1rem"
+                  >
+                    {block.text}
+                  </Text>)}
               </Link>
             );
           })}
