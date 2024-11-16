@@ -62,9 +62,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                   backgroundColor: block.isSolid
                     ? '#fff'
                     : themeColorsMap[themeColor],
-                  color: block.isSolid
-                    ? themeColorsMap[themeColor]
-                    : '#fff',
+                  color: block.isSolid ? themeColorsMap[themeColor] : '#fff',
                 }}
               >
                 {block.hasSubtitle && !block.hasImage && (
@@ -263,12 +261,11 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
           <lite-youtube
             videoid={getVideoId(block.videoUrl)}
             playlabel={'Play: ' + block.videoDescription}
+            style={{
+              backgroundImage: `url(https://i.ytimg.com/vi/${getVideoId(block.videoUrl)}/hqdefault.jpg)`,
+            }}
           >
-            <a
-              href="#"
-              className="lty-playbtn"
-              title="Play Video"
-            >
+            <a href="#" className="lty-playbtn" title="Play Video">
               <span className="lyt-visually-hidden">
                 Play Video: {block.videoDescription}
               </span>
