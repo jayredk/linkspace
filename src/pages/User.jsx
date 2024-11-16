@@ -69,14 +69,16 @@ export default function User() {
             {Object.keys(profile).length && <UserProfile profile={profile} slug={slug} />}
 
             {blocks.map((block, index) => {
-              return (
-                <MultiTypeBlock
-                  key={index}
-                  block={block}
-                  themeColor={profile.themeColor}
-                  isAnimating={true}
-                />
-              );
+              if (block.is_public) {
+                return (
+                  <MultiTypeBlock
+                    key={index}
+                    block={block}
+                    themeColor={profile.themeColor}
+                    isAnimating={true}
+                  />
+                );
+              }
             })}
           </VStack>
         </Container>

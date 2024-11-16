@@ -72,6 +72,7 @@ const defaultBlockItems = [
   {
     id: 1,
     type: 'text-button',
+    is_public: false,
     isSolid: false,
     hasSubtitle: false,
     fontSize: 'sm',
@@ -88,6 +89,7 @@ const defaultBlockItems = [
   {
     id: 2,
     type: 'banner-board',
+    is_public: false,
     blocks: [
       {
         imageUrl:
@@ -100,6 +102,7 @@ const defaultBlockItems = [
   {
     id: 3,
     type: 'square-board',
+    is_public: false,
     blocks: [
       {
         imageUrl:
@@ -112,6 +115,7 @@ const defaultBlockItems = [
   {
     id: 4,
     type: 'double-square-board',
+    is_public: false,
     blocks: [
       {
         imageUrl:
@@ -130,6 +134,7 @@ const defaultBlockItems = [
   {
     id: 5,
     type: 'video-player',
+    is_public: false,
     videoUrl: 'https://www.youtube.com/watch?v=ZSfiWjFjXdE',
     videoDescription: '',
   },
@@ -275,6 +280,7 @@ function DragOverlayItem({ block, themeColor }) {
 
 function SortableBlock({
   block,
+  setBlocks,
   openEditBlockModal,
   setTempBlockData,
   themeColor,
@@ -290,6 +296,8 @@ function SortableBlock({
   } = useSortable({
     id: block.id,
   });
+
+  const user = useUser();
 
   const getTransformStyle = () => {
     if (isTranslate) return 'translateY(20px)';
@@ -309,11 +317,34 @@ function SortableBlock({
     openEditBlockModal();
   };
 
+  const toggleBlockPublic = () => {
+    let newBlocks = null;
+    const currentBlock = block;
+
+    setBlocks((prevState) => {
+      newBlocks = prevState.map((block) => {
+        if (block.id === currentBlock.id) {
+          return {
+            ...block,
+            is_public: !block.is_public
+          };
+        }
+
+        return block;
+      });
+
+      return newBlocks;
+      
+    });
+    updateUserBlocks(user.uid, newBlocks);
+  };
+
   return (
     <Box
       ref={setNodeRef}
       {...attributes}
       style={style}
+      position="relative"
       overflow="hidden"
       w="100%"
       opacity={isDragging ? 0.5 : 1}
@@ -322,6 +353,8 @@ function SortableBlock({
       borderBottomRadius="xl"
     >
       <Flex
+        position="relative"
+        zIndex="1"
         bgColor="gray.200"
         borderTopRadius="1rem"
         justifyContent="space-between"
@@ -336,7 +369,7 @@ function SortableBlock({
             fontSize="1.25rem"
             icon={<Icon as={MdDragIndicator} />}
           />
-          <Switch />
+          <Switch isChecked={block.is_public} onChange={toggleBlockPublic} />
         </HStack>
         <HStack spacing={2}>
           <Tooltip label="複製" borderRadius="1.5rem">
@@ -361,6 +394,16 @@ function SortableBlock({
       </Flex>
 
       <MultiTypeBlock block={block} themeColor={themeColor} />
+
+      <Box
+        hidden={block.is_public ? true : false}
+        userSelect="none"
+        cursor="default"
+        position="absolute"
+        inset={0}
+        backgroundColor="black"
+        opacity={0.7}
+      ></Box>
     </Box>
   );
 }
@@ -669,6 +712,7 @@ export default function Dashboard() {
                           />
                           <SortableBlock
                             block={block}
+                            setBlocks={setBlocks}
                             openEditBlockModal={openEditBlockModal}
                             setTempBlockData={setTempBlockData}
                             themeColor={profile.themeColor}
