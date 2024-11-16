@@ -413,9 +413,6 @@ function SortableBlock({
         ref={setNodeRef}
         {...attributes}
         style={style}
-        as={motion.div}
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
         position="relative"
         overflow="hidden"
         w="100%"
@@ -424,66 +421,76 @@ function SortableBlock({
         borderTopRadius="1rem"
         borderBottomRadius="xl"
       >
-        <Flex
-          position="relative"
-          zIndex="1"
-          bgColor="gray.200"
-          borderTopRadius="1rem"
-          justifyContent="space-between"
-          p="0.5rem 1rem"
-        >
-          <HStack spacing={2}>
-            <IconButton
-              {...listeners}
-              aria-label="Sort block"
-              bgColor="transparent"
-              cursor="grab"
-              fontSize="1.25rem"
-              icon={<Icon as={MdDragIndicator} />}
-            />
-            <Switch isChecked={block.is_public} onChange={toggleBlockPublic} />
-          </HStack>
-          <HStack spacing={2}>
-            <Tooltip label="複製" borderRadius="1.5rem">
-              <IconButton
-                aria-label="Copy block"
-                bgColor="transparent"
-                icon={<Icon as={BsCopy} />}
-                onClick={() => {
-                  setAction('copy');
-                  onOpen();
-                }}
-              />
-            </Tooltip>
-            <Tooltip label="刪除" borderRadius="1.5rem">
-              <IconButton
-                aria-label="Delete block"
-                bgColor="transparent"
-                fontSize="1.25rem"
-                icon={<Icon as={MdDelete} />}
-                onClick={() => {
-                  setAction('delete');
-                  onOpen();
-                }}
-              />
-            </Tooltip>
-            <Button onClick={handleEditBlock} rightIcon={<Icon as={MdEdit} />}>
-              編輯
-            </Button>
-          </HStack>
-        </Flex>
-
-        <MultiTypeBlock block={block} themeColor={themeColor} />
-
         <Box
-          hidden={block.is_public ? true : false}
-          userSelect="none"
-          cursor="default"
-          position="absolute"
-          inset={0}
-          backgroundColor="black"
-          opacity={0.7}
-        ></Box>
+          as={motion.div}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <Flex
+            position="relative"
+            zIndex="1"
+            bgColor="gray.200"
+            borderTopRadius="1rem"
+            justifyContent="space-between"
+            p="0.5rem 1rem"
+          >
+            <HStack spacing={2}>
+              <IconButton
+                {...listeners}
+                aria-label="Sort block"
+                bgColor="transparent"
+                cursor="grab"
+                fontSize="1.25rem"
+                icon={<Icon as={MdDragIndicator} />}
+              />
+              <Switch
+                isChecked={block.is_public}
+                onChange={toggleBlockPublic}
+              />
+            </HStack>
+            <HStack spacing={2}>
+              <Tooltip label="複製" borderRadius="1.5rem">
+                <IconButton
+                  aria-label="Copy block"
+                  bgColor="transparent"
+                  icon={<Icon as={BsCopy} />}
+                  onClick={() => {
+                    setAction('copy');
+                    onOpen();
+                  }}
+                />
+              </Tooltip>
+              <Tooltip label="刪除" borderRadius="1.5rem">
+                <IconButton
+                  aria-label="Delete block"
+                  bgColor="transparent"
+                  fontSize="1.25rem"
+                  icon={<Icon as={MdDelete} />}
+                  onClick={() => {
+                    setAction('delete');
+                    onOpen();
+                  }}
+                />
+              </Tooltip>
+              <Button
+                onClick={handleEditBlock}
+                rightIcon={<Icon as={MdEdit} />}
+              >
+                編輯
+              </Button>
+            </HStack>
+          </Flex>
+          <MultiTypeBlock block={block} themeColor={themeColor} />
+          <Box
+            hidden={block.is_public ? true : false}
+            userSelect="none"
+            cursor="default"
+            position="absolute"
+            inset={0}
+            backgroundColor="black"
+            opacity={0.7}
+          ></Box>
+        </Box>
       </Box>
       <AlertDialog
         motionPreset="slideInBottom"
