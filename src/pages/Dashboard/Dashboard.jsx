@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
@@ -18,6 +18,12 @@ import { useUser, useSetUser } from '../../stores/userStore';
 import { getUserInfo, updateUserBlocks } from '../../services/userService';
 
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Avatar,
   Box,
   Button,
@@ -41,6 +47,8 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+
+import { motion } from 'framer-motion';
 
 import {
   MdContentCopy,
@@ -135,7 +143,7 @@ const defaultBlockItems = [
     id: 5,
     type: 'video-player',
     is_public: false,
-    videoUrl: 'https://www.youtube.com/watch?v=ZSfiWjFjXdE',
+    videoUrl: 'https://www.youtube.com/watch?v=eDqfg_LexCQ',
     videoDescription: '',
   },
 ];
@@ -299,6 +307,11 @@ function SortableBlock({
 
   const user = useUser();
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef(null);
+  const [action, setAction] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const getTransformStyle = () => {
     if (isTranslate) return 'translateY(20px)';
 
@@ -339,72 +352,167 @@ function SortableBlock({
     updateUserBlocks(user.uid, newBlocks);
   };
 
+  const handleCopyBlock = async () => {
+    let newBlocks = null;
+    const currentBlock = block;
+
+
+    setBlocks((prevState) => {
+      const newIndex =
+          prevState.findIndex((block) => block.id === currentBlock.id) + 1;
+
+      newBlocks = [...prevState];
+      newBlocks.splice(newIndex, 0, { ...currentBlock, id: crypto.randomUUID() });
+
+      return newBlocks;
+    });
+    updateUserBlocks(user.uid, newBlocks);
+
+  };
+
+  const handleDeleteBlock = async () => {
+    let newBlocks = null;
+    const currentBlock = block;
+
+
+    setBlocks((prevState) => {
+      newBlocks = prevState.filter(
+        (block) => block.id !== currentBlock.id
+      );
+
+      return newBlocks;
+    });
+    updateUserBlocks(user.uid, newBlocks);
+
+  };
+
+  const confirmAction = async () => {
+    setIsLoading(true);
+
+    switch (action) {
+      case 'delete':
+        await handleDeleteBlock();
+        break;
+
+      case 'copy':
+        await handleCopyBlock();
+        break;
+
+      default:
+        break;
+    }
+
+    setIsLoading(false);
+    onClose();
+
+  };
+
   return (
-    <Box
-      ref={setNodeRef}
-      {...attributes}
-      style={style}
-      position="relative"
-      overflow="hidden"
-      w="100%"
-      opacity={isDragging ? 0.5 : 1}
-      bgColor="white"
-      borderTopRadius="1rem"
-      borderBottomRadius="xl"
-    >
-      <Flex
-        position="relative"
-        zIndex="1"
-        bgColor="gray.200"
-        borderTopRadius="1rem"
-        justifyContent="space-between"
-        p="0.5rem 1rem"
-      >
-        <HStack spacing={2}>
-          <IconButton
-            {...listeners}
-            aria-label="Sort block"
-            bgColor="transparent"
-            cursor="grab"
-            fontSize="1.25rem"
-            icon={<Icon as={MdDragIndicator} />}
-          />
-          <Switch isChecked={block.is_public} onChange={toggleBlockPublic} />
-        </HStack>
-        <HStack spacing={2}>
-          <Tooltip label="複製" borderRadius="1.5rem">
-            <IconButton
-              aria-label="Copy block"
-              bgColor="transparent"
-              icon={<Icon as={BsCopy} />}
-            />
-          </Tooltip>
-          <Tooltip label="刪除" borderRadius="1.5rem">
-            <IconButton
-              aria-label="Delete block"
-              bgColor="transparent"
-              fontSize="1.25rem"
-              icon={<Icon as={MdDelete} />}
-            />
-          </Tooltip>
-          <Button onClick={handleEditBlock} rightIcon={<Icon as={MdEdit} />}>
-            編輯
-          </Button>
-        </HStack>
-      </Flex>
-
-      <MultiTypeBlock block={block} themeColor={themeColor} />
-
+    <>
       <Box
-        hidden={block.is_public ? true : false}
-        userSelect="none"
-        cursor="default"
-        position="absolute"
-        inset={0}
-        backgroundColor="black"
-        opacity={0.7}
-      ></Box>
-    </Box>
+        ref={setNodeRef}
+        {...attributes}
+        style={style}
+        as={motion.div}
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        position="relative"
+        overflow="hidden"
+        w="100%"
+        opacity={isDragging ? 0.5 : 1}
+        bgColor="white"
+        borderTopRadius="1rem"
+        borderBottomRadius="xl"
+      >
+        <Flex
+          position="relative"
+          zIndex="1"
+          bgColor="gray.200"
+          borderTopRadius="1rem"
+          justifyContent="space-between"
+          p="0.5rem 1rem"
+        >
+          <HStack spacing={2}>
+            <IconButton
+              {...listeners}
+              aria-label="Sort block"
+              bgColor="transparent"
+              cursor="grab"
+              fontSize="1.25rem"
+              icon={<Icon as={MdDragIndicator} />}
+            />
+            <Switch isChecked={block.is_public} onChange={toggleBlockPublic} />
+          </HStack>
+          <HStack spacing={2}>
+            <Tooltip label="複製" borderRadius="1.5rem">
+              <IconButton
+                aria-label="Copy block"
+                bgColor="transparent"
+                icon={<Icon as={BsCopy} />}
+                onClick={() => {
+                  setAction('copy');
+                  onOpen();
+                }}
+              />
+            </Tooltip>
+            <Tooltip label="刪除" borderRadius="1.5rem">
+              <IconButton
+                aria-label="Delete block"
+                bgColor="transparent"
+                fontSize="1.25rem"
+                icon={<Icon as={MdDelete} />}
+                onClick={() => {
+                  setAction('delete');
+                  onOpen();
+                }}
+              />
+            </Tooltip>
+            <Button onClick={handleEditBlock} rightIcon={<Icon as={MdEdit} />}>
+              編輯
+            </Button>
+          </HStack>
+        </Flex>
+
+        <MultiTypeBlock block={block} themeColor={themeColor} />
+
+        <Box
+          hidden={block.is_public ? true : false}
+          userSelect="none"
+          cursor="default"
+          position="absolute"
+          inset={0}
+          backgroundColor="black"
+          opacity={0.7}
+        ></Box>
+      </Box>
+      <AlertDialog
+        motionPreset="slideInBottom"
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            {action === 'delete' ? '確認要刪除區塊嗎?' : '確認要複製區塊嗎?'}
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              取消
+            </Button>
+            <Button
+              onClick={confirmAction}
+              isLoading={isLoading}
+              colorScheme={action === 'delete' ? 'red' : 'blue'}
+              ml={3}
+            >
+              確認
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 
@@ -698,7 +806,7 @@ export default function Dashboard() {
                       const isShowPlaceholder = hoverBlockIndex === index;
 
                       return (
-                        <React.Fragment key={block.id}>
+                        <Fragment key={block.id}>
                           <Box
                             display={isShowPlaceholder ? 'block' : 'none'}
                             overflow="hidden"
@@ -718,7 +826,7 @@ export default function Dashboard() {
                             themeColor={profile.themeColor}
                             isTranslate={index >= parseInt(hoverBlockIndex)}
                           />
-                        </React.Fragment>
+                        </Fragment>
                       );
                     })}
                 </SortableContext>
