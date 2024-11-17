@@ -153,6 +153,8 @@ export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
             isExternal
             display="block"
             position="relative"
+            borderRadius="lg"
+            overflow="hidden"
           >
             <AspectRatio w="100%" ratio={2 / 1}>
               {block.imageUrl ? (
@@ -160,7 +162,6 @@ export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
                   src={block.imageUrl}
                   alt={block.text}
                   objectFit="cover"
-                  borderRadius="lg"
                 />
               ) : (
                 <Box bgColor="#E2E8F0">
@@ -194,6 +195,8 @@ export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
             isExternal
             display="block"
             position="relative"
+            borderRadius="lg"
+            overflow="hidden"
           >
             <AspectRatio w="100%" ratio={1 / 1}>
               {block.imageUrl ? (
@@ -201,7 +204,6 @@ export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
                   src={block.imageUrl}
                   alt={block.text}
                   objectFit="cover"
-                  borderRadius="lg"
                 />
               ) : (
                 <Box bgColor="#E2E8F0">
@@ -236,6 +238,8 @@ export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
                 href={block.linkUrl}
                 target="_blank"
                 position="relative"
+                borderRadius="md"
+                overflow="hidden"
                 _hover={{
                   transform: 'scale(1.03)',
                   transition: 'transform .3s',
@@ -246,7 +250,6 @@ export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
                     <Image
                       src={block.imageUrl}
                       alt={block.text}
-                      borderRadius="md"
                       objectFit="cover"
                     />
                   ) : (
@@ -268,7 +271,8 @@ export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
                     p="1rem"
                   >
                     {block.text}
-                  </Text>)}
+                  </Text>
+                )}
               </Link>
             );
           })}

@@ -275,7 +275,7 @@ export default function BlockEditorModal({
 
   async function handleSave() {
     const docRef = doc(db, 'users', userId);
-    let newBlocks = null;
+    let newSections = null;
 
     setIsLoading(true);
 
@@ -290,12 +290,12 @@ export default function BlockEditorModal({
         );
         const newItems = [...prevState];
         newItems[index] = { ...updatedModalState };
-        newBlocks = newItems;
+        newSections = newItems;
         return newItems;
       });
 
       await updateDoc(docRef, {
-        blocks: newBlocks,
+        sections: newSections,
       });
       setTempCroppedImage(null);
       setModalState({});
