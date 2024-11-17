@@ -85,10 +85,11 @@ export default function Signup() {
             },
           ],
         },
-        blocks: [
+        sections: [
           {
             id: crypto.randomUUID(),
             type: 'text-button',
+            is_public: true,
             isSolid: false,
             hasSubtitle: false,
             hasImage: false,

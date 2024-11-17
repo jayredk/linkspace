@@ -84,7 +84,7 @@ const defaultSectionItems = [
   {
     id: 1,
     type: 'text-button',
-    is_public: false,
+    is_public: true,
     isSolid: false,
     hasSubtitle: false,
     fontSize: 'sm',
@@ -101,7 +101,7 @@ const defaultSectionItems = [
   {
     id: 2,
     type: 'banner-board',
-    is_public: false,
+    is_public: true,
     blocks: [
       {
         imageUrl:
@@ -114,7 +114,7 @@ const defaultSectionItems = [
   {
     id: 3,
     type: 'square-board',
-    is_public: false,
+    is_public: true,
     blocks: [
       {
         imageUrl:
@@ -127,7 +127,7 @@ const defaultSectionItems = [
   {
     id: 4,
     type: 'double-square-board',
-    is_public: false,
+    is_public: true,
     blocks: [
       {
         imageUrl:
@@ -146,7 +146,7 @@ const defaultSectionItems = [
   {
     id: 5,
     type: 'video-player',
-    is_public: false,
+    is_public: true,
     videoUrl: 'https://www.youtube.com/watch?v=eDqfg_LexCQ',
     videoDescription: '',
   },
