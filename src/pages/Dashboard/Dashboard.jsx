@@ -52,6 +52,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
+import { motion, AnimatePresence } from 'framer-motion';
 
 import {
   MdContentCopy,
@@ -373,19 +374,26 @@ function SortableSection({
 
   };
 
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const handleDeleteSection = async () => {
     let newSections = null;
-    const currentBlock = section;
+    const currentSection = section;
 
+    setIsDeleting(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     setSections((prevState) => {
       newSections = prevState.filter(
-        (section) => section.id !== currentBlock.id
+        (section) => section.id !== currentSection.id
       );
 
       return newSections;
     });
     updateUserSections(user.uid, newSections);
+
+    setIsDeleting(false);
   };
 
   const confirmAction = async () => {
@@ -419,80 +427,88 @@ function SortableSection({
         overflow="hidden"
         w="100%"
         opacity={isDragging ? 0.5 : 1}
-        bgColor="white"
+        bgColor="transparent"
         borderTopRadius="1rem"
         borderBottomRadius="xl"
       >
-        <Box
-          as={motion.div}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <Flex
-            position="relative"
-            zIndex="1"
-            bgColor="gray.200"
-            borderTopRadius="1rem"
-            justifyContent="space-between"
-            p="0.5rem 1rem"
-          >
-            <HStack spacing={2}>
-              <IconButton
-                {...listeners}
-                aria-label="Sort block"
-                bgColor="transparent"
-                cursor="grab"
-                fontSize="1.25rem"
-                icon={<Icon as={MdDragIndicator} />}
-              />
-              <Switch
-                isChecked={section.is_public}
-                onChange={toggleSectionPublic}
-              />
-            </HStack>
-            <HStack spacing={2}>
-              <Tooltip label="複製" borderRadius="1.5rem">
-                <IconButton
-                  aria-label="Copy block"
-                  bgColor="transparent"
-                  icon={<Icon as={BsCopy} />}
-                  onClick={() => {
-                    setAction('copy');
-                    onOpen();
-                  }}
-                />
-              </Tooltip>
-              <Tooltip label="刪除" borderRadius="1.5rem">
-                <IconButton
-                  aria-label="Delete block"
-                  bgColor="transparent"
-                  fontSize="1.25rem"
-                  icon={<Icon as={MdDelete} />}
-                  onClick={() => {
-                    setAction('delete');
-                    onOpen();
-                  }}
-                />
-              </Tooltip>
-              <Button
-                onClick={handleEditSection}
-                rightIcon={<Icon as={MdEdit} />}
+        <AnimatePresence>
+          {section && !isDeleting && (
+            <Box
+              key={section.id}
+              as={motion.div}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.8 }}
+              bgColor="white"
+            >
+              <Flex
+                position="relative"
+                zIndex="1"
+                bgColor="gray.200"
+                borderTopRadius="1rem"
+                justifyContent="space-between"
+                p="0.5rem 1rem"
               >
+                <HStack spacing={2}>
+                  <IconButton
+                    {...listeners}
+                    aria-label="Sort block"
+                    bgColor="transparent"
+                    cursor="grab"
+                    fontSize="1.25rem"
+                    icon={<Icon as={MdDragIndicator} />}
+                  />
+                  <Switch
+                    isChecked={section.is_public}
+                    onChange={toggleSectionPublic}
+                  />
+                </HStack>
+                <HStack spacing={2}>
+                  <Tooltip label="複製" borderRadius="1.5rem">
+                    <IconButton
+                      aria-label="Copy block"
+                      bgColor="transparent"
+                      icon={<Icon as={BsCopy} />}
+                      onClick={() => {
+                        setAction('copy');
+                        onOpen();
+                      }}
+                    />
+                  </Tooltip>
+                  <Tooltip label="刪除" borderRadius="1.5rem">
+                    <IconButton
+                      aria-label="Delete block"
+                      bgColor="transparent"
+                      fontSize="1.25rem"
+                      icon={<Icon as={MdDelete} />}
+                      onClick={() => {
+                        setAction('delete');
+                        onOpen();
+                      }}
+                    />
+                  </Tooltip>
+                  <Button
+                    onClick={handleEditSection}
+                    rightIcon={<Icon as={MdEdit} />}
+                  >
                     編輯
-              </Button>
-            </HStack>
-          </Flex>
-          <MultiTypeBlock section={section} themeColor={themeColor} />
-          <Box
-            hidden={section.is_public ? true : false}
-            userSelect="none"
-            cursor="default"
-            position="absolute"
-            inset={0}
-            backgroundColor="black"
-            opacity={0.7}
-          ></Box>
-        </Box>
+                  </Button>
+                </HStack>
+              </Flex>
+              <MultiTypeBlock section={section} themeColor={themeColor} />
+              <Box
+                hidden={section.is_public ? true : false}
+                userSelect="none"
+                cursor="default"
+                position="absolute"
+                inset={0}
+                backgroundColor="black"
+                opacity={0.7}
+              ></Box>
+            </Box>
+          )}
+        </AnimatePresence>
       </Box>
       <AlertDialog
         motionPreset="slideInBottom"
