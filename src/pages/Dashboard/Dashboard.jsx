@@ -173,6 +173,7 @@ const defaultSectionItems = [
 
 function DraggableItemPanel({ sectionNums }) {
   const [blockItems] = useState(defaultSectionItems);
+  const MAX_SECTION_NUMS = 8;
 
   return (
     <VStack
@@ -190,15 +191,32 @@ function DraggableItemPanel({ sectionNums }) {
       boxShadow="rgba(0, 0, 0, 0.04) 0px 5px 5px"
       p="2rem"
       w="300px"
+      h="550px"
       gap="1rem"
     >
-      <Text alignSelf="flex-start" ml="0.75rem" mb="1rem">
-        區塊數量 {sectionNums} / 8
+      <Text ml="0.75rem" mb="1rem">
+      區塊數量：
+        {MAX_SECTION_NUMS === sectionNums ? (
+          <Text display="inline-block" color="#E35D5D">
+            {sectionNums} / 8（已達上限）
+          </Text>
+        ) : (
+          `${sectionNums} / 8`
+        )}
       </Text>
-      <SimpleGrid columns={2} spacing={4}>
+      <SimpleGrid columns={2} spacing={4} position="relative">
         {blockItems.map((item) => (
           <DraggableItem key={item.id} item={item} />
         ))}
+        {MAX_SECTION_NUMS === sectionNums && (
+          <Box
+            position="absolute"
+            inset="0"
+            bgColor="gray"
+            opacity="0.5"
+            borderRadius="2xl"
+          />
+        )}
       </SimpleGrid>
     </VStack>
   );
