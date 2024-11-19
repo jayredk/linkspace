@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 import {
-  closestCorners,
   DndContext,
   DragOverlay,
   useDraggable,
@@ -11,7 +10,6 @@ import {
 import {
   arrayMove,
   SortableContext,
-  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 
@@ -758,7 +756,6 @@ export default function Dashboard() {
         <Container maxW="lg" pt="10rem" pb="5rem">
           <Flex justifyContent="space-between">
             <DndContext
-              collisionDetection={closestCorners}
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
@@ -823,10 +820,7 @@ export default function Dashboard() {
                     </UserProfile>
                   </>
                 )}
-                <SortableContext
-                  items={sections}
-                  strategy={verticalListSortingStrategy}
-                >
+                <SortableContext items={sections}>
                   {sections &&
                     sections.map((section, index) => {
                       const isShowPlaceholder = hoverSectionIndex === index;
@@ -858,7 +852,7 @@ export default function Dashboard() {
                 </SortableContext>
               </VStack>
               <DragOverlay>
-                {!isFromSectionItems ? (
+                {!isFromSectionItems && activeDragSectionId ? (
                   <DragOverlayItem
                     section={sections.find(
                       (section) => section.id === activeDragSectionId
